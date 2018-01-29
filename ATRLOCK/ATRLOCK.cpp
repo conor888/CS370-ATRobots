@@ -87,6 +87,39 @@ int main(int argc, char *argv[]) {
             s = "";
         }
     }
+
+    //LOCK HEADER
+    f2 <<";------------------------------------------------------------------------------";
+    // writeln(f2,'; ',no_path(base_name(fn1)),' Locked on ',date);
+    f2 <<";------------------------------------------------------------------------------";
+
+    lock_code = "";
+    //k:=random(21)+20;
+
+    //DECODE LOCK
+    for (i=1; i < k; i++){
+        //lock_code[i] = //char(ord(lock_code[i])-65);
+    }
+
+    //write('Encoding "',fn1,'"...');
+
+    //ENCODE ROBOT
+    //s = //btrim(s);
+
+    //if length(s)>0 then
+    f2 << " "; // << //ucase(s));
+
+    // while not eof(f1) do
+    //readln(f1,s1); s:='';
+    //s1:=btrim(ucase(s1));
+
+    //write_line(s,s1);
+
+    f2 << "Done. Used LOCK Format #" << lock_type << ".";
+    f2 << "Only ATR2 v2.08 or later can decode.";
+    f2 << "LOCKed robot saved as " << fn2 << ".";
+
+    //close(f1); close(f2);
 }
 
 int write_line(string s, string s1, ofstream f2) {
