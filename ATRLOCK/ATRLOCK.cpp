@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <ctime>
 
 using namespace std;
 
@@ -18,6 +19,8 @@ int main(int argc, char *argv[]) {
     int i, j, k, lock_pos, lock_dat, this_dat;
     ifstream f1;
     ofstream f2;
+    time_t now = time(0);
+    tm *ltm = localtime(&now);
 
     //randomize(); Generates random number based on current date
     lock_pos = 0;
@@ -89,9 +92,12 @@ int main(int argc, char *argv[]) {
     }
 
     //LOCK HEADER
-    f2 <<";------------------------------------------------------------------------------";
+    f2 << endl;
+    f2 <<";------------------------------------------------------------------------------\n";
     // writeln(f2,'; ',no_path(base_name(fn1)),' Locked on ',date);
-    f2 <<";------------------------------------------------------------------------------";
+    f2 << "; " << fn1 << " Locked on " << (1900 + ltm->tm_year) << "/" << (1 + ltm->tm_mon) <<
+       "/" << (ltm->tm_mday) << endl;
+    f2 <<";------------------------------------------------------------------------------\n";
 
     lock_code = "";
     //k:=random(21)+20;
@@ -115,11 +121,12 @@ int main(int argc, char *argv[]) {
 
     //write_line(s,s1);
 
-    f2 << "Done. Used LOCK Format #" << lock_type << ".";
-    f2 << "Only ATR2 v2.08 or later can decode.";
-    f2 << "LOCKed robot saved as " << fn2 << ".";
+    cout << "Done. Used LOCK Format #" << lock_type << "." << endl;
+    cout << "Only ATR2 v2.08 or later can decode." << endl;
+    cout << "LOCKed robot saved as " << fn2 << "." << endl;
 
-    //close(f1); close(f2);
+    f1.close();
+    f2.close();
 }
 
 int write_line(string s, string s1, ofstream f2) {
