@@ -3,7 +3,7 @@
 using namespace std;
 
 string prepare(string s, string s1){
-//function prepare(s,s1:string):string;
+//function prepare(s,s1:string):string
 
     int i,j,k,l;
     string s2;
