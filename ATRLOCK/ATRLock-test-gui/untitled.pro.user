@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
+<<<<<<< HEAD
 <!-- Written by QtCreator 4.5.0, 2018-02-05T10:57:05. -->
+=======
+<<<<<<< HEAD
+<!-- Written by QtCreator 4.5.0, 2018-02-01T15:30:31. -->
+=======
+<!-- Written by QtCreator 4.5.0, 2018-02-01T15:39:10. -->
+>>>>>>> 962a0f6ba1aedbd48f6f63662585560497d8fb10
+>>>>>>> 22a1940d3b95cae2c48a555fbe8e802c7bb6c959
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -296,7 +304,15 @@
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.ProFile">untitled.pro</value>
     <value type="bool" key="Qt4ProjectManager.Qt4RunConfiguration.UseDyldImageSuffix">false</value>
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory"></value>
+<<<<<<< HEAD
     <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">C:/Users/conor/Documents/Qt Creator/build-untitled-Desktop_Qt_5_10_0_MinGW_32bit-Release</value>
+=======
+<<<<<<< HEAD
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">/Users/nickspina/Documents/GitHub/CS370-ATRobots/ATRLOCK/build-untitled-Desktop_Qt_5_10_0_clang_64bit-Debug/untitled.app/Contents/MacOS</value>
+=======
+    <value type="QString" key="Qt4ProjectManager.Qt4RunConfiguration.UserWorkingDirectory.default">C:/Users/conor/Documents/Qt Creator/build-untitled-Desktop_Qt_5_10_0_MinGW_32bit-Debug</value>
+>>>>>>> 962a0f6ba1aedbd48f6f63662585560497d8fb10
+>>>>>>> 22a1940d3b95cae2c48a555fbe8e802c7bb6c959
     <value type="uint" key="RunConfiguration.QmlDebugServerPort">3768</value>
     <value type="bool" key="RunConfiguration.UseCppDebugger">false</value>
     <value type="bool" key="RunConfiguration.UseCppDebuggerAuto">true</value>
