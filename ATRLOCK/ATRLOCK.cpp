@@ -14,17 +14,18 @@ bool endsWith(string, string);
 string replaceExt(string, string);
 string ucase(string);
 string prepare(string, string);
-string encode(string, char []);
+string encode(string, char [], int);
+
+int lock_dat, lock_pos;
 
 int main(int argc, char *argv[]) {
     string fn1, fn2, s, s1, s2;
-    int i, k, lock_pos, lock_dat, this_dat;
+    int i, k, lock_pos, this_dat;
     ifstream f1;
     ofstream f2;
     time_t now = time(0);
     tm *ltm = localtime(&now);
 
-    //randomize(); Generates random number based on current date
     lock_pos = 0;
     lock_dat = 0;
 
@@ -97,7 +98,7 @@ int main(int argc, char *argv[]) {
     srand (time(NULL));
 
     //LOCK HEADER
-    f2 << endl;
+    //f2 << endl;
     f2 <<";------------------------------------------------------------------------------\n";
     //Try to remove .AT2 ext in the future
     f2 << "; " << fn1 << " Locked on " << (1900 + ltm->tm_year) << "/" << (1 + ltm->tm_mon) <<
@@ -106,11 +107,12 @@ int main(int argc, char *argv[]) {
 
     //k:=random(21)+20;
     k = rand() % 21 + 20;
-    auto *lock_code = new char[k];
+    char *lock_code = new char[k];
+
+    //cout << "k is " << k << endl;
 
     //Generate lock code to char array
     for (i = 0; i < k; i++) {
-        //lock_code[i] = static_cast<char>(rand() % 32 + 65);
         lock_code[i] = (char)(rand() % 32 + 65);
     }
 
@@ -160,13 +162,13 @@ int main(int argc, char *argv[]) {
 int write_line(string s, string s1, ofstream &f2, int k, char lock_code[]) {
     //cout << "write_line: " << s1 << endl;
 
-    //s = prepare(s, s1);
+    s = prepare(s, s1);
 
     //cout << "write_line s: " << s << endl;
 
     //write line
     if (s1.length() > 0) {
-        s = encode(s1, lock_code);
+        s = encode(s, lock_code, k);
         f2 << s << endl;
     }
 }
@@ -214,73 +216,83 @@ string ucase(string str) {
 }
 
 string prepare(string s, string s1){
-//function prepare(s,s1:string):string;
 
-    int i,k;
-    string s2;
+    int i,j;
 
-    cout << "prepare s: " << s << endl;
-    cout << "prepare s1: " << s1 << endl;
+    //int n = s1.length();
+    //char c[n + 1];
+
+    //cout << "c is initially " << c << endl;
+
+    //for(i = 0; i < (n); i++) {
+    //    c[i] = ' ';
+    //}
+    //strcpy(c, s1.c_str());
+
 
     //{--remove comments--}
-    if ((s1.length()==0) || (s1[1]=';')){
-        s1="";
-    }
-    else
-    { k=0;
-        for (i=s1.length(); i>0 ; i--)
+    /*if ((s1.length() == 0) || (s1[0]=';')){
+        s1 = "";
+    } else {
+        k = 0;
+        for (i = 0; i < s1.length(); i++)
         {
             if (s1[i]==';'){
-                k=i;
+                k = i;
             }
-            if (k>0){
+            if (k > 0){
                 //Figure out how lstr works
                 //s1=lstr(s1,k-1);
             }
         }
-    }
+    }*/
 
 //    {--remove excess spaces--}
-    s2="";
-    for (i=1; i<=s1.length(); i++){
+    //j = 0;
+    for (i = 0; i < s1.length(); i++) {
 
-        if (s1.compare(i, 1, " ") != 0 || s1.compare(i, 1, "\b") != 0 || s1.compare(i, 1, "\t") != 0 ||
-                s1.compare(i, 1, "\n") != 0 || s1.compare(i, 1, ",") != 0) {
-            s2 = s2+s1[i];
+        if ( (s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
+                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) ) {
+            s1.erase(i, 1);
+            //c[j] = s1[i];
+            //j++;
         }
-        else if (s2!= ""){
+        //cout << s1[i] << " " << (s1.compare(i, 1, " ") != 0) << " " << (s1.compare(i, 1, "\b") != 0) << " " << (s1.compare(i, 1, "\t") != 0) << " " << (s1.compare(i, 1, "\n") != 0) << " " << (s1.compare(i, 1, ",") != 0) << endl;
+        /*else if (s2!= ""){
             s = s + s2 + " ";
             s2 = "";
-        }
+        }*/
 
-//    if not (s1[i] in [' ',#8,#9,#10,',']) then s2:=s2+s1[i]
-//     else begin if s2!='' then s:=s+s2+' '; s2:=''; end;
     }
-    if (s2!=""){
+    /*if (s2!=""){
         s = s+s2;
-    }
-
+    }*/
+    //c[n] = ' ';
+    //cout << s1 << "; " << c << endl;
+    //s1 = c;
+    //cout << s1 << endl;
     return s1;
-//    prepare=s;
 }
 
-string encode(string s, char lock_code[]) {
-    int i, lock_pos, this_dat, lock_dat;
+string encode(string s, char lock_code[], int k) {
+    int i, this_dat;
 
     int n = s.length();
     char c[n+1];
     strcpy(c, s.c_str());
+    //unsigned char c_temp = ' ';
 
-    cout << "encode: " << s << endl;
+    //cout << "encode: " << s << endl;
 
-    lock_pos = 0;
-    lock_dat = 0;
-    // if lock_code<>'' then ???
-    //if(lock_code='') {
+    //char lock_code2[21];
+    //strcpy(lock_code2, "AAAAAAAAAAAAAAAAAAAA");
+
+    //cout << "strlen(lock_code) is " << strlen(lock_code) << endl;
+
+    if(strlen(lock_code) != 0) {
         for (i = 0; i < s.length(); i++) {
-            lock_pos++;
 
-            if (lock_pos > strlen(lock_code)) {
+            if (lock_pos > (k - 1)) {
                 lock_pos = 0;
             }
 
@@ -291,11 +303,15 @@ string encode(string s, char lock_code[]) {
 
             this_dat = (int)(c[i]) & 15;
             //Debug:
-            cout << this_dat << endl;
-            c[i] = (char)(((int)(c[i]) ^ ((int)(lock_code[lock_pos]) ^ lock_dat)) + 1);
+            //cout << c[i] << ", " << (int)(c[i]) << ", & 15 = " << this_dat << endl;
+            //cout << ((((long)(c[i]) ^ (long)(lock_code[lock_pos])) ^ lock_dat) + 1) << ", ";
+            c[i] = (char)((((int)(c[i]) ^ (int)(lock_code[lock_pos])) ^ lock_dat) + 1);
+            //cout << c[i] << ", lock_dat = " << lock_dat << ", lock_code = " << (int)lock_code[lock_pos] << ", lock_pos = " << lock_pos << endl;
             lock_dat = this_dat;
+            lock_pos++;
         }
+        //cout << c << endl;
         s = c;
         return s;
-    //}
+    }
 }
