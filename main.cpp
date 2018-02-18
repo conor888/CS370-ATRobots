@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
+#include <iomanip>
 #include "atr2func.h"
 
 using namespace std;
@@ -327,8 +328,14 @@ void prog_error(int n, string ss) {
 
 void print_code(int n, int p) {
     int i;
-
-    //Not done
+    std::cout << std::hex << p << ": ";
+    for (i = 0; max_op; i++) {
+        cout << setfill("0") << setw(5) << robot[n].code[p].op[i] << " ";
+    }
+    cout << " = ";
+    for (i = 0; max_op; i++) {
+        std::cout << std::hex << robot[n].code[p].op[i] << "h" << "\n\n";
+    }
 }
 
 void parse1(int n, int p, parsetype s) {
