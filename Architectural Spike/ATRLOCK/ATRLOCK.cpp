@@ -1,28 +1,31 @@
 #include <iostream>
-#include <string>
+//#include <string>
 #include <fstream>
 #include <ctime>
+#include <cstring>
 
 using namespace std;
 
 #define lock_type 3
 
-int write_line(string, string, ofstream);
+int write_line(string, string, ofstream &, int, char []);
 bool file_exists(string);
 bool endsWith(string, string);
 string replaceExt(string, string);
 string ucase(string);
 string prepare(string, string);
+string encode(string, char [], int);
+
+int lock_dat, lock_pos;
 
 int main(int argc, char *argv[]) {
-    string fn1, fn2, s, s1, s2, lock_code;
-    int i, j, k, lock_pos, lock_dat, this_dat;
+    string fn1, fn2, s, s1, s2;
+    int i, k, lock_pos, this_dat;
     ifstream f1;
     ofstream f2;
     time_t now = time(0);
     tm *ltm = localtime(&now);
 
-    //randomize(); Generates random number based on current date
     lock_pos = 0;
     lock_dat = 0;
 
@@ -91,35 +94,62 @@ int main(int argc, char *argv[]) {
         }
     }
 
+    //Randomize = rand.time null
+    srand (time(NULL));
+
     //LOCK HEADER
-    f2 << endl;
+    //f2 << endl;
     f2 <<";------------------------------------------------------------------------------\n";
-    // writeln(f2,'; ',no_path(base_name(fn1)),' Locked on ',date);
+    //Try to remove .AT2 ext in the future
     f2 << "; " << fn1 << " Locked on " << (1900 + ltm->tm_year) << "/" << (1 + ltm->tm_mon) <<
        "/" << (ltm->tm_mday) << endl;
     f2 <<";------------------------------------------------------------------------------\n";
 
-    lock_code = "";
     //k:=random(21)+20;
+    k = rand() % 21 + 20;
+    char *lock_code = new char[k];
 
-    //DECODE LOCK
-    for (i=1; i < k; i++){
-        //lock_code[i] = //char(ord(lock_code[i])-65);
+    //cout << "k is " << k << endl;
+
+    //Generate lock code to char array
+    for (i = 0; i < k; i++) {
+        lock_code[i] = (char)(rand() % 32 + 65);
     }
 
-    //write('Encoding "',fn1,'"...');
+    //Print lock code info
+    f2 << "#LOCK" << lock_type << " ";
+    for (i = 0; i < k; i++) {
+        f2 << lock_code[i];
+    }
+    f2 << endl;
+
+    //DECODE lock_code
+    for (i = 0; i < k; i++){
+        lock_code[i] = (char)((int)(lock_code[i]) - 65);
+    }
+
+    cout << "Encoding " << fn1 << "..." << endl;
 
     //ENCODE ROBOT
     //s = //btrim(s);
 
     //if length(s)>0 then
-    f2 << " "; // << //ucase(s));
+    if (s.length() > 0) {
+        write_line("", ucase(s), f2, k, lock_code);
+    }
 
     // while not eof(f1) do
     //readln(f1,s1); s:='';
     //s1:=btrim(ucase(s1));
 
-    //write_line(s,s1);
+    while (getline(f1, s1)) {
+        //Read line of f1 to s1, done in while cond. When it reaches EOF, while loop ends.
+
+        s = "";
+        s1 = ucase(s1);
+
+        write_line(s, s1, f2, k, lock_code);
+    }
 
     cout << "Done. Used LOCK Format #" << lock_type << "." << endl;
     cout << "Only ATR2 v2.08 or later can decode." << endl;
@@ -129,13 +159,17 @@ int main(int argc, char *argv[]) {
     f2.close();
 }
 
-int write_line(string s, string s1, ofstream f2) {
-    //s = prepare(s, s1);
+int write_line(string s, string s1, ofstream &f2, int k, char lock_code[]) {
+    //cout << "write_line: " << s1 << endl;
+
+    s = prepare(s, s1);
+
+    //cout << "write_line s: " << s << endl;
 
     //write line
     if (s1.length() > 0) {
-        //s = encode(s);
-        f2 << s;
+        s = encode(s, lock_code, k);
+        f2 << s << endl;
     }
 }
 
@@ -182,49 +216,102 @@ string ucase(string str) {
 }
 
 string prepare(string s, string s1){
-//function prepare(s,s1:string):string;
 
-    int i,j,k,l;
-    string s2;
+    int i,j;
 
-//    {--remove comments--}
-    if ((s1.length()==0) || (s1[1]=';')){
-        s1="";
-    }
-    else
-    { k=0;
-        for (i=s1.length(); i>0 ; i--)
+    //int n = s1.length();
+    //char c[n + 1];
+
+    //cout << "c is initially " << c << endl;
+
+    //for(i = 0; i < (n); i++) {
+    //    c[i] = ' ';
+    //}
+    //strcpy(c, s1.c_str());
+
+
+    //{--remove comments--}
+    /*if ((s1.length() == 0) || (s1[0]=';')){
+        s1 = "";
+    } else {
+        k = 0;
+        for (i = 0; i < s1.length(); i++)
         {
             if (s1[i]==';'){
-                k=i;
+                k = i;
             }
-            if (k>0){
+            if (k > 0){
                 //Figure out how lstr works
                 //s1=lstr(s1,k-1);
             }
         }
-    }
+    }*/
 
 //    {--remove excess spaces--}
-    s2="";
-    for (i=1; i<=s1.length(); i++){
+    //j = 0;
+    for (i = 0; i < s1.length(); i++) {
 
-        if (s1.compare(i, 1, " ") != 0 || s1.compare(i, 1, "\b") != 0 || s1.compare(i, 1, "\t") != 0 ||
-                s1.compare(i, 1, "\n") != 0 || s1.compare(i, 1, ",") != 0) {
-            s2 = s2+s1[i];
+        if ( (s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
+                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) ) {
+            s1.erase(i, 1);
+            //c[j] = s1[i];
+            //j++;
         }
-        else if (s2!= ""){
+        //cout << s1[i] << " " << (s1.compare(i, 1, " ") != 0) << " " << (s1.compare(i, 1, "\b") != 0) << " " << (s1.compare(i, 1, "\t") != 0) << " " << (s1.compare(i, 1, "\n") != 0) << " " << (s1.compare(i, 1, ",") != 0) << endl;
+        /*else if (s2!= ""){
             s = s + s2 + " ";
             s2 = "";
-        }
+        }*/
 
-//    if not (s1[i] in [' ',#8,#9,#10,',']) then s2:=s2+s1[i]
-//     else begin if s2!='' then s:=s+s2+' '; s2:=''; end;
     }
-    if (s2!=""){
+    /*if (s2!=""){
         s = s+s2;
-    }
+    }*/
+    //c[n] = ' ';
+    //cout << s1 << "; " << c << endl;
+    //s1 = c;
+    //cout << s1 << endl;
+    return s1;
+}
 
-    return s;
-//    prepare=s;
+string encode(string s, char lock_code[], int k) {
+    int i, this_dat;
+
+    int n = s.length();
+    char c[n+1];
+    strcpy(c, s.c_str());
+    //unsigned char c_temp = ' ';
+
+    //cout << "encode: " << s << endl;
+
+    //char lock_code2[21];
+    //strcpy(lock_code2, "AAAAAAAAAAAAAAAAAAAA");
+
+    //cout << "strlen(lock_code) is " << strlen(lock_code) << endl;
+
+    if(strlen(lock_code) != 0) {
+        for (i = 0; i < s.length(); i++) {
+
+            if (lock_pos > (k - 1)) {
+                lock_pos = 0;
+            }
+
+            //If character is outside normal alphabet/symbols in ASCII range, change it to a space
+            if (((int)(c[i]) <= 31) || ((int)(c[i]) >= 128)) {
+                c[i] = ' ';
+            }
+
+            this_dat = (int)(c[i]) & 15;
+            //Debug:
+            //cout << c[i] << ", " << (int)(c[i]) << ", & 15 = " << this_dat << endl;
+            //cout << ((((long)(c[i]) ^ (long)(lock_code[lock_pos])) ^ lock_dat) + 1) << ", ";
+            c[i] = (char)((((int)(c[i]) ^ (int)(lock_code[lock_pos])) ^ lock_dat) + 1);
+            //cout << c[i] << ", lock_dat = " << lock_dat << ", lock_code = " << (int)lock_code[lock_pos] << ", lock_pos = " << lock_pos << endl;
+            lock_dat = this_dat;
+            lock_pos++;
+        }
+        //cout << c << endl;
+        s = c;
+        return s;
+    }
 }
