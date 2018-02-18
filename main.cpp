@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <cstring>
+#include "atr2func.h"
 
 using namespace std;
 
@@ -123,6 +124,7 @@ typedef struct missile_rec {
 
 
 ///Function declarations
+string operand(int, int);
 string mnemonic(int, int);
 void prog_error(int, string);
 void print_code(int, int);
@@ -130,6 +132,8 @@ void parse1(int, int, parsetype);
 void check_plen(int);
 void compile(int, string);
 void robot_config(int);
+void reset_software(int);
+void reset_hardware(int n)
 
 
 
@@ -171,6 +175,25 @@ int kill_count, report_type;
 
 int main() {
     return 0;
+}
+
+string operand(int n, int m) {
+    string s;
+    s = n;
+
+    switch (m & 7) {
+        case 1: s = "@" + s;
+        case 2: s = ":" + s;
+        case 3: s = "$" + s;
+        case 4: s = "!" + s;
+        default: s = n;
+    }
+
+    if ((m & 8) > 0) {
+        s = "[" + s + "]";
+    }
+
+    return s;
 }
 
 string mnemonic(int n, int m)  {
@@ -229,7 +252,7 @@ string mnemonic(int n, int m)  {
             default: s = "XXX";
         }
     } else {
-        //s = operand(n,m); ???
+        s = operand(n,m);
     }
 
     return s;
@@ -304,6 +327,8 @@ void prog_error(int n, string ss) {
 
 void print_code(int n, int p) {
     int i;
+
+    //Not done
 }
 
 void parse1(int n, int p, parsetype s) {
@@ -575,5 +600,150 @@ void compile(int n, string filename) {
 
 void robot_config(int n) {
     int i, j, k;
-    //Not started
+
+    switch (robot[n].config.scanner) {
+        case 5:
+            robot[n].scanrange = 1500;
+        case 4:
+            robot[n].scanrange = 1000;
+        case 3:
+            robot[n].scanrange = 700;
+        case 2:
+            robot[n].scanrange = 500;
+        case 1:
+            robot[n].scanrange = 350;
+        default:
+            robot[n].scanrange = 250;
+    }
+
+    switch (robot[n].config.weapon) {
+        case 5:
+            robot[n].shotstrength = 1.5;
+        case 4:
+            robot[n].shotstrength = 1.35;
+        case 3:
+            robot[n].shotstrength = 1.2;
+        case 2:
+            robot[n].shotstrength = 1.0;
+        case 1:
+            robot[n].shotstrength = 0.8;
+        default:
+            robot[n].shotstrength = 0.5;
+    }
+
+    switch (robot[n].config.armor) {
+        case 5:
+            robot[n].damageadj = 0.66;
+            robot[n].speedadj  = 0.66;
+        case 4:
+            robot[n].damageadj = 0.77;
+            robot[n].speedadj  = 0.75;
+        case 3:
+            robot[n].damageadj = 0.83;
+            robot[n].speedadj  = 0.85;
+        case 2:
+            robot[n].damageadj = 1.0;
+            robot[n].speedadj  = 1.0;
+        case 1:
+            robot[n].damageadj = 1.5;
+            robot[n].speedadj  = 1.2;
+        default:
+            robot[n].damageadj = 2.0;
+            robot[n].speedadj  = 1.33;
+    }
+
+    switch (robot[n].config.engine) {
+        case 5:
+            robot[n].speedadj = robot[n].speedadj * 1.5;
+        case 4:
+            robot[n].speedadj = robot[n].speedadj * 1.35;
+        case 3:
+            robot[n].speedadj = robot[n].speedadj * 1.2;
+        case 2:
+            robot[n].speedadj = robot[n].speedadj * 1.0;
+        case 1:
+            robot[n].speedadj = robot[n].speedadj * 0.8;
+        default:
+            robot[n].speedadj = robot[n].speedadj * 0.5;
+    }
+
+    switch (robot[n].config.mines) {
+        case 5:
+            robot[n].mines = 24;
+        case 4:
+            robot[n].mines = 16;
+        case 3:
+            robot[n].mines = 10;
+        case 2:
+            robot[n].mines = 6;
+        case 1:
+            robot[n].mines = 4;
+        default:
+            robot[n].mines = 2;
+            robot[n].config.mines = 0;
+    }
+
+    robot[n].shields_up = false;
+    if (robot[n].config.shield < 3 || robot[n].config.shield > 5) {
+        robot[n].config.shield = 0;
+    }
+    if (robot[n].config.heatsinks < 0 || robot[n].config.heatsinks > 5) {
+        robot[n].config.heatsinks = 0;
+    }
+}
+
+void reset_software(int n) {
+    int i;
+    for(i = 0; i < max_ram; i++) {
+        robot[n].ram[i] = 0;
+        robot[n].ram[71] = 768;
+        robot[n].thd = robot[n].hd;
+        robot[n].tspd = 0;
+        robot[n].scanarc = 8;
+        robot[n].shift = 0;
+        robot[n].err = 0;
+        robot[n].overburn = false;
+        robot[n].keepshift = false;
+        robot[n].ip = 0;
+        robot[n].accuracy = 0;
+        robot[n].meters = 0;
+        robot[n].delay_left = 0;
+        robot[n].time_left = 0;
+        robot[n].shields_up = false;
+    }
+}
+
+void reset_hardware(int n) {
+    int i;
+    double d, dd;
+
+    for(i = 0; i < max_robot_lines; i++) {
+        robot[n].ltx[i] = 0;
+        robot[n].tx[i] = 0;
+        robot[n].lty[i] = 0;
+        robot[n].ty[i] = 0;
+    }
+    do {
+        robot[n].x = rand() % 1000;
+        robot[n].y = rand() % 1000;
+        dd = 1000;
+        for(i = 0; i < num_robots; i++) {
+            if(robot[i].x < 0) {
+                robot[i].x = 0;
+            }
+            if(robot[i].x > 1000) {
+                robot[i].x = 1000;
+            }
+            if(robot[i].y < 0) {
+                robot[i].y = 0;
+            }
+            if(robot[i].y > 1000) {
+                robot[i].y = 1000;
+            }
+            d = atr2func::distance(robot[n].x, robot[n].y, robot[i].x, robot[i].y);
+            if((robot[i].armor > 0) && (i != n) && (d < dd)) {
+                dd = d;
+            }
+        }
+    } while (dd > 32);
 }
