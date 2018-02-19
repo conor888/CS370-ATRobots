@@ -328,23 +328,14 @@ void prog_error(int n, string ss) {
 
 void print_code(int n, int p) {
     int i;
-    std::cout << std::hex << p << ": ";
-    for (i = 0; max_op; i++) {
-<<<<<<< HEAD
-        cout << setfill("0") << setw(5) << robot[n]^.code[p].op[i] << " ";
-    }
-    cout << " = ";
-    for (i = 0; max_op; i++) {
-        std::cout << std::hex << robot[n]^.code[p].op[i] << "h" << "\n\n";
-    //Not done
-=======
+    cout << hex << p << ": ";
+    for (i = 0; i < max_op; i++) {
         cout << setfill("0") << setw(5) << robot[n].code[p].op[i] << " ";
     }
     cout << " = ";
     for (i = 0; max_op; i++) {
-        std::cout << std::hex << robot[n].code[p].op[i] << "h" << "\n\n";
+        cout << hex << robot[n].code[p].op[i] << "h" << "\n\n";
     }
->>>>>>> cbc58c84cfb19975f27bba38af419c548c02759f
 }
 
 void parse1(int n, int p, parsetype s) {
