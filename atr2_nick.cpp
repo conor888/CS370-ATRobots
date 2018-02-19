@@ -51,6 +51,57 @@ int reset_software(int n) {
 
 }
 
+int init_robot(int n) {
+
+    int i,j,k,l;
+
+    robot[n].wins = 0;
+    robot[n].trials = 0;
+    robot[n].kills = 0;
+    robot[n].deaths = 0;
+    robot[n].shots_fired = 0;
+    robot[n].match_shots = 0;
+    robot[n].hits = 0;
+    robot[n].damage_total = 0;
+    robot[n].cycles_lived = 0;
+    robot[n].error_count = 0;
+    robot[n].plen = 0;
+    robot[n].max_time = 0;
+    robot[n].name = '';
+    robot[n].fn = '';
+    robot[n].speed = 0;
+    robot[n].arc_count = 0;
+    robot[n].sonar_count = 0;
+    robot[n].robot_time_limit = 0;
+    robot[n].scanrange = 1500;
+    robot[n].shotstrength = 1;
+    robot[n].damageadj = 1;
+    robot[n].speedadj = 1;
+    robot[n].mines = 0;
+
+    robot.config.scanner = 5;
+    robot.config.weapon = 2;
+    robot.config.armor = 2;
+    robot.config.engine = 2;
+    robot.config.heatsinks = 1;
+    robot.config.shield = 0;
+    robot.config.mines = 0;
+
+    for (i = 0; i < max_ram; i++) {
+        ram[i] = 0;
+    }
+
+    ram[71] = 768;
+
+    for (i = 0; i < max_code; i++) {
+        for (k = 0; k < max_op; k++) {
+            code[i].op[k] = 0;
+        }
+    }
+   reset_hardware(n);
+   reset_software(n);
+}
+
 
 
 
