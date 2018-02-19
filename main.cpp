@@ -755,7 +755,7 @@ void reset_hardware(int n) {
     } while (dd > 32);
 }
 
-int init_robot(int n) {
+void init_robot(int n) {
 
     int i,j,k,l;
 
