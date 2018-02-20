@@ -106,6 +106,46 @@ int init_robot(int n) {
 
 
 
+void shutdown() {
+
+    int i,j,k;
+
+// graph_mode(false);
+    if (show_cnotice = true) {
+
+//   textcolor(3);
+    cout << progname << " " << version << " ";
+    cout << cnotice1 << "\n";
+    cout << cnotice2 << "\n";
+    cout << cnotice3 << "\n";
+  }
+
+// textcolor(7);
+    if (registered = false) {
+//        textcolor(4);
+        cout << "Unregistered version";
+    } else {
+        cout << "Registered to: " << reg_name;
+    }
+// textcolor(7);
+    cout << "\n";
+    if (logging_errors = true) {
+
+    for (i = 0; i < num_robots; i++){
+        cout << "Robot error-log created: " << robot[i].base_name(fn) << ".ERR";
+        close(errorlog);
+    }
+   exit();
+}
+
+
+
+
+
+
+
+
+
 
 
 

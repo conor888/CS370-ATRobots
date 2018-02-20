@@ -190,6 +190,7 @@ DIST          = /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/spec_pre.pr
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/qt_config.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/spec_post.prf \
+		../ATRLock-test-gui/.qmake.stash \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/toolchain.prf \
@@ -371,6 +372,7 @@ Makefile: ../ATRLock-test-gui/untitled.pro /Users/nickspina/Qt/5.10.0/clang_64/m
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/qt_config.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/macx-clang/qmake.conf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/exclusive_builds.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/mac/sdk.prf \
 		/Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/toolchain.prf \
@@ -538,6 +540,7 @@ Makefile: ../ATRLock-test-gui/untitled.pro /Users/nickspina/Qt/5.10.0/clang_64/m
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/qt_config.prf:
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/macx-clang/qmake.conf:
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/exclusive_builds.prf:
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/mac/sdk.prf:
 /Users/nickspina/Qt/5.10.0/clang_64/mkspecs/features/toolchain.prf:
@@ -611,6 +614,7 @@ clean: compiler_clean
 
 distclean: clean 
 	-$(DEL_FILE) -r untitled.app
+	-$(DEL_FILE) .qmake.stash
 	-$(DEL_FILE) Makefile
 
 
