@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <cmath>
 #include <cstring>
 #include <iomanip>
@@ -145,7 +146,7 @@ robot_rec robot[max_robots + 4];
 missile_rec missile[max_missiles];
 
 //Compiler variables
-//text f;
+ifstream f;
 int numvars, numlabels, maxcode, lock_pos, lock_dat;
 string varname[max_vars]; //[max_var_len]
 int varloc[max_vars];
@@ -883,6 +884,69 @@ void compile(int n, string filename) {
             s = atr2func::lstr(s, k-1);
         }
         s = atr2func::btrim(atr2func::ucase(s));
+        for (i = 0; i < max_op; i++) {
+            pp[i] = '';
+        }
+        if (((int)s.length > 0) && (s[0] != ';')) {
+            if (s[0] == '#') {          //Compiler directives
+                s1 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s, s.length() - 1)));
+                msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
+                k = 0;
+                for (i = 0; i < s1.length(); i++) {
+                    if ((k == 0) && (s1[i] == ' ')) {
+                        k = i;
+                    }
+                }
+                k--;
+                if (k > 1) {
+                    s2 = atr2func::lstr(s1, k);
+                    s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k)));
+                    k = 0;
+                    if (numvars > 0) {
+                        for (i = 0; i < numvars; i++) {
+                            if (s3.compare(varname[i]) == 0) {
+                                k = i;
+                            }
+                        }
+                    }
+                    if ((s2 == "DEF") && (numvars < max_vars)) {
+                        if ((int)s3.length() > max_var_len) {
+                            prog_error(12, s3);
+                        } else {
+                            if (k > 0) {
+                                prog_error(11, s3);
+                            } else {
+                                numvars++;
+                                if (numvars > max_vars) {
+                                    prog_error(14, "");
+                                } else {
+                                    varname[numvars] = s3;
+                                    varloc[numvars]  = 127 + numvars;
+                                }
+                            }
+                        }
+                    } else if (atr2func::lstr(s2, 4) == "LOCK") {
+                        robot[n].is_locked = true; //this robot is locked
+                        if ((int)s2.length() > 4) {
+                            locktype = atr2func::value(atr2func::rstr(s2, s2.length() - 4));
+                        }
+                        lock_code = atr2func::btrim(atr2func::ucase(s3));
+                        cout << "Robot is of LOCKed format from this point forward. [" << locktype << "]";
+                        for (i = 0; i < (int)lock_code.length(); i++) {
+                            lock_code[i] = (char)((int)lock_code[i] - 65);
+                        }
+                    }
+                }
+            } else if (s[0] == '*') {   //Inline Pre-Compiled Machine Code
+
+            } else if (s[0] == ':') {   //:labels
+
+            } else if (s[0] == '!') {   //!labels
+
+            } else {                    //Instructions/Numbers
+
+            }
+        }
     }
 
 
