@@ -8,7 +8,7 @@ using namespace std;
 
 #define lock_type 3
 
-int write_line(string, string, ofstream &, int, char []);
+void write_line(string, string, ofstream &, int, char []);
 bool file_exists(string);
 bool endsWith(string, string);
 string replaceExt(string, string);
@@ -159,7 +159,7 @@ int main(int argc, char *argv[]) {
     f2.close();
 }
 
-int write_line(string s, string s1, ofstream &f2, int k, char lock_code[]) {
+void write_line(string s, string s1, ofstream &f2, int k, char lock_code[]) {
     s = prepare(s, s1);
 
     //write line
@@ -215,6 +215,32 @@ string prepare(string s, string s1){
 
     int i;
 
+    //int n = s1.length();
+    //char c[n + 1];
+
+    //for(i = 0; i < (n); i++) {
+    //    c[i] = ' ';
+    //}
+    //strcpy(c, s1.c_str());
+
+
+    //{--remove comments--}
+    /*if ((s1.length() == 0) || (s1[0]=';')){
+        s1 = "";
+    } else {
+        k = 0;
+        for (i = 0; i < s1.length(); i++)
+        {
+            if (s1[i]==';'){
+                k = i;
+            }
+            if (k > 0){
+                //Figure out how lstr works
+                //s1=lstr(s1,k-1);
+            }
+        }
+    }*/
+
     //{--remove excess spaces, newlines--}
     for (i = 0; i < s1.length(); i++) {
 
@@ -256,5 +282,5 @@ string encode(string s, char lock_code[], int k) {
         s = c;
         return s;
     }
-    return 0;
+    return "";
 }
