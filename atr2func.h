@@ -18,7 +18,7 @@ public:
     //std::string hexb(byte num);
     //std::string hex(word num);
     //double valuer(std::string i);
-    //long value(std::string i);
+    static long value(std::string i);
     //std::string cstrr(double i);
     //std::string cstr(long i);
     //std::string zero_pad(long n, long l);

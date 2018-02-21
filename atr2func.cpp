@@ -13,6 +13,14 @@ atr2func::atr2func() {
 
 }
 
+long atr2func::value(std::string i) {
+    long s;
+    int n;
+
+    s = std::stoi(i);
+    return s;
+}
+
 std::string atr2func::ucase(std::string s) {
     int i;
     if((int)s.length() >= 1) {
