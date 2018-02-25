@@ -18,22 +18,22 @@ public:
     //std::string hexb(byte num);
     //std::string hex(word num);
     //double valuer(std::string i);
-    //long value(std::string i);
+    static long value(std::string i);
     //std::string cstrr(double i);
     //std::string cstr(long i);
     //std::string zero_pad(long n, long l);
     //std::string zero_pads(std::string s, long l);
     //std::string addfront(std::string b, int l);
     //std::string addrear(std::string b, int l);
-    //std::string ucase(std::string s);
+    static std::string ucase(std::string s);
     //std::string lcase(std::string s);
     //std::string space(byte i);
     //std::string repchar(char c, byte i);
-    //std::string ltrim(std::string s1);
-    //std::string rtrim(std::string s1);
-    //std::string btrim(std::string s1);
-    //std::string lstr(std::string s1, int l);
-    //std::string rstr(std::string s1, int l);
+    static std::string ltrim(std::string s1);
+    static std::string rtrim(std::string s1);
+    static std::string btrim(std::string s1);
+    static std::string lstr(std::string s1, int l);
+    static std::string rstr(std::string s1, int l);
     //void FlushKey();
     //void calibrate_timing();
     //void time_delay(int n); //{n=milliseconds}
@@ -57,6 +57,9 @@ public:
     //int find_anglei(double xx, double yy, double tx, double ty);
     //std::string bin(int n);
     //std::string decimal(int num, int length);
+
+    //Our custom functions:
+    static bool exists(std::string s);
 private:
     //long delay_per_sec;
     //bool registered, graphix, sound_on;
