@@ -4,6 +4,7 @@
 #include <cstring>
 #include <iomanip>
 #include "atr2func.h"
+#include "filelib.h"
 
 using namespace std;
 
@@ -111,7 +112,7 @@ struct robot_rec {
     prog_type code;
     int ram[max_ram];
     mine_rec mine[max_mines];
-    //text errorlog;
+    ofstream errorlog;
 };
 
 typedef std::string parsetype[max_op];
@@ -136,6 +137,13 @@ void compile(int, string);
 void robot_config(int);
 void reset_software(int);
 void reset_hardware(int n);
+void init_robot(int n);
+void create_robot(int n, string filename);
+void shutdown();
+void delete_compile_report();
+void write_compile_report();
+void parse_param(string s);
+
 
 
 
@@ -164,7 +172,7 @@ int step_count;     //step counter used as break flag
 bool step_loop;     //break flag for stepping
 //bool show_debugger;       //flag for viewing debugger panel vs. robot stats
 // /FIFI
-bool old_shields, insans_missiles, debug_info, windoze, no_gfx, logging_errors,
+bool old_shields, insane_missiles, debug_info, windoze, no_gfx, logging_errors,
     timinig, show_arcs;
 int game_delay, time_slice, insanity, update_timer, max_gx, max_gy, stats_mode;
 long game_limit, game_cycle, matches, played, executed;
@@ -173,6 +181,12 @@ long game_limit, game_cycle, matches, played, executed;
 bool quit, report, show_cnotice;
 int kill_count, report_type;
 
+
+
+
+//Custom global variables
+bool registered = false, sound_on = false;
+string reg_name = "Unregistered";
 
 
 int main() {
@@ -571,7 +585,7 @@ void parse1(int n, int p, parsetype s) {
 
             ///numbers
             if ((not found) && (isdigit(s[i][0]) || s[i].compare(0, 1, "-"))) {
-                opcode = stoi(s[i]);
+                opcode = atr2func::str2int(s[i]);
                 found = true;
             }
 
@@ -600,6 +614,359 @@ void check_plen(int plen) {
         //streamtemp << "\nMaximum program length exceeded, (Limit: " << maxcode+1 << " compiled lines)";
         prog_error(16, "Maximum program length exceeded.");
     }
+}
+
+void compile(int n, string filename) {
+    parsetype pp;
+    string s, s1, s2, s3, orig_s, msg;
+    int i, j, k, l, linecount, mask, locktype;
+    string ss[max_op];
+    char c, lc;
+
+    lock_code = "";
+    lock_pos = 0;
+    locktype = 0;
+    lock_dat = 0;
+
+    if (!filelib::exist(filename)) {
+        prog_error(8, filename);
+    }
+    //textcolor(robot_color(n));
+    cout << "Compiling robot #" << n+1 << ": " << filename << endl;
+
+    robot[n].is_locked = false;
+    numvars = 0;
+    numlabels = 0;
+    for (k = 0; k < max_code; k++) {
+        for (i = 0; i < max_op; i++) {
+            robot[n].code[k].op[i] = 0;
+        }
+    }
+    robot[n].plen = 0;
+    //assign(f, filename);
+    //reset(f);
+    s = "";
+    linecount = 0;
+
+    while(1) { //(not eof(f)) and (s != "#END)
+        //readln(f,s);
+        linecount++;
+        if (locktype < 3) {
+            lock_pos = 0;
+        }
+        if (!lock_code.empty()) {
+            for (i = 1; i < (int)s.length(); i++) {
+                lock_pos++;
+                if (lock_pos > (int)lock_code.length()) {
+                    lock_pos = 1;
+                }
+                switch(locktype) {
+                    case 3:
+                        //s[i] = char((ord(s[i])-1) xor (ord(lock_code[lock_pos]) xor lock_dat));
+                    case 2:
+                        //s[i] = char(ord(s[i]) xor (ord(lock_code[lock_pos]) xor 1));
+                    default:
+                        exit(0);
+                        //s[i] = char(ord(s[i]) xor ord(lock_code[lock_pos]));
+                }
+                lock_dat = (int)s[i] & 15;
+            }
+        }
+        //s = btrim(s);
+        orig_s = s;
+        for (i = 1; i < (int)s.length(); i++) {
+            if (((int)(s[i]) <= 32) || ((int)(s[i]) >= 128) || s[i] == ',') { //s[i] in [#0..#32,',',#128..#255]
+                s.replace(i, 1, " ");
+            }
+        }
+        if (show_source && ((lock_code.empty() || debugging_compiler))) {
+            //cout << zero_pad(linecount, 3) << ":" << zero_pad(plen, 3) << " " << s << endl;
+        }
+        if (debugging_compiler) {
+            //if ((int)robot[n].readkey == 27) {
+            //    exit(0);
+            //}
+        }
+        k = 0;
+        for (i = (int)s.length(); i > 0; i--) {
+            if (s[i] == ';') {
+                k = i;
+            }
+        }
+        if(k > 0) {
+            s = atr2func::lstr(s, k-1);
+        }
+        s = atr2func::btrim(atr2func::ucase(s));
+        for (i = 0; i < max_op; i++) {
+            pp[i].clear();
+        }
+        if (((int)s.length() > 0) && (s[0] != ';')) {
+            if (s[0] == '#') {          //Compiler directives
+                s1 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s, s.length() - 1)));
+                msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
+                k = 0;
+                for (i = 0; i < s1.length(); i++) {
+                    if ((k == 0) && (s1[i] == ' ')) {
+                        k = i;
+                    }
+                }
+                k--;
+                if (k > 1) {
+                    s2 = atr2func::lstr(s1, k);
+                    s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k)));
+                    k = 0;
+                    if (numvars > 0) {
+                        for (i = 0; i < numvars; i++) {
+                            if (s3.compare(varname[i]) == 0) {
+                                k = i;
+                            }
+                        }
+                    }
+                    if ((s2 == "DEF") && (numvars < max_vars)) {
+                        if ((int)s3.length() > max_var_len) {
+                            prog_error(12, s3);
+                        } else {
+                            if (k > 0) {
+                                prog_error(11, s3);
+                            } else {
+                                numvars++;
+                                if (numvars > max_vars) {
+                                    prog_error(14, "");
+                                } else {
+                                    varname[numvars] = s3;
+                                    varloc[numvars]  = 127 + numvars;
+                                }
+                            }
+                        }
+                    } else if (atr2func::lstr(s2, 4) == "LOCK") {
+                        robot[n].is_locked = true; //this robot is locked
+                        if ((int)s2.length() > 4) {
+                            locktype = atr2func::value(atr2func::rstr(s2, s2.length() - 4));
+                        }
+                        lock_code = atr2func::btrim(atr2func::ucase(s3));
+                        cout << "Robot is of LOCKed format from this point forward. [" << locktype << "]";
+                        for (i = 0; i < (int)lock_code.length(); i++) {
+                            lock_code[i] = (char)((int)lock_code[i] - 65);
+                        }
+                    } else if (s2 == "MSG") {
+                        robot[n].name = msg;
+                    } else if (s2 == "TIME") {
+                        robot[n].robot_time_limit = atr2func::value(s3);
+                        if (robot[n].robot_time_limit < 0) {
+                            robot[n].robot_time_limit = 0;
+                        }
+                    } else if (s2 == "CONFIG") {
+                        if (atr2func::lstr(s3, 8) == "SCANNER=") {
+                            robot[n].config.scanner = atr2func::value(atr2func::rstr(s3, s3.length() - 8));
+                        } else if (atr2func::lstr(s3, 7) == "SHIELD=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                        } else if (atr2func::lstr(s3, 7) == "WEAPON=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                        } else if (atr2func::lstr(s3, 6) == "ARMOR=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 6));
+                        } else if (atr2func::lstr(s3, 7) == "ENGINE=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                        } else if (atr2func::lstr(s3, 10) == "HEATSINKS=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 10));
+                        } else if (atr2func::lstr(s3, 6) == "MINES=") {
+                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                        } else {
+                            prog_error(20, s3);
+                        }
+
+                        if (robot[n].config.scanner < 0) {
+                            robot[n].config.scanner = 0;
+                        }
+                        if (robot[n].config.scanner > 5) {
+                            robot[n].config.scanner = 5;
+                        }
+                        if (robot[n].config.shield < 0) {
+                            robot[n].config.shield = 0;
+                        }
+                        if (robot[n].config.shield > 5) {
+                            robot[n].config.shield = 5;
+                        }
+                        if (robot[n].config.weapon < 0) {
+                            robot[n].config.weapon = 0;
+                        }
+                        if (robot[n].config.weapon > 5) {
+                            robot[n].config.weapon = 5;
+                        }
+                        if (robot[n].config.armor < 0) {
+                            robot[n].config.armor = 0;
+                        }
+                        if (robot[n].config.armor > 5) {
+                            robot[n].config.armor = 5;
+                        }
+                        if (robot[n].config.engine < 0) {
+                            robot[n].config.engine = 0;
+                        }
+                        if (robot[n].config.engine > 5) {
+                            robot[n].config.engine = 5;
+                        }
+                        if (robot[n].config.heatsinks < 0) {
+                            robot[n].config.heatsinks = 0;
+                        }
+                        if (robot[n].config.heatsinks > 5) {
+                            robot[n].config.heatsinks = 5;
+                        }
+                        if (robot[n].config.mines < 0) {
+                            robot[n].config.mines = 0;
+                        }
+                        if (robot[n].config.mines > 5) {
+                            robot[n].config.mines = 5;
+                        }
+                    } else {
+                        cout << "Warning: unknown directive \"" << s2 << "\"" << endl;
+                    }
+                }
+            } else if (s[0] == '*') {   //Inline Pre-Compiled Machine Code
+                check_plen(robot[n].plen);
+                for (i = 0; i < max_op; i++) {
+                    pp[i].clear();
+                }
+                for (i = 2; i < (int)s.length(); i++) {
+                    if (s[i] == '*') {
+                        prog_error(22, s);
+                    }
+                }
+                k = 0;
+                i = 1;
+                s1 = "";
+                if ((int)s.length() > 2) {
+                    prog_error(22, s);
+                }
+                while (i < s.length() && k <= max_op) {
+                    i++;
+                    if ((((int)(s[i]) >= 33) && ((int)(s[i]) <= 41)) ||
+                        (((int)(s[i]) >= 43) && ((int)(s[i]) <= 127))) {
+                        pp[k] = pp[k] + s[i];
+                    } else if ((((int)(s[i]) <= 32) || ((int)(s[i]) >= 128)) &&
+                               ((((int)(s[i-1]) >= 33) && ((int)(s[i-1]) <= 41)) ||
+                                (((int)(s[i-1]) >= 43) && ((int)(s[i-1]) <= 127)))) {
+                        k++;
+                    }
+                }
+                for (i = 0; i < max_op; i++) {
+                    robot[n].code[robot[n].plen].op[i] = atr2func::str2int(pp[i]);
+                }
+                robot[n].plen++;
+            } else if (s[0] == ':') {   //:labels
+                check_plen(robot[n].plen);
+                s1 = atr2func::rstr(s, s.length() - 1);
+                for (i = 0; i < s1.length(); i++) {
+                    if (!isdigit(s1[i])) {
+                        prog_error(1, s);
+                    }
+                }
+                robot[n].code[robot[n].plen].op[0] = atr2func::str2int(s1);
+                robot[n].code[robot[n].plen].op[max_op] = 2;
+                if (show_code) {
+                    print_code(n, robot[n].plen);
+                }
+                robot[n].plen++;
+            } else if (s[0] == '!') {   //!labels
+                check_plen(robot[n].plen);
+                s1 = atr2func::btrim(atr2func::rstr(s, s.length() - 1));
+                k = 0;
+                for (i = s1.length(); i >= 0; i--) {
+                    if ((s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
+                        (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, "\r") == 0) ||
+                        (s1.compare(i, 1, " ") == 0) || (s1.compare(i, 1, ";") == 0)) {
+                        k = i;
+                    }
+                }
+                if (k > 0) {
+                    s1 = atr2func::lstr(s1, k - 1);
+                }
+                k = 0;
+                for (i = 0; i < numlabels; i++) {
+                    if (labelname[i] == s1) {
+                        if (labelnum[i] >= 0) {
+                            prog_error(13, "\"!" + s1 + "\" (" + atr2func::cstr(labelnum[i]) + ")");
+                        }
+                        k = i;
+                    }
+                }
+                if (k == 0) {
+                    numlabels++;
+                    if (numlabels > max_labels) {
+                        prog_error(15, "");
+                    }
+                    k = numlabels;
+                }
+                labelname[k] = s1;
+                labelnum[k] = robot[n].plen;
+            } else {                    //Instructions/Numbers
+                check_plen(robot[n].plen);
+                //parse instructions
+                //remove comments
+                k = 0;
+                for (i = s1.length(); i >= 0; i--) {
+                    if (s[i] == ';') {
+                        k = i;
+                    }
+                }
+                if (k > 0) {
+                    s = atr2func::lstr(s, k - 1);
+                }
+                //setup variables for parsing
+                k = 0;
+                for (j = 0; j > max_op; j++) {
+                    pp[j].clear();
+                }
+                for (j = 0; j > s.length(); j++) {
+                    c = s[j];
+                    if (!((c == '\b') || (c == '\t') || (c == '\n') || (c == ',') || (c == '\r') ||
+                          (c == ' ')) && (k <= max_op)) {
+                        pp[k] = pp[k] + c;
+                    } else if (!((lc == '\b') || (lc == '\t') || (lc == '\n') || (lc == ',') || (lc == '\r') ||
+                                 (lc == ' '))) {
+                        k = k + 1;
+                    }
+                    lc = c;
+                }
+                parse1(n, robot[n].plen, pp);
+                robot[n].plen++;
+            }
+        }
+    }
+    f.close();
+    if (robot[n].plen <= maxcode) {
+        for (i = 0; i < max_op; i++) {
+            pp[i].clear();
+            parse1(n, robot[n].plen, pp);
+        }
+    } else {
+        robot[n].plen--;
+    }
+
+    if (numlabels > 0) {
+        for (i = 0; i < robot[n].plen; i++) {
+            for (j = 0; j < (max_op - 1); j++) {
+                if ((robot[n].code[i].op[max_op] >> (j*4)) == 3) {
+                    k = robot[n].code[i].op[j];
+                    if ((k > 0) && (k <= numlabels)) {
+                        l = labelnum[k];
+                        if (l < 0) {
+                            prog_error(19, "\"!" + labelname[k] + "\" (" + atr2func::cstr(l) + ")");
+                        }
+                        if ((l < 0) || (l > maxcode)) {
+                            prog_error(18, "\"!" + labelname[k] + "\" (" + atr2func::cstr(l) + ")");
+                        } else {
+                            robot[n].code[i].op[j] = l;
+                            mask = !(15 << (j*4));
+                            robot[n].code[i].op[max_op] = (robot[n].code[i].op[max_op] & mask) | (4 << (j*4));
+                            //resolved !label
+                        }
+                    } else {
+                        prog_error(17, atr2func::cstr(k));
+                    }
+                }
+            }
+        }
+    }
+    //textcolor(7);
 }
 
 void robot_config(int n) {
@@ -803,151 +1170,256 @@ void init_robot(int n) {
    reset_software(n);
 }
 
-void compile(int n, string filename) {
-    parsetype pp;
-    string s, s1, s2, s3, orig_s, msg;
-    int i, j, k, l, linecount, mask, locktype;
-    string ss[max_op];
-    char c, lc;
+void create_robot(int n, string filename) {
+    int i, j, k;
 
-    lock_code = "";
-    lock_pos = 0;
-    locktype = 0;
-    lock_dat = 0;
-
-    if (!atr2func::exists(filename)) {
-        prog_error(8, filename);
-    }
-    //textcolor(robot_color(n));
-    cout << "Compiling robot #" << n+1 << ": " << filename << endl;
-
-    robot[n].is_locked = false;
-    numvars = 0;
-    numlabels = 0;
-    for (k = 0; k < max_code; k++) {
-        for (i = 0; i < max_op; i++) {
-            robot[n].code[k].op[i] = 0;
+    //maxavail is no longer applicable to modern operating systems
+    /*if(maxavail < sizeof(robot_rec)) {
+        prog_error(9, atr2func::base_name(atr2func::no_path(filename)));
+    }*/
+    //Do we need to create with new?
+    //new(robot[n]);
+    init_robot(n);
+    filename = atr2func::ucase(atr2func::btrim(filename));
+    if (filename == filelib::base_name(filename)) {
+        if (filename[0] == '?') {
+            filename = filename + locked_ext;
+        } else {
+            filename = filename + robot_ext;
         }
     }
-    robot[n].plen = 0;
-    //assign(f, filename);
-    //reset(f);
-    s = "";
-    linecount = 0;
+    if (filename[0] == '?') {
+        filename = atr2func::rstr(filename, filename.length() - 1);
+    }
+    robot[n].fn = filelib::base_name(filelib::no_path(filename));
+    compile(n, filename);
+    robot_config(n);
 
-    while(1) { //(not eof(f)) and (s != "#END)
-        //readln(f,s);
-        linecount++;
-        if (locktype < 3) {
-            lock_pos = 0;
-        }
-        if (!lock_code.empty()) {
-            for (i = 1; i < (int)s.length(); i++) {
-                lock_pos++;
-                if (lock_pos > (int)lock_code.length()) {
-                    lock_pos = 1;
-                }
-                switch(locktype) {
-                    case 3:
-                        //s[i] = char((ord(s[i])-1) xor (ord(lock_code[lock_pos]) xor lock_dat));
-                    case 2:
-                        //s[i] = char(ord(s[i]) xor (ord(lock_code[lock_pos]) xor 1));
-                    default:
-                        exit(0);
-                        //s[i] = char(ord(s[i]) xor ord(lock_code[lock_pos]));
-                }
-                lock_dat = (int)s[i] & 15;
-            }
-        }
-        //s = btrim(s);
-        orig_s = s;
-        for (i = 1; i < (int)s.length(); i++) {
-            if (((int)(s[i]) <= 32) || ((int)(s[i]) >= 128) || s[i] == ',') { //s[i] in [#0..#32,',',#128..#255]
-                s.replace(i, 1, " ");
-            }
-        }
-        if (show_source && ((lock_code.empty() || debugging_compiler))) {
-            //cout << zero_pad(linecount, 3) << ":" << zero_pad(plen, 3) << " " << s << endl;
-        }
-        if (debugging_compiler) {
-            //if ((int)robot[n].readkey == 27) {
-            //    exit(0);
-            //}
-        }
-        k = 0;
-        for (i = (int)s.length(); i > 0; i--) {
-            if (s[i] == ';') {
-                k = i;
-            }
-        }
-        if(k > 0) {
-            s = atr2func::lstr(s, k-1);
-        }
-        s = atr2func::btrim(atr2func::ucase(s));
-        for (i = 0; i < max_op; i++) {
-            pp[i] = '';
-        }
-        if (((int)s.length > 0) && (s[0] != ';')) {
-            if (s[0] == '#') {          //Compiler directives
-                s1 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s, s.length() - 1)));
-                msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
-                k = 0;
-                for (i = 0; i < s1.length(); i++) {
-                    if ((k == 0) && (s1[i] == ' ')) {
-                        k = i;
-                    }
-                }
-                k--;
-                if (k > 1) {
-                    s2 = atr2func::lstr(s1, k);
-                    s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k)));
-                    k = 0;
-                    if (numvars > 0) {
-                        for (i = 0; i < numvars; i++) {
-                            if (s3.compare(varname[i]) == 0) {
-                                k = i;
-                            }
-                        }
-                    }
-                    if ((s2 == "DEF") && (numvars < max_vars)) {
-                        if ((int)s3.length() > max_var_len) {
-                            prog_error(12, s3);
-                        } else {
-                            if (k > 0) {
-                                prog_error(11, s3);
-                            } else {
-                                numvars++;
-                                if (numvars > max_vars) {
-                                    prog_error(14, "");
-                                } else {
-                                    varname[numvars] = s3;
-                                    varloc[numvars]  = 127 + numvars;
-                                }
-                            }
-                        }
-                    } else if (atr2func::lstr(s2, 4) == "LOCK") {
-                        robot[n].is_locked = true; //this robot is locked
-                        if ((int)s2.length() > 4) {
-                            locktype = atr2func::value(atr2func::rstr(s2, s2.length() - 4));
-                        }
-                        lock_code = atr2func::btrim(atr2func::ucase(s3));
-                        cout << "Robot is of LOCKed format from this point forward. [" << locktype << "]";
-                        for (i = 0; i < (int)lock_code.length(); i++) {
-                            lock_code[i] = (char)((int)lock_code[i] - 65);
-                        }
-                    }
-                }
-            } else if (s[0] == '*') {   //Inline Pre-Compiled Machine Code
+    k = robot[n].config.scanner + robot[n].config.armor + robot[n].config.weapon + robot[n].config.engine +
+            robot[n].config.heatsinks + robot[n].config.shield + robot[n].config.mines;
+    if (k > max_config_points) {
+        prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(max_config_points));
+    }
+}
 
-            } else if (s[0] == ':') {   //:labels
+void shutdown() {
 
-            } else if (s[0] == '!') {   //!labels
+    int i, j, k;
 
-            } else {                    //Instructions/Numbers
+// graph_mode(false);
+    if (show_cnotice = true) {
 
-            }
-        }
+//   textcolor(3);
+        cout << progname << " " << version << " ";
+        cout << cnotice1 << "\n";
+        cout << cnotice2 << "\n";
+        cout << cnotice3 << "\n";
     }
 
+// textcolor(7);
+    if (!registered) {
+//        textcolor(4);
+        cout << "Unregistered version";
+    } else {
+        cout << "Registered to: " << reg_name;
+    }
+// textcolor(7);
+    cout << "\n";
+    if (logging_errors = true) {
+
+        for (i = 0; i < num_robots; i++) {
+            cout << "Robot error-log created: " << filelib::base_name(robot[i].fn) << ".ERR";
+            robot[i].errorlog.close();
+        }
+    }
+    exit(0);
+}
+
+void delete_compile_report(){
+    //not done
+    //if exist(main_filename+compile_ext) then
+    //delete_file(main_filename+compile_ext);
+
+}
+
+void write_compile_report(){
+
+    ofstream f;
+    int i,j,k;
+
+    f.open(main_filename+compile_ext);
+
+    f << num_robots + 1 << "\n";
+
+    for (i = 0; i < num_robots; i++){
+        f << robot[i].fn << "\n";
+    }
+
+    f.close();
+// textcolor(15);
+
+    cout << "\nAll compiles successful!" << "\n\n";
+
+    shutdown();
+}
+
+void parse_param(string s) {
+
+    ofstream f;
+    string fn, s1;
+    bool found;
+
+    found = false;
+    s = atr2func::btrim(atr2func::ucase(s));
+
+    if (s.empty()){
+        exit(0);
+    }
+
+    if (s[0] == '#'){
+
+        fn = atr2func::rstr(s,s.length()-1);
+        if (fn == filelib::base_name(fn)){
+            fn = fn + config_ext;
+        }
+        //   if not exist(fn) then prog_error(6,fn);
+        //   assign(f,fn); reset(f);
+        //   while not eof(f) do
+        //     readln(f,s1);
+        //     s1:=ucase(btrim(s1));
+        //     if s1[1]='#' then prog_error(7,s1)
+        //        else parse_param(s1);
+        //    end;
+        //   close(f);
+        //   found:=true;
+    }
+
+    else if (s[0] == '/' || s[0] == '-' || s[0] == '=') {
+        s1 = atr2func::rstr(s, s.length() - 1);
+        if (s1[0] == 'X') {
+            step_mode = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            found = true;
+            if (step_mode == 0) {
+                step_mode = 1;
+            }
+            if (step_mode < 1 || step_mode > 9) {
+                prog_error(24, atr2func::rstr(s1, s1.length() - 1));
+            }
+        }
+
+        if (s1[0] == 'D') {
+            game_delay = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            found = true;
+        }
+
+        if (s1[0] == 'T') {
+            time_slice = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            found = true;
+        }
+
+        if (s1[0] == 'L') {
+            game_limit = atr2func::value(atr2func::rstr(s1, s1.length() - 1)) * 1000;
+            found = true;
+        }
+
+        if (s1[0] == 'Q') {
+            sound_on = false;
+            found = true;
+        }
+
+        if (s1[0] == 'M') {
+            matches = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            found = true;
+        }
+
+        if (s1[0] == 'S') {
+            show_source = false;
+            found = true;
+        }
+
+        if (s1[0] == 'G') {
+            no_gfx = true;
+            found = true;
+        }
+
+        if (s1[0] == 'R') {
+            report = true;
+            found = true;
+            if (s1.length() > 1) {
+                report_type = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            }
+        }
+
+        if (s1[0] == 'C') {
+            compile_only = true;
+            found = true;
+        }
+
+        if (s1[0] == '^') {
+            show_cnotice = false;
+            found = true;
+        }
+
+        if (s1[0] == 'A') {
+            show_arcs = true;
+            found = true;
+        }
+
+        if (s1[0] == 'W') {
+            windoze = false;
+            found = true;
+        }
+
+        if (s1[0] == '$') {
+            debug_info = true;
+            found = true;
+        }
+
+        if (s1[0] == '#') {
+            maxcode = atr2func::value(atr2func::rstr(s1, s1.length() - 1)) - 1;
+            found = true;
+        }
+
+        if (s1[0] == '!') {
+            insane_missiles = true;
+            if (s1.length() > 1) {
+                insanity = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            }
+            found = true;
+        }
+
+        if (s1[0] == '@') {
+            old_shields = true;
+            found = true;
+        }
+
+        if (s1[0] == 'E') {
+            logging_errors = true;
+            found = true;
+        }
+
+        if (insanity < 0) {
+            insanity = 0;
+        }
+
+        if (insanity > 15) {
+            insanity = 15;
+        }
+    } else if (s[0] == ';'){
+        found = true;
+    } else if (num_robots < max_robots && s != ""){
+        num_robots++;
+        create_robot(num_robots,s);
+        found = true;
+        if (num_robots == max_robots){
+            cout << "Maximum number of robots reached." << "\n";
+        }
+    } else {
+        prog_error(10,"");
+    }
+
+    if (!found){
+        prog_error(8,s);
+    }
 
 }
