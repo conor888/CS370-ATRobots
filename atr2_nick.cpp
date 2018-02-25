@@ -108,17 +108,17 @@ void init_robot(int n) {
 
 void shutdown() {
 
-    int i,j,k;
+    int i, j, k;
 
 // graph_mode(false);
     if (show_cnotice = true) {
 
 //   textcolor(3);
-    cout << progname << " " << version << " ";
-    cout << cnotice1 << "\n";
-    cout << cnotice2 << "\n";
-    cout << cnotice3 << "\n";
-  }
+        cout << progname << " " << version << " ";
+        cout << cnotice1 << "\n";
+        cout << cnotice2 << "\n";
+        cout << cnotice3 << "\n";
+    }
 
 // textcolor(7);
     if (registered = false) {
@@ -131,11 +131,12 @@ void shutdown() {
     cout << "\n";
     if (logging_errors = true) {
 
-    for (i = 0; i < num_robots; i++){
-        cout << "Robot error-log created: " << robot[i].base_name(fn) << ".ERR";
-        errorlog.close();
+        for (i = 0; i < num_robots; i++) {
+            cout << "Robot error-log created: " << robot[i].base_name(fn) << ".ERR";
+            errorlog.close();
+        }
+        exit();
     }
-   exit();
 }
 
 
@@ -175,7 +176,7 @@ void write_compile_report(){
     exit();
 }
 
-int parse_param(string s) {
+void parse_param(string s) {
 
     ofstream f;
     string fn, s1;
@@ -206,134 +207,131 @@ int parse_param(string s) {
        //   found:=true;
    }
 
-    else if (s[1] == "/" || s[1] == "-" || s[1] == "="){
-        s1 = ATR2FUNC::rstr(s,s.length()-1);
-        if (s1[1] == "X"){
-            step_mode = value(ATR2FUNC::rstr(s1,s1.length()-1));
-            found = true;
-            if (step_mode == 0){
-                step_mode = 1;
-            }
-            if (step_mode < 1 || step_mode > 9){
-                prog_error(24,ATR2FUNC::rstr(s1,s1.length()-1));
-            }
-        }
-
-    if (s1[1] == "D"){
-        game_delay = value(ATR2FUNC::rstr(s1,s1.length()-1));
-        found = true;
-    }
-
-    if (s1[1] == "T"){
-        time_slice = value(ATR2FUNC::rstr(s1,s1.length()-1));
-        found = true;
-    }
-
-    if (s1[1] == "L"){
-        game_limit = value(ATR2FUNC::rstr(s1,s1.length()-1))*1000;
-        found = true;
-    }
-
-    if (s1[1] == "Q"){
-        sound_on = false;
-        found = true;
-    }
-
-   if (s1[1] == "M"){
-       matches = value(ATR2FUNC::rstr(s1,s1.length()-1));
-       found = true;
-   }
-
-   if (s1[1] == "S"){
-       show_source = false;
-       found = true;
-   }
-
-   if (s1[1] == "G"){
-       no_gfx = true;
-       found = true;
-   }
-
-   if (s1[1] == "R") {
-       report = true;
-       found = true;
-       if (s1.length() > 1){
-           report_type = value(ATR2FUNC::rstr(s1,s1.length()-1))
+    else if (s[1] == "/" || s[1] == "-" || s[1] == "=") {
+       s1 = ATR2FUNC::rstr(s, s.length() - 1);
+       if (s1[1] == "X") {
+           step_mode = value(ATR2FUNC::rstr(s1, s1.length() - 1));
+           found = true;
+           if (step_mode == 0) {
+               step_mode = 1;
+           }
+           if (step_mode < 1 || step_mode > 9) {
+               prog_error(24, ATR2FUNC::rstr(s1, s1.length() - 1));
+           }
        }
-   }
 
-   if (s1[1] == "C"){
-       compile_only = true;
-       found = true;
-   }
-
-   if (s1[1] == "^"){
-       show_cnotice = false;
-       found = true;
-   }
-
-   if (s1[1] == "A"){
-       show_arcs = true;
-       found = true;
-   }
-
-   if (s1[1] == "W"){
-       windoze = false;
-       found = true;
-   }
-
-   if (s1[1] == "$"){
-       debug_info = true;
-       found = true;
-   }
-
-   if (s1[1] == "#"){
-       maxcode = value(ATR2FUNC::rstr(s1,s1.length()-1))-1;
-       found = true;
-   }
-
-   if (s1[1] == "!"){
-       insane_missiles = true;
-       if (s1.length() > 1){
-           insanity = value(ATR2FUNC::rstr(s1,s1.length()-1))
+       if (s1[1] == "D") {
+           game_delay = value(ATR2FUNC::rstr(s1, s1.length() - 1));
+           found = true;
        }
-       found = true;
-   }
 
-   if (s1[1] == "@"){
-       old_shields = true;
-       found = true;
-   }
-
-   if (s1[1] == "E"){
-       logging_errors = true;
-       found = true;
-   }
-
-   if (insanity < 0){
-       insanity = 0;
-   }
-
-   if (insanity > 15){
-       insanity = 15;
-   }
-
-   else if (s[1] = ";"){
-       found = true;
-   }
-
-   else if (num_robots < max_robots && s != ""){
-       num_robots++;
-       create_robot(num_robots,s);
-       found = true;
-       if (num_robots == max_robots){
-           cout << "Maximum number of robots reached." << "\n";
+       if (s1[1] == "T") {
+           time_slice = value(ATR2FUNC::rstr(s1, s1.length() - 1));
+           found = true;
        }
+
+       if (s1[1] == "L") {
+           game_limit = value(ATR2FUNC::rstr(s1, s1.length() - 1)) * 1000;
+           found = true;
+       }
+
+       if (s1[1] == "Q") {
+           sound_on = false;
+           found = true;
+       }
+
+       if (s1[1] == "M") {
+           matches = value(ATR2FUNC::rstr(s1, s1.length() - 1));
+           found = true;
+       }
+
+       if (s1[1] == "S") {
+           show_source = false;
+           found = true;
+       }
+
+       if (s1[1] == "G") {
+           no_gfx = true;
+           found = true;
+       }
+
+       if (s1[1] == "R") {
+           report = true;
+           found = true;
+           if (s1.length() > 1) {
+               report_type = value(ATR2FUNC::rstr(s1, s1.length() - 1))
+           }
+       }
+
+       if (s1[1] == "C") {
+           compile_only = true;
+           found = true;
+       }
+
+       if (s1[1] == "^") {
+           show_cnotice = false;
+           found = true;
+       }
+
+       if (s1[1] == "A") {
+           show_arcs = true;
+           found = true;
+       }
+
+       if (s1[1] == "W") {
+           windoze = false;
+           found = true;
+       }
+
+       if (s1[1] == "$") {
+           debug_info = true;
+           found = true;
+       }
+
+       if (s1[1] == "#") {
+           maxcode = value(ATR2FUNC::rstr(s1, s1.length() - 1)) - 1;
+           found = true;
+       }
+
+       if (s1[1] == "!") {
+           insane_missiles = true;
+           if (s1.length() > 1) {
+               insanity = value(ATR2FUNC::rstr(s1, s1.length() - 1))
+           }
+           found = true;
+       }
+
+       if (s1[1] == "@") {
+           old_shields = true;
+           found = true;
+       }
+
+       if (s1[1] == "E") {
+           logging_errors = true;
+           found = true;
+       }
+
+       if (insanity < 0) {
+           insanity = 0;
+       }
+
+       if (insanity > 15) {
+           insanity = 15;
+       }
+   } else if (s[1] = ";"){
+           found = true;
+   } else if (num_robots < max_robots && s != ""){
+           num_robots++;
+           create_robot(num_robots,s);
+           found = true;
+           if (num_robots == max_robots){
+               cout << "Maximum number of robots reached." << "\n";
+           }
+   } else {
+       prog_error(10,'');
    }
 
-   else prog_error(10,'');
-
-   if (found != true){
+   if (!found){
        prog_error(8,s);
    }
 
