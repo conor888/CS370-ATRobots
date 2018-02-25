@@ -282,7 +282,7 @@ string prepare(string s, string s1){
     for (i = 0; i < (int)s1.length(); i++) {
 
         if ( (s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
-                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) ) {
+                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, " ") == 0)) {
             s1.erase(i, 1);
             //c[j] = s1[i];
             //j++;

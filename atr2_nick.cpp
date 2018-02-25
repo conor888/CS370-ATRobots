@@ -4,27 +4,27 @@
 
 using namespace std;
 
-int print_code(int n, int p) {
+void print_code(int n, int p) {
 
     int i;
-    std::cout << std::hex << p << ": ";
+    cout << hex << p << ": ";
     for (i = 0; max_op; i++) {
         cout << setfill("0") << setw(5) << robot[n]^.code[p].op[i] << " ";
     }
     cout << " = ";
     for (i = 0; max_op; i++) {
-        std::cout << std::hex << robot[n]^.code[p].op[i] << "h" << "\n\n";
+        cout << hex << robot[n]^.code[p].op[i] << "h" << "\n\n";
     }
 
 }
 
-int check_plen(int plen) {
+void check_plen(int plen) {
 
     if (plen>maxcode) {
         prog_error(16,#13#10+"Maximum program length exceeded, (Limit: "+ cstr(maxcode+1)+" compiled lines)");
 }
 
-int reset_software(int n) {
+void reset_software(int n) {
 
     int i;
 
@@ -51,7 +51,7 @@ int reset_software(int n) {
 
 }
 
-int init_robot(int n) {
+void init_robot(int n) {
 
     int i,j,k,l;
 
@@ -133,10 +133,217 @@ void shutdown() {
 
     for (i = 0; i < num_robots; i++){
         cout << "Robot error-log created: " << robot[i].base_name(fn) << ".ERR";
-        close(errorlog);
+        errorlog.close();
     }
    exit();
 }
+
+
+bool file_exists(string filename)
+{
+    ifstream testopen(filename);
+    return testopen.good();
+}
+
+//NOT DONE
+void delete_compile_report(){
+
+//    if exist(main_filename+compile_ext) then
+//       delete_file(main_filename+compile_ext);
+
+
+}
+
+void write_compile_report(){
+
+    ofstream f;
+    int i,j,k;
+
+    f.open(main_filename+compile_ext);
+
+    cout << f << num_robots + 1 << "\n";
+
+    for (i = 0; i < num_robots; i++){
+         cout << robot[i].f << robot[i].fn << "\n";
+    }
+
+    f.close();
+// textcolor(15);
+
+    cout << "\nAll compiles successful!" << "\n\n";
+
+    exit();
+}
+
+int parse_param(string s) {
+
+    ofstream f;
+    string fn, s1;
+    bool found;
+
+    found = false;
+    s = btrim(toupper(s));
+
+    if (s == ""){
+        exit();
+    }
+
+   if (s[1] == "#"){
+
+       fn = ATR2FUNC::rstr(s,s.length()-1);
+       if (fn == base_name(fn)){
+           fn = fn + config_ext;
+       }
+       //   if not exist(fn) then prog_error(6,fn);
+       //   assign(f,fn); reset(f);
+       //   while not eof(f) do
+       //     readln(f,s1);
+       //     s1:=ucase(btrim(s1));
+       //     if s1[1]='#' then prog_error(7,s1)
+       //        else parse_param(s1);
+       //    end;
+       //   close(f);
+       //   found:=true;
+   }
+
+    else if (s[1] == "/" || s[1] == "-" || s[1] == "="){
+        s1 = ATR2FUNC::rstr(s,s.length()-1);
+        if (s1[1] == "X"){
+            step_mode = value(ATR2FUNC::rstr(s1,s1.length()-1));
+            found = true;
+            if (step_mode == 0){
+                step_mode = 1;
+            }
+            if (step_mode < 1 || step_mode > 9){
+                prog_error(24,ATR2FUNC::rstr(s1,s1.length()-1));
+            }
+        }
+
+    if (s1[1] == "D"){
+        game_delay = value(ATR2FUNC::rstr(s1,s1.length()-1));
+        found = true;
+    }
+
+    if (s1[1] == "T"){
+        time_slice = value(ATR2FUNC::rstr(s1,s1.length()-1));
+        found = true;
+    }
+
+    if (s1[1] == "L"){
+        game_limit = value(ATR2FUNC::rstr(s1,s1.length()-1))*1000;
+        found = true;
+    }
+
+    if (s1[1] == "Q"){
+        sound_on = false;
+        found = true;
+    }
+
+   if (s1[1] == "M"){
+       matches = value(ATR2FUNC::rstr(s1,s1.length()-1));
+       found = true;
+   }
+
+   if (s1[1] == "S"){
+       show_source = false;
+       found = true;
+   }
+
+   if (s1[1] == "G"){
+       no_gfx = true;
+       found = true;
+   }
+
+   if (s1[1] == "R") {
+       report = true;
+       found = true;
+       if (s1.length() > 1){
+           report_type = value(ATR2FUNC::rstr(s1,s1.length()-1))
+       }
+   }
+
+   if (s1[1] == "C"){
+       compile_only = true;
+       found = true;
+   }
+
+   if (s1[1] == "^"){
+       show_cnotice = false;
+       found = true;
+   }
+
+   if (s1[1] == "A"){
+       show_arcs = true;
+       found = true;
+   }
+
+   if (s1[1] == "W"){
+       windoze = false;
+       found = true;
+   }
+
+   if (s1[1] == "$"){
+       debug_info = true;
+       found = true;
+   }
+
+   if (s1[1] == "#"){
+       maxcode = value(ATR2FUNC::rstr(s1,s1.length()-1))-1;
+       found = true;
+   }
+
+   if (s1[1] == "!"){
+       insane_missiles = true;
+       if (s1.length() > 1){
+           insanity = value(ATR2FUNC::rstr(s1,s1.length()-1))
+       }
+       found = true;
+   }
+
+   if (s1[1] == "@"){
+       old_shields = true;
+       found = true;
+   }
+
+   if (s1[1] == "E"){
+       logging_errors = true;
+       found = true;
+   }
+
+   if (insanity < 0){
+       insanity = 0;
+   }
+
+   if (insanity > 15){
+       insanity = 15;
+   }
+
+   else if (s[1] = ";"){
+       found = true;
+   }
+
+   else if (num_robots < max_robots && s != ""){
+       num_robots++;
+       create_robot(num_robots,s);
+       found = true;
+       if (num_robots == max_robots){
+           cout << "Maximum number of robots reached." << "\n";
+       }
+   }
+
+   else prog_error(10,'');
+
+   if (found != true){
+       prog_error(8,s);
+   }
+
+}
+
+
+
+
+
+
 
 
 
