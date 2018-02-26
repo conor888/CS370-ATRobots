@@ -35,6 +35,7 @@ const double
 
 const int
     minint          = -32768,
+    maxint          = 32768,
     max_var_len     = 16,
 
     //robots
@@ -127,15 +128,26 @@ struct missile_rec {
 
 
 ///Function declarations
-string operand(int, int);
-string mnemonic(int, int);
-void prog_error(int, string);
-void print_code(int, int);
-void parse1(int, int, parsetype);
-void check_plen(int);
-void compile(int, string);
-void robot_config(int);
-void reset_software(int);
+string operand(int n, int m);
+string mnemonic(int n, int m);
+//void log_error(int n, int i, string ov);
+//int max_shown();
+//bool graph_check(int n);
+//void robot_graph(int n);
+//void update_armor(int n);
+//void update_armor(int n);
+void robot_error(int n, int i, string ov); //Not done
+//void update_lives(int n);
+//void update_cycle_window();
+//void setscreen();
+//void graph_mode(bool on);
+void prog_error(int n, string ss);
+void print_code(int n, int p);
+void parse1(int n, int p, parsetype s);
+void check_plen(int plen);
+void compile(int n, string filename);
+void robot_config(int n);
+void reset_software(int n);
 void reset_hardware(int n);
 void init_robot(int n);
 void create_robot(int n, string filename);
@@ -143,6 +155,49 @@ void shutdown();
 void delete_compile_report();
 void write_compile_report();
 void parse_param(string s);
+void init(int argc, char* argv[]);
+//void draw_robot(int n);
+int get_from_ram(int n, int i, int j);
+int get_val(int n, int c, int o);
+void put_val(int n, int c, int o, int v);
+void push(int n, int v);
+int pop(int n);
+//int find_label(int n, int l, int m);
+//void init_mine(int n, int detectrange, int size);
+//int count_missiles();
+//void init_missile(double xx, double yy, double xxv, double yyv, int dir, int s, int blast, bool ob);
+//void damage(int n, int d, bool physical);
+//int scan(int n);
+//void com_transmit(int n, int chan, int data);
+//int com_receive(int n);
+//int in_port(int n, int p, int time_used); //time_used has var label?
+//void out_port(int n, int p, int v, int time_used); //time_used has var label?
+//void call_int(int n, int int_num, int time_used); //time_used has var label?
+//void jump(int n, int o, bool inc_ip); //inc_ip has var label?
+//void update_debug_bars();
+//void update_debug_system();
+//void update_debug_registers();
+//void update_debug_flags();
+//void update_debug_memory();
+//void update_debug_code();
+//void update_debug_window();
+//void init_debug_window();
+//void close_debug_window();
+bool gameover();
+//void toggle_graphix();
+//bool invalid_microcode(int n, int ip);
+//void process_keypress(char c);
+//void execute_instruction(int n);
+//void do_robot(int n);
+//void do_mine(int n, int m);
+//void do_missile(int n);
+//string victor_string(int k, int n);
+//void show_statistics();
+//void score_robots();
+void init_bout();
+void bout(); //Not done
+//void write_report();
+void begin_window(); //Not done
 
 
 
@@ -184,12 +239,75 @@ int kill_count, report_type;
 
 
 
-//Custom global variables
-bool registered = false, sound_on = false;
-string reg_name = "Unregistered";
+//Custom global variables (most from init() function)
+bool registered, sound_on, graphix, timing;
+string reg_name;
+int delay_per_sec, reg_num;
 
 
-int main() {
+int main(int argc, char *argv[]) {
+    init(argc, argv);
+
+    int i, j, k, l, n, w;
+
+    if(graphix) {
+        begin_window();
+    }
+    if(matches > 0) {
+        for (i = 0; i < matches; i++) {
+            bout();
+        }
+    }
+    if(!graphix) {
+        cout << endl;
+    }
+    if(quit) {
+        exit(0);
+    }
+    if(matches > 1) {
+        cout << endl << endl;
+        //graph_mode(false);
+        //textcolor(15);
+        cout << "Bout complete! (" << matches << " matches" << endl;
+        k = 0;
+        w = 0;
+        for (i = 0; i < num_robots; i++) {
+            if (robot[i].wins == w) {
+                k++;
+            }
+            if (robot[i].wins > w) {
+                k = 1;
+                n = i;
+                w = robot[i].wins;
+            }
+        }
+        cout << "Robot           Wins  Matches  Kills  Deaths    Shots" << endl;
+        cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+        for (i = 0; i < num_robots; i++) {
+            //textcolor(robot_color(i));
+            cout << atr2func::addfront(atr2func::cstr(i+1), 2) << " - " << atr2func::addrear(robot[i].fn, 8)
+                    << atr2func::addfront(atr2func::cstr(robot[i].wins), 7) << atr2func::addfront(atr2func::cstr(robot[i].trials), 8)
+                    << atr2func::addfront(atr2func::cstr(robot[i].kills), 8) << atr2func::addfront(atr2func::cstr(robot[i].deaths), 8)
+                    << atr2func::addfront(atr2func::cstr(robot[i].shots_fired), 9) << endl;
+        }
+        //textcolor(15);
+        cout << endl;
+        if (k == 1) {
+            cout << "Robot #" << n + 1 << " (" << robot[n].fn << ") wins the bout! (score: " << w << "/" << matches << ")" << endl;
+        } else {
+            cout << "There is no clear victor!" << endl;
+        }
+        cout << endl;
+    } else if (graphix) {
+        //graph_mode(false);
+        //show_statistics();
+    }
+    if (report) {
+        //write_report();
+    }
+
+    shutdown();
+
     return 0;
 }
 
@@ -274,6 +392,10 @@ string mnemonic(int n, int m)  {
     return s;
 }
 
+void robot_error(int n, int i, string ov) {
+    return;
+}
+
 void prog_error(int n, string ss) {
     string s;
 
@@ -351,6 +473,8 @@ void print_code(int n, int p) {
     for (i = 0; i < max_op; i++) {
         cout << hex << robot[n].code[p].op[i] << "h" << "\n\n";
     }
+
+    return;
 }
 
 void parse1(int n, int p, parsetype s) {
@@ -606,6 +730,8 @@ void parse1(int n, int p, parsetype s) {
     if (compile_by_line) {
         //readkey;
     }
+
+    return;
 }
 
 void check_plen(int plen) {
@@ -614,6 +740,8 @@ void check_plen(int plen) {
         //streamtemp << "\nMaximum program length exceeded, (Limit: " << maxcode+1 << " compiled lines)";
         prog_error(16, "Maximum program length exceeded.");
     }
+
+    return;
 }
 
 void compile(int n, string filename) {
@@ -967,6 +1095,8 @@ void compile(int n, string filename) {
         }
     }
     //textcolor(7);
+
+    return;
 }
 
 void robot_config(int n) {
@@ -1061,6 +1191,8 @@ void robot_config(int n) {
     if (robot[n].config.heatsinks < 0 || robot[n].config.heatsinks > 5) {
         robot[n].config.heatsinks = 0;
     }
+
+    return;
 }
 
 void reset_software(int n) {
@@ -1082,6 +1214,8 @@ void reset_software(int n) {
         robot[n].time_left = 0;
         robot[n].shields_up = false;
     }
+
+    return;
 }
 
 void reset_hardware(int n) {
@@ -1117,6 +1251,8 @@ void reset_hardware(int n) {
             }
         }
     } while (dd > 32);
+
+    return;
 }
 
 void init_robot(int n) {
@@ -1168,6 +1304,8 @@ void init_robot(int n) {
     }
    reset_hardware(n);
    reset_software(n);
+
+    return;
 }
 
 void create_robot(int n, string filename) {
@@ -1200,6 +1338,8 @@ void create_robot(int n, string filename) {
     if (k > max_config_points) {
         prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(max_config_points));
     }
+
+    return;
 }
 
 void shutdown() {
@@ -1240,6 +1380,7 @@ void delete_compile_report(){
     //if exist(main_filename+compile_ext) then
     //delete_file(main_filename+compile_ext);
 
+    return;
 }
 
 void write_compile_report(){
@@ -1422,4 +1563,390 @@ void parse_param(string s) {
         prog_error(8,s);
     }
 
+    return;
+}
+
+void init(int argc, char *argv[]) {
+    int i;
+
+    if(debugging_compiler || compile_by_line || show_code) {
+        cout << "!!! Warning !!! Compiler Debugging enabled !!!" << endl;
+        //flushkey;
+        //readkey;
+    }
+    step_mode = 0; //stepping disabled
+    logging_errors = false;
+    stats_mode = 0;
+    insane_missiles = false;
+    insanity = 0;
+    delay_per_sec = 0;
+    windoze = true;
+    graphix = false;
+    no_gfx = false;
+    sound_on = true;
+    timing = true;
+    matches = 1;
+    played = 0;
+    old_shields = false;
+    quit = false;
+    compile_only = false;
+    show_arcs = false;
+    debug_info = false;
+    show_cnotice = true;
+    show_source = true;
+    report = false;
+    kill_count = 0;
+    maxcode = max_code;
+    //atr2func::make_tables;
+    //randomize;
+    num_robots = -1;
+    game_limit = 100000;
+    game_cycle = 0;
+    game_delay = default_delay;
+    time_slice = default_slice;
+    for (i = 0; i < max_missiles; i++) {
+        missile[i].a = 0;
+        missile[i].source = -1;
+        missile[i].x = 0;
+        missile[i].y = 0;
+        missile[i].lx = 0;
+        missile[i].ly = 0;
+        missile[i].mult = 1;
+    }
+    registered = false;
+    reg_name = "Unregistered";
+    reg_num = 65535; //FFFF in hex
+    //check_registration();
+    //textcolor(3);
+    cout << endl << progname << " " << version << " " << cnotice1 << endl << cnotice2 << endl;
+    //textcolor(7);
+    if (!registered) {
+        //textcolor(4);
+        cout << "Unregistered version" << endl;
+    } else {
+        cout << "Registered to: " << reg_name << endl;
+    }
+    //textcolor(7);
+    cout << endl;
+
+    delete_compile_report();
+    if (argc > 1) {
+        for (i = 1; i <= argc; i++) {
+            parse_param(atr2func::btrim(atr2func::ucase(argv[i])));
+        }
+    } else {
+        prog_error(5, "");
+    }
+    temp_mode = step_mode;
+    if (logging_errors) {
+        for (i = 0; i < num_robots; i++) {
+            robot[i].errorlog.open(filelib::base_name(robot[i].fn) + ".ERR");
+        }
+    }
+    if (compile_only) {
+        write_compile_report();
+    }
+    if (num_robots < 1) {
+        prog_error(4, "");
+    }
+    if (!no_gfx) {
+        //graph_mode(true);
+    }
+
+    //fix ups
+    if (matches > 100000) {
+        matches = 100000;
+    }
+    if (matches < 1) {
+        matches = 1;
+    }
+    if (game_delay > 1000) {
+        game_delay = 1000;
+    }
+    if (game_delay < 0) {
+        game_delay = 0;
+    }
+    if (time_slice > 100) {
+        time_slice = 100;
+    }
+    if (time_slice < 1) {
+        time_slice = 1;
+    }
+    if (game_limit < 0) {
+        game_limit = 0;
+    }
+    if (game_limit > 100000) {
+        game_limit = 100000;
+    }
+    if (maxcode < 1) {
+        maxcode = 1;
+    }
+    if (maxcode > max_code) {
+        maxcode = max_code;
+    }
+
+    //just to avoid floating pointers
+    /*for (i = num_robots + 1; i < (max_robots + 2); i++) {
+        robot[i] = robot[0];
+    }*/
+    //robot[-1] = robot[0];
+    //robot[-2] = robot[0];
+
+    /*if (!graphix) {
+        cout << "Freemem: " << memavail << endl << endl;
+    }*/
+
+    return;
+}
+
+int get_from_ram(int n, int i, int j) {
+    return 0;
+}
+
+int get_val(int n, int c, int o) {
+    int i, j, k, l;
+    k = 0;
+
+    j = (robot[n].code[c].op[max_op] >> (4*o)) & 15;
+    i = robot[n].code[c].op[o];
+    if ((j & 7) == 1) {
+        k = get_from_ram(n, i, j);
+    } else {
+        k = i;
+    }
+    if ((j & 8) > 0)  {
+        k = get_from_ram(n, k, j);
+    }
+    return k;
+}
+
+void put_val(int n, int c, int o, int v) {
+    int i, j, k;
+
+    k = 0;
+    i = 0;
+    j = 0;
+
+    j = (robot[n].code[c].op[max_op] >> (4 * o)) & 15;
+    i = robot[n].code[c].op[o];
+    if ((j & 7) == 1) {
+        if ((i < 0) || (i > max_ram)) {
+            robot_error(n, 4, atr2func::cstr(i));
+        } else {
+            if ((j & 8) > 0) {
+                i = robot[n].ram[i];
+                if ((i < 0) || (i > max_ram)) {
+                    robot_error(n, 4, atr2func::cstr(i));
+                } else {
+                    robot[n].ram[i] = v;
+                }
+            }
+        }
+    } else {
+        robot[n].ram[i] = v;
+    }
+    robot_error(n, 3, "");
+
+    return;
+}
+
+void push(int n, int v) {
+    if ((robot[n].ram[71] >= stack_base) && (robot[n].ram[71] < (stack_base + stack_size))) {
+        robot[n].ram[71] = v;
+        robot[n].ram[71] = robot[n].ram[71] + 1;
+    } else {
+        robot_error(n, 1, atr2func::cstr(robot[n].ram[71]));
+    }
+
+    return;
+}
+
+int pop(int n) {
+    int k;
+
+    if ((robot[n].ram[71] > stack_base) && (robot[n].ram[71] <= (stack_base + stack_size))) {
+        robot[n].ram[71] = robot[n].ram[71] - 1;
+        k = robot[n].ram[robot[n].ram[71]];
+    } else {
+        robot_error(n, 5, atr2func::cstr(robot[n].ram[71]));
+    }
+
+    return k;
+}
+
+
+
+
+
+
+bool gameover() {
+    int n, i, j, k, l;
+
+    if ((game_cycle >= game_limit) && (game_limit > 0)) {
+        return true;
+        exit(0);
+    }
+    if ((game_cycle & 31) == 0) {
+        k = 0;
+        for (n = 0; n < num_robots; n++) {
+            if (robot[n].armor > 0) {
+                k++;
+            }
+        }
+        if (k <= 1) {
+            return true;
+        } else {
+            return false;
+        }
+    } else {
+        return false;
+    }
+}
+
+void init_bout() {
+    int i, j, k;
+
+    game_cycle = 0;
+    for (i = 0; i < max_missiles; i++) {
+        missile[i].a = 0;
+        missile[i].source = -1;
+        missile[i].x = 0;
+        missile[i].y = 0;
+        missile[i].lx = 0;
+        missile[i].ly = 0;
+        missile[i].mult = 1;
+    }
+    for (i = 0; i < num_robots; i++) {
+        robot[i].mem_watch = 128;
+        reset_hardware(i);
+        reset_software(i);
+    }
+    if (graphix) {
+        //setscreen();
+    }
+    if (graphix && (step_mode > 0)) {
+        //init_debug_window();
+    }
+    if (!graphix) {
+        //textcolor(7);
+        //There is some commented "battle in progress" text here...
+    }
+
+    return;
+}
+
+void bout() {
+    int i, j, k, n;
+    char c;
+    long timer;
+
+    if(quit) {
+        exit(0);
+    }
+
+    played++;
+    init_bout();
+    bout_over = false;
+
+    if (step_mode == 0) {
+        step_loop = false;
+    } else {
+        step_loop = true;
+    }
+    step_count = -1;
+    if (graphix && (step_mode > 0)) {
+        for (i = 0; i < num_robots; i++) {
+            //draw_robot(i);
+        }
+    }
+
+    do {
+        game_cycle++;
+        for (i = 0; i < num_robots; i++) {
+            if (robot[i].armor > 0) {
+                do_robot(i);
+            }
+        }
+        for (i = 0; i < max_missiles; i++) {
+            if (missile[i].a > 0) {
+                do_missile(i);
+            }
+        }
+        for (i = 0; i < num_robots; i++) {
+            for (k = 0; k < max_mines; k++) {
+                if (robot[i].mine[k].yield > 0) {
+                    do_mine(i, k);
+                }
+            }
+        }
+
+        if (graphix && timing) {
+            //time_delay(game_delay);
+        }
+
+        /*if (keypressed) {
+            c = upcase(readkey)
+        } else {
+            c = (char)255;
+        }
+        switch(c) {
+            case 'X':
+            case '+', '=':
+            case '-', '_':
+            case 'G':
+            default:
+                process_keypress(c);
+        }*/
+
+        //flushkey;
+        if (game_delay < 0) {
+            game_delay = 0;
+        }
+        if (game_delay > 100) {
+            game_delay = 100;
+        }
+
+        switch(game_delay) {
+            case 0 ... 1:
+                k = 100;
+            case 2 ... 5:
+                k = 50;
+            case 6 ... 10:
+                k = 25;
+            case 11 ... 25:
+                k = 20;
+            case 26 ... 40:
+                k = 10;
+            case 41 ... 70:
+                k = 5;
+            case 71 ... maxint:
+                k = 1;
+            default:
+                k = 10;
+        }
+
+        if (!graphix) {
+            k = 100;
+        }
+        /*if (graphix) {
+            if (((game_cycle % k) == 0) || (game_cycle == 10)) {
+                update_cycle_window();
+            } else {
+                if (update_timer != mem[0:$46C] >> 1) {
+                    update_cycle_window();
+                }
+                update_timer = mem[0:$46C] >> 1;
+            }
+        }*/
+    } while (!(quit || gameover() || bout_over));
+
+    //update_cycle_window();
+    //score_robots();
+    //show_statistics();
+
+    return;
+}
+
+void begin_window() {
+    return;
 }
