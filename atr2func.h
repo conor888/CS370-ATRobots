@@ -22,8 +22,8 @@ public:
     static std::string cstr(long i);
     //std::string zero_pad(long n, long l);
     //std::string zero_pads(std::string s, long l);
-    //std::string addfront(std::string b, int l);
-    //std::string addrear(std::string b, int l);
+    static std::string addfront(std::string b, int l);
+    static std::string addrear(std::string b, int l);
     static std::string ucase(std::string s);
     //std::string lcase(std::string s);
     //std::string space(byte i);

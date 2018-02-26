@@ -24,6 +24,14 @@ std::string atr2func::cstr(long i) {
     return "";
 }
 
+std::string atr2func::addfront(std::string b, int l) {
+
+}
+
+std::string atr2func::addrear(std::string b, int l) {
+
+}
+
 std::string atr2func::ucase(std::string s) {
     int i;
     if((int)s.length() >= 1) {
@@ -73,7 +81,7 @@ std::string atr2func::rstr(std::string s1, int l) {
     }
 }
 
-int hex2int(std::string s) {
+int atr2func::hex2int(std::string s) {
     uint16_t w;
     int i;
 
@@ -101,17 +109,17 @@ int hex2int(std::string s) {
             w = (uint16_t)((w << 4) | 8);
         } else if (s[i] == '9') {
             w = (uint16_t)((w << 4) | 9);
-        } else if (s[i] == '10') {
+        } else if (s[i] == 'A') {
             w = (uint16_t)((w << 4) | 10);
-        } else if (s[i] == '11') {
+        } else if (s[i] == 'B') {
             w = (uint16_t)((w << 4) | 11);
-        } else if (s[i] == '12') {
+        } else if (s[i] == 'C') {
             w = (uint16_t)((w << 4) | 12);
-        } else if (s[i] == '13') {
+        } else if (s[i] == 'D') {
             w = (uint16_t)((w << 4) | 13);
-        } else if (s[i] == '14') {
+        } else if (s[i] == 'E') {
             w = (uint16_t)((w << 4) | 14);
-        } else if (s[i] == '15') {
+        } else if (s[i] == 'F') {
             w = (uint16_t)((w << 4) | 15);
         } else {
             i = s.length();
@@ -121,7 +129,7 @@ int hex2int(std::string s) {
     return (int)w;
 }
 
-int str2int(std::string s) {
+int atr2func::str2int(std::string s) {
     long i, j, k;
     bool neg;
 
