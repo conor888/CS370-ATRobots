@@ -380,52 +380,70 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
 
     k = -1;
 //    click;
- for i:=max_missiles downto 0 do
-  if missile[i].a=0 then k:=i;
- if k>=0 then
-  with missile[k] do
-   begin
-    source:=s;
-    x:=xx; lx:=x;
-    y:=yy; ly:=y;
-    rad:=0; lrad:=0;
-    if ob then mult:=1.25 else mult:=1;
-    if blast>0 then
-      begin max_rad:=blast; a:=2; end
-     else
-      begin
-       if (s>=0) and (s<=num_robots) then
-          mult:=mult*(robot[s]^.shotstrength);
-       m:=mult;
-       if ob then m:=m+0.25;
-       mspd:=missile_spd*mult;
-       if insane_missiles then mspd:=100+(50*insanity)*mult;
-       if (s>=0) and (s<=num_robots) then
-         begin
-          inc(robot[s]^.heat,round(20*m));
-          inc(robot[s]^.shots_fired);
-          inc(robot[s]^.match_shots);
-         end;
-       a:=1; hd:=dir;
-       max_rad:=mis_radius;
-       if debug_info then
-         begin writeln(#13,zero_pad(game_cycle,5),' F ',s,': hd=',hd,'           ');
-         repeat until keypressed; flushkey; end;
-      end;
-   end;
- (*The following was to see if teh missile array is big enough*)
-  {else
-   begin
-    sound:=sound_on;
-    sound_on:=true;
-    chirp;
-    sound_on:=sound;
-   end;
- setfillstyle(1,0);
- setcolor(robot_color(k));
- bar(5,5,37,12);
- outtextxy(5,5,cstr(count_missiles));}
-end;
+    for (i = max_missiles; i > 0; i--){
+        if (missile[i].a = 0){
+            k = i;
+        }
+    }
+
+    if (k >= 0){
+        source = s;
+        x = xx;
+        lx = x;
+        y = yy;
+        ly = y;
+        rad = 0;
+        lrad = 0;
+
+        if (ob = true){
+            mult = 1.25;
+        } else {
+            mult = 1;
+        }
+        if (blast > 0){
+            max_rad = blast;
+            a = 2;
+        } else {
+            if ((s >= 0) && (s <= num_robots)){
+                mult = mult*(robot[s].shotstrength);
+                m = mult;
+            }
+            if (ob = true){
+                m = m + 0.25;
+            }
+            mspd = missile_spd*mult;
+            if (insane_missiles = true){
+                mspd = 100 + (50 * insanity) * mult;
+            }
+            if ((s >= 0) && (s <= num_robots)){
+                robot[s].heat = robot[s].heat + round(20*m);
+                robot[s].shots_fired++;
+                robot[s].match_shots++;
+            }
+            a = 1;
+            hd = dir;
+            max_rad = mis_radius;
+            if (debug_info = true){
+                do {
+                    cout << "\n" << zero_pad(game_cycle, 5) << " F " << s << ": hd=" << hd << "           " << "\n";
+                } while //(!keypressed)
+                ATR2FUNC::FlushKey(); //still have to port FlushKey
+            }
+        }
+    }
+
+// (*The following was to see if teh missile array is big enough*)
+//  {else
+//   begin
+//    sound:=sound_on;
+//    sound_on:=true;
+//    chirp;
+//    sound_on:=sound;
+//   end;
+// setfillstyle(1,0);
+// setcolor(robot_color(k));
+// bar(5,5,37,12);
+// outtextxy(5,5,cstr(count_missiles));}
 }
 
 
