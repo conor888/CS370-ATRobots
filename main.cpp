@@ -188,9 +188,9 @@ bool gameover();
 //bool invalid_microcode(int n, int ip);
 //void process_keypress(char c);
 //void execute_instruction(int n);
-//void do_robot(int n);
-//void do_mine(int n, int m);
-//void do_missile(int n);
+void do_robot(int n); //Not done
+void do_mine(int n, int m); //Not done
+void do_missile(int n); //Not done
 //string victor_string(int k, int n);
 //void show_statistics();
 //void score_robots();
@@ -393,7 +393,7 @@ string mnemonic(int n, int m)  {
 }
 
 void robot_error(int n, int i, string ov) {
-    return;
+
 }
 
 void prog_error(int n, string ss) {
@@ -465,16 +465,14 @@ void prog_error(int n, string ss) {
 
 void print_code(int n, int p) {
     int i;
-    cout << hex << p << ": ";
+    cout << atr2func::hex(p) << ": ";
     for (i = 0; i < max_op; i++) {
-        cout << setfill('0') << setw(5) << robot[n].code[p].op[i] << " ";
+        cout << atr2func::zero_pad(robot[n].code[p].op[i], 5) << " ";
     }
     cout << " = ";
     for (i = 0; i < max_op; i++) {
-        cout << hex << robot[n].code[p].op[i] << "h" << "\n\n";
+        cout << atr2func::hex(robot[n].code[p].op[i]) << "h " << "\n\n";
     }
-
-    return;
 }
 
 void parse1(int n, int p, parsetype s) {
@@ -730,8 +728,6 @@ void parse1(int n, int p, parsetype s) {
     if (compile_by_line) {
         //readkey;
     }
-
-    return;
 }
 
 void check_plen(int plen) {
@@ -741,7 +737,6 @@ void check_plen(int plen) {
         prog_error(16, "Maximum program length exceeded.");
     }
 
-    return;
 }
 
 void compile(int n, string filename) {
@@ -1095,8 +1090,6 @@ void compile(int n, string filename) {
         }
     }
     //textcolor(7);
-
-    return;
 }
 
 void robot_config(int n) {
@@ -1191,8 +1184,6 @@ void robot_config(int n) {
     if (robot[n].config.heatsinks < 0 || robot[n].config.heatsinks > 5) {
         robot[n].config.heatsinks = 0;
     }
-
-    return;
 }
 
 void reset_software(int n) {
@@ -1214,8 +1205,6 @@ void reset_software(int n) {
         robot[n].time_left = 0;
         robot[n].shields_up = false;
     }
-
-    return;
 }
 
 void reset_hardware(int n) {
@@ -1251,8 +1240,6 @@ void reset_hardware(int n) {
             }
         }
     } while (dd > 32);
-
-    return;
 }
 
 void init_robot(int n) {
@@ -1304,8 +1291,6 @@ void init_robot(int n) {
     }
    reset_hardware(n);
    reset_software(n);
-
-    return;
 }
 
 void create_robot(int n, string filename) {
@@ -1338,8 +1323,6 @@ void create_robot(int n, string filename) {
     if (k > max_config_points) {
         prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(max_config_points));
     }
-
-    return;
 }
 
 void shutdown() {
@@ -1379,8 +1362,6 @@ void delete_compile_report(){
     //not done
     //if exist(main_filename+compile_ext) then
     //delete_file(main_filename+compile_ext);
-
-    return;
 }
 
 void write_compile_report(){
@@ -1562,8 +1543,6 @@ void parse_param(string s) {
     if (!found){
         prog_error(8,s);
     }
-
-    return;
 }
 
 void init(int argc, char *argv[]) {
@@ -1695,8 +1674,6 @@ void init(int argc, char *argv[]) {
     /*if (!graphix) {
         cout << "Freemem: " << memavail << endl << endl;
     }*/
-
-    return;
 }
 
 int get_from_ram(int n, int i, int j) {
@@ -1746,8 +1723,6 @@ void put_val(int n, int c, int o, int v) {
         robot[n].ram[i] = v;
     }
     robot_error(n, 3, "");
-
-    return;
 }
 
 void push(int n, int v) {
@@ -1757,8 +1732,6 @@ void push(int n, int v) {
     } else {
         robot_error(n, 1, atr2func::cstr(robot[n].ram[71]));
     }
-
-    return;
 }
 
 int pop(int n) {
@@ -1803,6 +1776,18 @@ bool gameover() {
     }
 }
 
+void do_robot(int n) {
+
+}
+
+void do_mine(int n, int m) {
+
+}
+
+void do_missile(int n) {
+
+}
+
 void init_bout() {
     int i, j, k;
 
@@ -1831,8 +1816,6 @@ void init_bout() {
         //textcolor(7);
         //There is some commented "battle in progress" text here...
     }
-
-    return;
 }
 
 void bout() {
@@ -1943,10 +1926,8 @@ void bout() {
     //update_cycle_window();
     //score_robots();
     //show_statistics();
-
-    return;
 }
 
 void begin_window() {
-    return;
+
 }
