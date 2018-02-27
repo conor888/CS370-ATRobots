@@ -387,42 +387,42 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
     }
 
     if (k >= 0){
-        source = s;
-        x = xx;
-        lx = x;
-        y = yy;
-        ly = y;
-        rad = 0;
-        lrad = 0;
+        missile[k].source = s;
+        missile[k].x = xx;
+        missile[k].lx = missile[k].x;
+        missile[k].y = yy;
+        missile[k].ly = missile[k].y;
+        missile[k].rad = 0;
+        missile[k].lrad = 0;
 
         if (ob = true){
-            mult = 1.25;
+            missile[k].mult = 1.25;
         } else {
-            mult = 1;
+            missile[k].mult = 1;
         }
         if (blast > 0){
-            max_rad = blast;
-            a = 2;
+            missile[k].max_rad = blast;
+            missile[k].a = 2;
         } else {
             if ((s >= 0) && (s <= num_robots)){
-                mult = mult*(robot[s].shotstrength);
-                m = mult;
+                missile[k].mult = missile[k].mult*(robot[s].shotstrength);
+                m = missile[k].mult;
             }
             if (ob = true){
                 m = m + 0.25;
             }
-            mspd = missile_spd*mult;
+            missile[k].mspd = missile_spd*missile[k].mult;
             if (insane_missiles = true){
-                mspd = 100 + (50 * insanity) * mult;
+                missile[k].mspd = 100 + (50 * insanity) * missile[k].mult;
             }
             if ((s >= 0) && (s <= num_robots)){
                 robot[s].heat = robot[s].heat + round(20*m);
                 robot[s].shots_fired++;
                 robot[s].match_shots++;
             }
-            a = 1;
-            hd = dir;
-            max_rad = mis_radius;
+            missile[k].a = 1;
+            missile[k].hd = dir;
+            missile[k].max_rad = mis_radius;
             if (debug_info = true){
                 do {
                     cout << "\n" << zero_pad(game_cycle, 5) << " F " << s << ": hd=" << hd << "           " << "\n";
@@ -445,6 +445,79 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
 // bar(5,5,37,12);
 // outtextxy(5,5,cstr(count_missiles));}
 }
+
+//procedure damage(n,d:integer; physical:boolean);
+void damage(int n, int d, bool physical){
+
+// i,k,h,dd:integer;
+    int i, k, h, dd;
+// m:real;
+    double m;
+
+// if (n<0) or (n>num_robots) or (robot[n]^.armor<=0) then exit;
+    if ((n < 0) || (n > num_robots) || (robot[n].armor <= 0)){
+        exit();
+    }
+// if robot[n]^.config.shield<3 then robot[n]^.shields_up:=false;
+    if (robot[n].config.shield < 3){
+        robot[n].shields_up = false;
+    }
+ with robot[n]^ do
+  begin
+   h:=0;
+   if (shields_up) and (not physical) then
+    begin
+     dd:=d;
+     if (old_shields) and (config.shield>=3) then begin d:=0; h:=0; end
+      else case config.shield of
+       3:begin d:=round(dd*2/3); if d<1 then d:=1; h:=round(dd*2/3); end;
+       4:begin h:=trunc(dd/2); d:=dd-h; end;
+       5:begin d:=round(dd*1/3); if d<1 then d:=1;
+               h:=round(dd*1/3); if h<1 then h:=1; end;
+      end;
+    end;
+   if d<0 then d:=0;
+   if debug_info then
+    begin writeln(#13,zero_pad(game_cycle,5),' D ',n,': ',armor,'-',d,'=',armor-d,'           ');
+    repeat until keypressed; flushkey; end;
+   if d>0 then
+    begin d:=round(d*damageadj); if d<1 then d:=1; end;
+   dec(armor,d);
+   inc(heat,h);
+   last_damage:=0;
+   if armor<=0 then
+    begin
+     armor:=0;
+     update_armor(n);
+     heat:=500;
+     update_heat(n);
+     armor:=0;
+     inc(kill_count);
+     inc(deaths);
+     update_lives(n);
+     if graphix and timing then time_delay(10);
+     draw_robot(n);
+     heat:=0;
+     update_heat(n);
+     init_missile(x,y,0,0,0,n,blast_circle,false);
+     if overburn then m:=1.3 else m:=1;
+     for i:=0 to num_robots do
+      if (i<>n) and (robot[i]^.armor>0) then
+       begin
+        k:=round(distance(x,y,robot[i]^.x,robot[i]^.y));
+        if k<blast_radius then
+         damage(i,round(abs(blast_radius-k)*m),false);
+       end;
+    end;
+  end;
+end;
+}
+
+
+
+
+
+
 
 
 
