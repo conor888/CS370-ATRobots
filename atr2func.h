@@ -13,19 +13,19 @@ public:
 
     //void textxy(int x, int y, std::string s);
     //void coltextxy(int x, int y, std::string s, byte c);
-    //char hexnum(byte num);
-    //std::string hexb(byte num);
-    //std::string hex(word num);
-    //double valuer(std::string i);
+    //static char hexnum(uint8_t num); //Not used
+    //static std::string hexb(uint8_t num); //Not used
+    static std::string hex(int num);
+    static double valuer(std::string i);
     static long value(std::string i);
-    //std::string cstrr(double i);
+    static std::string cstrr(double i);
     static std::string cstr(long i);
-    //std::string zero_pad(long n, long l);
-    //std::string zero_pads(std::string s, long l);
+    static std::string zero_pad(long n, long l);
+    static std::string zero_pads(std::string s, long l);
     static std::string addfront(std::string b, int l);
     static std::string addrear(std::string b, int l);
     static std::string ucase(std::string s);
-    //std::string lcase(std::string s);
+    static std::string lcase(std::string s);
     //std::string space(byte i);
     //std::string repchar(char c, byte i);
     static std::string ltrim(std::string s1);

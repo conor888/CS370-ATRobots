@@ -5,10 +5,28 @@
 //#include <iostream>
 //#include <fstream>
 #include <cmath>
+#include <sstream>
+//#include <sstream>
 #include "atr2func.h"
 
 atr2func::atr2func() {
 
+}
+
+std::string atr2func::hex(int num) {
+    std::stringstream ss;
+    ss << std::hex << num;
+    std::string s(ss.str());
+    s = atr2func::ucase(s);
+    return s;
+}
+
+double atr2func::valuer(std::string i) {
+    double s;
+    int n;
+
+    s = std::stoi(i);
+    return s;
 }
 
 long atr2func::value(std::string i) {
@@ -19,24 +37,71 @@ long atr2func::value(std::string i) {
     return s;
 }
 
+std::string atr2func::cstrr(double i) {
+    std::string s1;
+
+    s1 = std::to_string(i);
+    return s1;
+}
+
 std::string atr2func::cstr(long i) {
-    //to do
-    return "";
+    std::string s1;
+
+    s1 = std::to_string(i);
+    return s1;
+}
+
+std::string atr2func::zero_pad(long n, long l) {
+    std::string s;
+
+    s = atr2func::cstr(n);
+    while (s.length() < l) {
+        s = "0" + s;
+    }
+
+    return s;
+}
+
+std::string atr2func::zero_pads(std::string s, long l) {
+    std::string s1;
+
+    s1 = s;
+    while (s.length() < l) {
+        s1 = "0" + s1;
+    }
+
+    return s1;
 }
 
 std::string atr2func::addfront(std::string b, int l) {
-
+    while (b.length() < l) {
+        b = " " + b;
+    }
+    return b;
 }
 
 std::string atr2func::addrear(std::string b, int l) {
-
+    while (b.length() < l) {
+        b = b + " ";
+    }
+    return b;
 }
 
 std::string atr2func::ucase(std::string s) {
     int i;
     if((int)s.length() >= 1) {
         for (i = 0; i < s.length(); i++) {
-            s[i] = toupper(s[i]);
+            s[i] = (char)toupper(s[i]);
+        }
+    }
+    return s;
+}
+
+std::string atr2func::lcase(std::string s) {
+    int i;
+    if((int)s.length() >= 1) {
+        for (i = 0; i < s.length(); i++) {
+            s[i] = (char)tolower(s[i]);
         }
     }
     return s;
@@ -67,7 +132,7 @@ std::string atr2func::lstr(std::string s1, int l) {
     if ((int)s1.length() <= 1) {
         return s1;
     } else {
-        s1.erase((unsigned int)(l + 1), (s1.length() - l));
+        s1.erase((unsigned int)(l + 1), std::string::npos);
         return s1;
     }
 }
@@ -76,7 +141,7 @@ std::string atr2func::rstr(std::string s1, int l) {
     if ((int)s1.length() <= 1) {
         return s1;
     } else {
-        //s1.erase((s1.length() - l), l);
+        s1.erase(0, (s1.length() - l));
         return s1;
     }
 }
