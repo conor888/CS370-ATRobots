@@ -70,7 +70,7 @@ int main(int argc, char *argv[]) {
     }
 
     //Filenames have been fully checked, open files.
-    f1.open(fn1, std::ofstream::binary);
+    f1.open(fn1, std::ifstream::binary);
     f2.open(fn2, std::ofstream::binary);
 
     //Check here to see if output file creation was successful
@@ -245,9 +245,9 @@ string prepare(string s, string s1){
     for (i = 0; i < s1.length(); i++) {
 
         if ( (s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
-                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, "\r") == 0) ||
-                (s1.compare(i, 1, " ") == 0)) {
+                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, "\r") == 0) ) {
             s1.erase(i, 1);
+            i--;
         }
 
     }
