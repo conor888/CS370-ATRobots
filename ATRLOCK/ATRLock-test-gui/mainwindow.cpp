@@ -277,12 +277,7 @@ string prepare(string s, string s1){
     for (i = 0; i < s1.length(); i++) {
 
         if ( (s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
-<<<<<<< HEAD
                 (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, " ") == 0)) {
-=======
-                (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, "\r") == 0) ||
-                (s1.compare(i, 1, " ") == 0)) {
->>>>>>> ae5cef5402af39a80c8db47db0c4d9424ee6949c
             s1.erase(i, 1);
         }
 

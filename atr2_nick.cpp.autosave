@@ -381,9 +381,13 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
     bool sound;
 
     k = -1;
-//    click;
- for i:=max_missiles downto 0 do
-  if missile[i].a=0 then k:=i;
+    
+    for (i = max_missiles; i > 0; i--){
+        if (missile[i].a = 0){
+            k = i;
+        }
+    }
+    
  if k>=0 then
   with missile[k] do
    begin
