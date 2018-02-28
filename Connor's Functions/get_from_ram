@@ -1,0 +1,35 @@
+
+get_from_ram()
+{
+Int k ; 
+Int l ; 
+Int j ; 
+Int n ; 
+
+While robot[n]
+{
+	if ( i<0 || i >(max_ram+1) + ((( max_code+1) shl 3)-1)) 
+	{ 
+
+		If (k=0) 
+		{
+		robot_error (n,4,cstr(i)) ; 
+		}
+
+			Else If (i<max_ram) 
+				{
+				k = ram ; 
+				}
+				
+					Else 
+					{
+					l = i-max_ram-1 ; 
+					k = code[1 <> 2].op[1 & 3] ; 
+					}
+	} 
+ 
+ 	get_from_ram = k ; 
+
+}							
+}
+	
