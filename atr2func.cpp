@@ -107,6 +107,20 @@ std::string atr2func::lcase(std::string s) {
     return s;
 }
 
+std::string atr2func::space(uint8_t i) {
+    std::string s;
+    int k;
+
+    s.clear();
+    if (i > 0) {
+        for (k = 0; k < i; i++) {
+            s = s + " ";
+        }
+    }
+
+    return s;
+}
+
 std::string atr2func::ltrim(std::string s1) {
     while(((int)s1.length() > 0) && ((s1.compare(0, 1, " ") == 0) ||
             (s1.compare(0, 1, "\b") == 0) || (s1.compare(0, 1, "\t") == 0))) {
@@ -143,6 +157,15 @@ std::string atr2func::rstr(std::string s1, int l) {
     } else {
         s1.erase(0, (s1.length() - l));
         return s1;
+    }
+}
+
+void atr2func::make_tables() {
+    int i, j, k;
+
+    for (i = 0; i <= 255; i++) {
+        atr2func::sint[i] = sin(i / 128 * 3.1415926535897932385);
+        atr2func::cost[i] = cos(i / 128 * 3.1415926535897932385);
     }
 }
 

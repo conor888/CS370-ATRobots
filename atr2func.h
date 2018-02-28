@@ -11,6 +11,8 @@ class atr2func {
 public:
     atr2func();
 
+    static double sint[256], cost[256];
+
     //void textxy(int x, int y, std::string s);
     //void coltextxy(int x, int y, std::string s, byte c);
     //static char hexnum(uint8_t num); //Not used
@@ -26,7 +28,7 @@ public:
     static std::string addrear(std::string b, int l);
     static std::string ucase(std::string s);
     static std::string lcase(std::string s);
-    //std::string space(byte i);
+    static std::string space(uint8_t i);
     //std::string repchar(char c, byte i);
     static std::string ltrim(std::string s1);
     static std::string rtrim(std::string s1);
@@ -43,7 +45,7 @@ public:
     //int sar(int n, int k);
     //void viewport(int x1, int y1, int x2, int y2);
     //void main_viewport();
-    //void make_tables();
+    static void make_tables();
     //int robot_color(int n);
     //void box(int x1, int y1, int x2, int y2);
     //void hole(int x1, int y1, int x2, int y2);
@@ -62,7 +64,6 @@ private:
     //bool registered, graphix, sound_on;
     //std::string reg_name;
     //word reg_num;
-    //double sint[256], cost[256];
 };
 
 
