@@ -74,7 +74,7 @@ public:
         label_2->setAlignment(Qt::AlignCenter);
         label_3 = new QLabel(centralWidget);
         label_3->setObjectName(QStringLiteral("label_3"));
-        label_3->setGeometry(QRect(160, 280, 411, 31));
+        label_3->setGeometry(QRect(20, 280, 711, 31));
         label_3->setFont(font1);
         label_3->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
         MainWindow->setCentralWidget(centralWidget);

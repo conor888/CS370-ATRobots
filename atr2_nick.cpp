@@ -513,10 +513,150 @@ void damage(int n, int d, bool physical){
 end;
 }
 
+void execute_instruction(int n){
+
+    switch(get_val(n,ip,0)){
+    case 25:
+        k = get_val(n,ip,2);
+        if ((k >= 0) && (k <= max_ram)){
+            ram[k] = get_val(n,ip,1);
+        }
+        else {
+            robot_error(n,4,cstr(k));
+        }
+        time_used = 2;
+        executed++;
+
+//25:begin (*PUT*)
+//    k:=get_val(n,ip,2);
+//    if (k>=0) and (k<=max_ram) then
+//        ram[k]:=get_val(n,ip,1)
+//      else robot_error(n,4,cstr(k));
+//    time_used:=2;
+//    inc(executed);
+//   end;
+
+    case 26:
+        call_int(n,get_val(n,ip,1),time_used);
+        executed++;
+
+    case 27:
+        time_used = 4;
+        put_val(n,ip,2,in_port(n,get_val(n,ip,1),time_used));
+        executed;
+
+    case 28:
+        time_used = 4;
+        out_port(n,get_val(n,ip,1),get_val(n,ip,2),time_used);
+        executed++;
+
+    case 29:
+        time_used = get_val(n,ip,1);
+        executed++;
+
+    case 30:
+        push(n,get_val(n,ip,1));
+        executed++;
+
+    case 31:
+        put_val(n,ip,1,pop(n));
+        executed++;
+
+    case 32:
+        robot_error(n,get_val(n,ip,1),"");
+        time_used = 0;
+        executed++;
+
+    case 33:
+        put_val(n,ip,1,get_val(n,ip,1)+1);
+        executed++;
+
+    case 34:
+        put_val(n,ip,1,get_val(n,ip,1)-1);
+        executed++;
+
+    case 35:
+        put_val(n,ip,1,get_val(n,ip,1) << get_val(n,ip,2));
+        executed++;
+
+    case 36:
+        put_val(n,ip,1,get_val(n,ip,1) >> get_val(n,ip,2));
+        executed++;
+
+    case 37:
+        put_val(n,ip,1,rol(get_val(n,ip,1),get_val(n,ip,2)));
+        executed++;
+
+    case 38:
+        put_val(n,ip,1,ror(get_val(n,ip,1),get_val(n,ip,2)));
+        executed++;
+
+    case 39:
+        time_used = 0;
+        if ((ram[64]) && (8>0)) {
+            jump(n,1,inc_ip);
+        }
+        executed++;
+
+    case 40:
+        time_used = 0;
+        if ((ram[64]) && (8=0)) {
+            jump(n,1,inc_ip);
+        }
+        executed++;
+
+    case 41:
+        if (((ram[64]) && (1 > 0)) || ((ram[64]) && (4 > 0))) {
+            jump(n,1,inc_ip);
+        }
+        time_used = 0;
+        executed++;
+
+    case 42:
+        if (((ram[64]) && (1 > 0)) || ((ram[64]) && (2 > 0))) {
+            jump(n,1,inc_ip);
+        }
+        time_used = 0;
+        executed++;
+
+    case 43:
+        put_val(n,ip,1,sal(get_val(n,ip,1),get_val(n,ip,2)));
+        executed++;
+
+    case 44:
+        put_val(n,ip,1,sar(get_val(n,ip,1),get_val(n,ip,2)));
+        executed++;
+
+    case 45:
+        put_val(n,ip,1,0-get_val(n,ip,1));
+        executed++;
+
+    case 46:
+        loc = get_val(n,ip,1);
+        if ((loc >= 0) && (loc <= plen)) {
+            inc_ip = false;
+            ip = loc;
+        }
+        else {
+            robot_error(n,2,cstr(loc));
+        }
 
 
 
+    else {
+        robot_error(n,6,"");
+    }
+}
 
+//    inc(delay_left,time_used);
+    delay_left = delay_left + time_used;
+    if (inc_ip) {
+        ip++;
+    }
+
+//if graphix and (n=0) and (step_mode>0) then update_debug_window;
+
+}
 
 
 
