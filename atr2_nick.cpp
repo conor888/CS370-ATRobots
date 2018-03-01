@@ -381,7 +381,7 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
     k = -1;
 //    click;
     for (i = max_missiles; i > 0; i--){
-        if (missile[i].a = 0){
+        if (missile[i].a == 0){
             k = i;
         }
     }
@@ -395,7 +395,7 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
         missile[k].rad = 0;
         missile[k].lrad = 0;
 
-        if (ob = true){
+        if (ob == true){
             missile[k].mult = 1.25;
         } else {
             missile[k].mult = 1;
@@ -408,11 +408,11 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
                 missile[k].mult = missile[k].mult*(robot[s].shotstrength);
                 m = missile[k].mult;
             }
-            if (ob = true){
+            if (ob == true){
                 m = m + 0.25;
             }
             missile[k].mspd = missile_spd*missile[k].mult;
-            if (insane_missiles = true){
+            if (insane_missiles == true){
                 missile[k].mspd = 100 + (50 * insanity) * missile[k].mult;
             }
             if ((s >= 0) && (s <= num_robots)){
@@ -423,7 +423,7 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
             missile[k].a = 1;
             missile[k].hd = dir;
             missile[k].max_rad = mis_radius;
-            if (debug_info = true){
+            if (debug_info == true){
                 do {
                     cout << "\n" << zero_pad(game_cycle, 5) << " F " << s << ": hd=" << hd << "           " << "\n";
                 } while //(!keypressed)
@@ -446,71 +446,93 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
 // outtextxy(5,5,cstr(count_missiles));}
 }
 
-//procedure damage(n,d:integer; physical:boolean);
 void damage(int n, int d, bool physical){
 
-// i,k,h,dd:integer;
     int i, k, h, dd;
-// m:real;
     double m;
 
-// if (n<0) or (n>num_robots) or (robot[n]^.armor<=0) then exit;
     if ((n < 0) || (n > num_robots) || (robot[n].armor <= 0)){
         exit();
     }
-// if robot[n]^.config.shield<3 then robot[n]^.shields_up:=false;
     if (robot[n].config.shield < 3){
         robot[n].shields_up = false;
     }
- with robot[n]^ do
-  begin
-   h:=0;
-   if (shields_up) and (not physical) then
-    begin
-     dd:=d;
-     if (old_shields) and (config.shield>=3) then begin d:=0; h:=0; end
-      else case config.shield of
-       3:begin d:=round(dd*2/3); if d<1 then d:=1; h:=round(dd*2/3); end;
-       4:begin h:=trunc(dd/2); d:=dd-h; end;
-       5:begin d:=round(dd*1/3); if d<1 then d:=1;
-               h:=round(dd*1/3); if h<1 then h:=1; end;
-      end;
-    end;
-   if d<0 then d:=0;
-   if debug_info then
-    begin writeln(#13,zero_pad(game_cycle,5),' D ',n,': ',armor,'-',d,'=',armor-d,'           ');
-    repeat until keypressed; flushkey; end;
-   if d>0 then
-    begin d:=round(d*damageadj); if d<1 then d:=1; end;
-   dec(armor,d);
-   inc(heat,h);
-   last_damage:=0;
-   if armor<=0 then
-    begin
-     armor:=0;
-     update_armor(n);
-     heat:=500;
-     update_heat(n);
-     armor:=0;
-     inc(kill_count);
-     inc(deaths);
-     update_lives(n);
-     if graphix and timing then time_delay(10);
-     draw_robot(n);
-     heat:=0;
-     update_heat(n);
-     init_missile(x,y,0,0,0,n,blast_circle,false);
-     if overburn then m:=1.3 else m:=1;
-     for i:=0 to num_robots do
-      if (i<>n) and (robot[i]^.armor>0) then
-       begin
-        k:=round(distance(x,y,robot[i]^.x,robot[i]^.y));
-        if k<blast_radius then
-         damage(i,round(abs(blast_radius-k)*m),false);
-       end;
-    end;
-  end;
-end;
+
+    h = 0;
+    if ((robot[n].shields_up = true) && (physical != true)){
+        dd = d;
+        if ((robot[n].old_shields = true) && (robot[n].config.shield >= 3)){
+            d = 0;
+            h = 0;
+        } else {
+            switch(robot[n].config.shield){
+                case 3:
+                    d = round(dd*2/3);
+                    if (d < 1){
+                        d = 1;
+                        h = round(dd*2/3)
+                    }
+                case 4:
+                    h = trunc(dd/2);
+                    d = dd-h;
+                case 5:
+                    d = round(dd*1/3);
+                    if (d < 1){
+                        d = 1;
+                    }
+                    h = round(dd*1/3);
+                    if (h < 1){
+                        h = 1;
+                    }
+            }
+        }
+    }
+    if (d < 0) {
+        d:=0;
+    }
+    if (robot[n].debug_info == true){
+        do {
+            cout << "\n" << zero_pad(robot[n].game_cycle,5) << " D " << n << ": " << robot[n].armor << "-" << d << "=" << robot[n].armor-d << "           ";
+        } while //(!keypressed)
+        ATR2FUNC::FlushKey(); //still have to port FlushKey
+    }
+    if (d > 0){
+        d = round(d*robot[n].damageadj);
+        if (d < 1){
+            d = 1;
+        }
+    }
+    robot[n].armor = robot[n].armor - d;
+    robot[n].heat = robot[n].heat + h;
+    robot[n].last_damage = 0;
+    if (robot[n].armor <= 0){
+        robot[n].armor = 0;
+        update_armor(n);
+        robot[n].heat = 500;
+        update_heat(n);
+        robot[n].armor = 0;
+        robot[n].kill_count++;
+        robot[n].deaths++;
+        update_lives(n);
+//     if graphix and timing then time_delay(10);
+//     draw_robot(n);
+        robot[n].heat = 0;
+        update_heat(n);
+        init_missile(robot[n].x,robot[n].y,0,0,0,n,robot[n].blast_circle,false);
+        if (robot[n].overburn == true){
+            m = 1.3;
+        } else {
+            m = 1;
+        }
+        for (i = 0; i < num_robots; i++){
+            if ((i != n) && (robot[i].armor > 0)){
+                k = round(distance(robot[n].x,robot[n].y,robot[i].x,robot[i].y));
+                if (k < robot[n].blast_radius){
+                    damage(i,round(abs(robot[n].blast_radius-k)*m),false);
+                }
+            }
+        }
+    }
 }
 
 void execute_instruction(int n){
@@ -526,15 +548,6 @@ void execute_instruction(int n){
         }
         time_used = 2;
         executed++;
-
-//25:begin (*PUT*)
-//    k:=get_val(n,ip,2);
-//    if (k>=0) and (k<=max_ram) then
-//        ram[k]:=get_val(n,ip,1)
-//      else robot_error(n,4,cstr(k));
-//    time_used:=2;
-//    inc(executed);
-//   end;
 
     case 26:
         call_int(n,get_val(n,ip,1),time_used);
@@ -600,7 +613,7 @@ void execute_instruction(int n){
 
     case 40:
         time_used = 0;
-        if ((ram[64]) && (8=0)) {
+        if ((ram[64]) && (8 == 0)) {
             jump(n,1,inc_ip);
         }
         executed++;
@@ -648,7 +661,6 @@ void execute_instruction(int n){
     }
 }
 
-//    inc(delay_left,time_used);
     delay_left = delay_left + time_used;
     if (inc_ip) {
         ip++;
@@ -658,8 +670,26 @@ void execute_instruction(int n){
 
 }
 
+void score_robots(){
 
+    int n,i,j,k,l;
 
+    k = 0;
+    n = -1;
+
+    for (i = 0; i < num_robots; i++) {
+        robot[i].trials++;
+        if (robot[i].armor > 0) {
+            k++;
+            n = i;
+        }
+    }
+
+    if ((k == 1) && (n >= 0)) {
+        robot[n].wins++;
+        robot[n].won = true;
+    }
+}
 
 
 
