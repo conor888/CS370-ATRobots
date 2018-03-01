@@ -43,7 +43,7 @@ void MainWindow::on_pushButton_3_clicked()
 {
     fileName = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.*)"));
     ui->label_3->setText(fileName);
 }
 
@@ -316,7 +316,7 @@ void MainWindow::on_pushButton_4_clicked()
         cout << "Must supply two arguments" << endl;
         exit(1);
     }*/
-    argc = 3;
+    //argc = 3;
 
 
     fn1 = fileName.toUtf8().constData();
@@ -381,5 +381,5 @@ void MainWindow::on_pushButton_4_clicked()
     messageBox.setFixedSize(500,200);
 
     f1.close();
-    f2.close()
+    f2.close();
 }
