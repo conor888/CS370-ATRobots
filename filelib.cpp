@@ -21,8 +21,8 @@ std::string filelib::base_name(std::string name) {
 
     s1.clear();
     s2.clear();
-    k = 1;
-    while ((k <= name.length()) && (name[k] != '.')) {
+    k = 0;
+    while ((k < name.length()) && (name[k] != '.')) {
         s1 = s1 + name[k];
         k++;
     }
