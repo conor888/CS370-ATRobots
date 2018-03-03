@@ -39,10 +39,10 @@ public:
     //void calibrate_timing();
     //void time_delay(int n); //{n=milliseconds}
     //void check_registration();
-    //int rol(int n, int k);
-    //int ror(int n, int k);
-    //int sal(int n, int k);
-    //int sar(int n, int k);
+    static int rol(int n, int k);
+    static int ror(int n, int k);
+    static int sal(int n, int k);
+    static int sar(int n, int k);
     //void viewport(int x1, int y1, int x2, int y2);
     //void main_viewport();
     static void make_tables();
@@ -54,8 +54,8 @@ public:
     static int hex2int(std::string s);
     static int str2int(std::string s);
     static double distance(double x1, double y1, double x2, double y2);
-    //double find_angle(double xx, double yy, double tx, double ty);
-    //int find_anglei(double xx, double yy, double tx, double ty);
+    static double find_angle(double xx, double yy, double tx, double ty);
+    static int find_anglei(double xx, double yy, double tx, double ty);
     //std::string bin(int n);
     //std::string decimal(int num, int length);
 
