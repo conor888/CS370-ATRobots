@@ -78,7 +78,7 @@ const int
     //        $AA, $55, $AA, $55);
 
 struct op_rec {
-    int op[max_op];
+    int op[max_op + 1];
 };
 
 typedef op_rec prog_type[max_code];
@@ -117,7 +117,7 @@ struct robot_rec {
     ofstream errorlog;
 };
 
-typedef std::string parsetype[max_op];
+typedef std::string parsetype[max_op + 1];
 
 //typedef &robot_rec robot_ptr;
 
@@ -212,7 +212,7 @@ missile_rec missile[max_missiles];
 //Compiler variables
 //ifstream f;
 int numvars, numlabels, maxcode, lock_pos, lock_dat;
-string varname[max_vars]; //[max_var_len]
+string varname[256]; //[max_var_len]
 int varloc[max_vars];
 string labelname[max_vars]; //[max_var_len]
 int labelnum[max_labels];
@@ -500,7 +500,10 @@ void update_heat(int n) {
 }
 
 void robot_error(int n, int i, string ov) {
-
+    if (logging_errors) {
+        log_error(n, i, ov);
+        robot[n].error_count++;
+    }
 }
 
 void update_lives(int n) {
@@ -603,11 +606,11 @@ void prog_error(int n, string ss) {
 void print_code(int n, int p) {
     int i;
     cout << atr2func::hex(p) << ": ";
-    for (i = 0; i < max_op; i++) {
+    for (i = 0; i <= max_op; i++) {
         cout << atr2func::zero_pad(robot[n].code[p].op[i], 5) << " ";
     }
     cout << " = ";
-    for (i = 0; i < max_op; i++) {
+    for (i = 0; i <= max_op; i++) {
         cout << atr2func::hex(robot[n].code[p].op[i]) << "h " << "\n\n";
     }
 }
@@ -618,12 +621,13 @@ void parse1(int n, int p, parsetype s) {
     string ss;
 
     //with robot[n]^ do
-        for (i = 0; i < max_op-1; i++) {
+        for (i = 0; i <= (max_op - 1); i++) {
             k = 0;
             found = false;
             opcode = 0;
             microcode = 0;
             s[i] = atr2func::btrim(atr2func::ucase(s[i]));
+            cout << "s[" << i << "] = " << s[i] << endl;
             indirect = false;
 
             /*
@@ -643,12 +647,17 @@ void parse1(int n, int p, parsetype s) {
                 found = true;
             }
 
+            if ((atr2func::lstr(s[i], 1)[0] == '[') && (atr2func::rstr(s[i], 1)[0] == ']')) {
+                s[i] = atr2func::lstr(atr2func::rstr(s[i], (int)s[i].length() - 1), (int)s[i].length() - 2);
+                indirect = true;
+            }
+
             //!labels
-            if(not found && s[i][0]=='!') {
+            if(!found && s[i][0]=='!') {
                 ss = s[i];
-                ss = atr2func::btrim(atr2func::rstr(ss, ss.length()-1));
+                ss = atr2func::btrim(atr2func::rstr(ss, (int)ss.length()-1));
                 if (numlabels > 0) {
-                    for (j = 1; j < numlabels; j++) {
+                    for (j = 1; j <= numlabels; j++) {
                         if (ss.compare(labelname[j]) == 0) {
                             found = true;
                             if (labelnum[j] >= 0) {
@@ -663,7 +672,7 @@ void parse1(int n, int p, parsetype s) {
                         }
                     }
                 }
-                if (not found) {
+                if (!found) {
                     numlabels++;
                     if (numlabels > max_labels) {
                         exit(15);
@@ -678,8 +687,8 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///variables
-            if (numvars > 0 && not found) {
-                for (j = 1; j < numvars; j++) {
+            if (numvars > 0 && !found) {
+                for (j = 1; j <= numvars; j++) {
                     if (s[i].compare(varname[j]) == 0) {
                         opcode = varloc[j];
                         microcode = 1; //variable
@@ -689,151 +698,151 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///instructions
-            if (s[i] == "NOP"     ) { opcode = 0; found = true; }
-            if (s[i] == "ADD"     ) { opcode = 1; found = true; }
-            if (s[i] == "SUB"     ) { opcode = 2; found = true; }
-            if (s[i] == "OR"      ) { opcode = 3; found = true; }
-            if (s[i] == "AND"     ) { opcode = 4; found = true; }
-            if (s[i] == "XOR"     ) { opcode = 5; found = true; }
-            if (s[i] == "NOT"     ) { opcode = 6; found = true; }
-            if (s[i] == "MPY"     ) { opcode = 7; found = true; }
-            if (s[i] == "DIV"     ) { opcode = 8; found = true; }
-            if (s[i] == "MOD"     ) { opcode = 9; found = true; }
-            if (s[i] == "RET"     ) { opcode = 10; found = true; }
-            if (s[i] == "RETURN"  ) { opcode = 10; found = true; }
-            if (s[i] == "GSB"     ) { opcode = 11; found = true; }
-            if (s[i] == "GOSUB"   ) { opcode = 11; found = true; }
-            if (s[i] == "CALL"    ) { opcode = 11; found = true; }
-            if (s[i] == "JMP"     ) { opcode = 12; found = true; }
-            if (s[i] == "JUMP"    ) { opcode = 12; found = true; }
-            if (s[i] == "GOTO"    ) { opcode = 12; found = true; }
-            if (s[i] == "JLS"     ) { opcode = 13; found = true; }
-            if (s[i] == "JB"      ) { opcode = 13; found = true; }
-            if (s[i] == "JGR"     ) { opcode = 14; found = true; }
-            if (s[i] == "JA"      ) { opcode = 14; found = true; }
-            if (s[i] == "JNE"     ) { opcode = 15; found = true; }
-            if (s[i] == "JEQ"     ) { opcode = 16; found = true; }
-            if (s[i] == "JE"      ) { opcode = 16; found = true; }
-            if (s[i] == "XCHG"    ) { opcode = 17; found = true; }
-            if (s[i] == "SWAP"    ) { opcode = 17; found = true; }
-            if (s[i] == "DO"      ) { opcode = 18; found = true; }
-            if (s[i] == "LOOP"    ) { opcode = 19; found = true; }
-            if (s[i] == "CMP"     ) { opcode = 20; found = true; }
-            if (s[i] == "TEST"    ) { opcode = 21; found = true; }
-            if (s[i] == "SET"     ) { opcode = 22; found = true; }
-            if (s[i] == "MOV"     ) { opcode = 22; found = true; }
-            if (s[i] == "LOC"     ) { opcode = 23; found = true; }
-            if (s[i] == "ADDR"    ) { opcode = 23; found = true; }
-            if (s[i] == "GET"     ) { opcode = 24; found = true; }
-            if (s[i] == "PUT"     ) { opcode = 25; found = true; }
-            if (s[i] == "INT"     ) { opcode = 26; found = true; }
-            if (s[i] == "IPO"     ) { opcode = 27; found = true; }
-            if (s[i] == "IN"      ) { opcode = 27; found = true; }
-            if (s[i] == "OPO"     ) { opcode = 28; found = true; }
-            if (s[i] == "OUT"     ) { opcode = 28; found = true; }
-            if (s[i] == "DEL"     ) { opcode = 29; found = true; }
-            if (s[i] == "DELAY"   ) { opcode = 29; found = true; }
-            if (s[i] == "PUSH"    ) { opcode = 30; found = true; }
-            if (s[i] == "POP"     ) { opcode = 31; found = true; }
-            if (s[i] == "ERR"     ) { opcode = 32; found = true; }
-            if (s[i] == "ERROR"   ) { opcode = 32; found = true; }
-            if (s[i] == "INC"     ) { opcode = 33; found = true; }
-            if (s[i] == "DEC"     ) { opcode = 34; found = true; }
-            if (s[i] == "SHL"     ) { opcode = 35; found = true; }
-            if (s[i] == "SHR"     ) { opcode = 36; found = true; }
-            if (s[i] == "ROL"     ) { opcode = 37; found = true; }
-            if (s[i] == "ROR"     ) { opcode = 38; found = true; }
-            if (s[i] == "JZ"      ) { opcode = 39; found = true; }
-            if (s[i] == "JNZ"     ) { opcode = 40; found = true; }
-            if (s[i] == "JAE"     ) { opcode = 41; found = true; }
-            if (s[i] == "JGE"     ) { opcode = 41; found = true; }
-            if (s[i] == "JLE"     ) { opcode = 42; found = true; }
-            if (s[i] == "JBE"     ) { opcode = 42; found = true; }
-            if (s[i] == "SAL"     ) { opcode = 43; found = true; }
-            if (s[i] == "SAR"     ) { opcode = 44; found = true; }
-            if (s[i] == "NEG"     ) { opcode = 45; found = true; }
-            if (s[i] == "JTL"     ) { opcode = 46; found = true; }
+            if (s[i] == "NOP"     ) { opcode = 0; found = true; } else
+            if (s[i] == "ADD"     ) { opcode = 1; found = true; } else
+            if (s[i] == "SUB"     ) { opcode = 2; found = true; } else
+            if (s[i] == "OR"      ) { opcode = 3; found = true; } else
+            if (s[i] == "AND"     ) { opcode = 4; found = true; } else
+            if (s[i] == "XOR"     ) { opcode = 5; found = true; } else
+            if (s[i] == "NOT"     ) { opcode = 6; found = true; } else
+            if (s[i] == "MPY"     ) { opcode = 7; found = true; } else
+            if (s[i] == "DIV"     ) { opcode = 8; found = true; } else
+            if (s[i] == "MOD"     ) { opcode = 9; found = true; } else
+            if (s[i] == "RET"     ) { opcode = 10; found = true; } else
+            if (s[i] == "RETURN"  ) { opcode = 10; found = true; } else
+            if (s[i] == "GSB"     ) { opcode = 11; found = true; } else
+            if (s[i] == "GOSUB"   ) { opcode = 11; found = true; } else
+            if (s[i] == "CALL"    ) { opcode = 11; found = true; } else
+            if (s[i] == "JMP"     ) { opcode = 12; found = true; } else
+            if (s[i] == "JUMP"    ) { opcode = 12; found = true; } else
+            if (s[i] == "GOTO"    ) { opcode = 12; found = true; } else
+            if (s[i] == "JLS"     ) { opcode = 13; found = true; } else
+            if (s[i] == "JB"      ) { opcode = 13; found = true; } else
+            if (s[i] == "JGR"     ) { opcode = 14; found = true; } else
+            if (s[i] == "JA"      ) { opcode = 14; found = true; } else
+            if (s[i] == "JNE"     ) { opcode = 15; found = true; } else
+            if (s[i] == "JEQ"     ) { opcode = 16; found = true; } else
+            if (s[i] == "JE"      ) { opcode = 16; found = true; } else
+            if (s[i] == "XCHG"    ) { opcode = 17; found = true; } else
+            if (s[i] == "SWAP"    ) { opcode = 17; found = true; } else
+            if (s[i] == "DO"      ) { opcode = 18; found = true; } else
+            if (s[i] == "LOOP"    ) { opcode = 19; found = true; } else
+            if (s[i] == "CMP"     ) { opcode = 20; found = true; } else
+            if (s[i] == "TEST"    ) { opcode = 21; found = true; } else
+            if (s[i] == "SET"     ) { opcode = 22; found = true; } else
+            if (s[i] == "MOV"     ) { opcode = 22; found = true; } else
+            if (s[i] == "LOC"     ) { opcode = 23; found = true; } else
+            if (s[i] == "ADDR"    ) { opcode = 23; found = true; } else
+            if (s[i] == "GET"     ) { opcode = 24; found = true; } else
+            if (s[i] == "PUT"     ) { opcode = 25; found = true; } else
+            if (s[i] == "INT"     ) { opcode = 26; found = true; } else
+            if (s[i] == "IPO"     ) { opcode = 27; found = true; } else
+            if (s[i] == "IN"      ) { opcode = 27; found = true; } else
+            if (s[i] == "OPO"     ) { opcode = 28; found = true; } else
+            if (s[i] == "OUT"     ) { opcode = 28; found = true; } else
+            if (s[i] == "DEL"     ) { opcode = 29; found = true; } else
+            if (s[i] == "DELAY"   ) { opcode = 29; found = true; } else
+            if (s[i] == "PUSH"    ) { opcode = 30; found = true; } else
+            if (s[i] == "POP"     ) { opcode = 31; found = true; } else
+            if (s[i] == "ERR"     ) { opcode = 32; found = true; } else
+            if (s[i] == "ERROR"   ) { opcode = 32; found = true; } else
+            if (s[i] == "INC"     ) { opcode = 33; found = true; } else
+            if (s[i] == "DEC"     ) { opcode = 34; found = true; } else
+            if (s[i] == "SHL"     ) { opcode = 35; found = true; } else
+            if (s[i] == "SHR"     ) { opcode = 36; found = true; } else
+            if (s[i] == "ROL"     ) { opcode = 37; found = true; } else
+            if (s[i] == "ROR"     ) { opcode = 38; found = true; } else
+            if (s[i] == "JZ"      ) { opcode = 39; found = true; } else
+            if (s[i] == "JNZ"     ) { opcode = 40; found = true; } else
+            if (s[i] == "JAE"     ) { opcode = 41; found = true; } else
+            if (s[i] == "JGE"     ) { opcode = 41; found = true; } else
+            if (s[i] == "JLE"     ) { opcode = 42; found = true; } else
+            if (s[i] == "JBE"     ) { opcode = 42; found = true; } else
+            if (s[i] == "SAL"     ) { opcode = 43; found = true; } else
+            if (s[i] == "SAR"     ) { opcode = 44; found = true; } else
+            if (s[i] == "NEG"     ) { opcode = 45; found = true; } else
+            if (s[i] == "JTL"     ) { opcode = 46; found = true; } else
 
             ///registers
-            if (s[i] == "COLCNT"  ) { opcode = 8; microcode = 01; found = true; }
-            if (s[i] == "METERS"  ) { opcode = 9; microcode = 01; found = true; }
-            if (s[i] == "COMBASE" ) { opcode = 10; microcode = 01; found = true; }
-            if (s[i] == "COMEND"  ) { opcode = 11; microcode = 01; found = true; }
-            if (s[i] == "FLAGS"   ) { opcode = 64; microcode = 01; found = true; }
-            if (s[i] == "AX"      ) { opcode = 65; microcode = 01; found = true; }
-            if (s[i] == "BX"      ) { opcode = 66; microcode = 01; found = true; }
-            if (s[i] == "CX"      ) { opcode = 67; microcode = 01; found = true; }
-            if (s[i] == "DX"      ) { opcode = 68; microcode = 01; found = true; }
-            if (s[i] == "EX"      ) { opcode = 69; microcode = 01; found = true; }
-            if (s[i] == "FX"      ) { opcode = 70; microcode = 01; found = true; }
-            if (s[i] == "SP"      ) { opcode = 71; microcode = 01; found = true; }
+            if (s[i] == "COLCNT"  ) { opcode = 8; microcode = 1; found = true; } else
+            if (s[i] == "METERS"  ) { opcode = 9; microcode = 1; found = true; } else
+            if (s[i] == "COMBASE" ) { opcode = 10; microcode = 1; found = true; } else
+            if (s[i] == "COMEND"  ) { opcode = 11; microcode = 1; found = true; } else
+            if (s[i] == "FLAGS"   ) { opcode = 64; microcode = 1; found = true; } else
+            if (s[i] == "AX"      ) { opcode = 65; microcode = 1; found = true; } else
+            if (s[i] == "BX"      ) { opcode = 66; microcode = 1; found = true; } else
+            if (s[i] == "CX"      ) { opcode = 67; microcode = 1; found = true; } else
+            if (s[i] == "DX"      ) { opcode = 68; microcode = 1; found = true; } else
+            if (s[i] == "EX"      ) { opcode = 69; microcode = 1; found = true; } else
+            if (s[i] == "FX"      ) { opcode = 70; microcode = 1; found = true; } else
+            if (s[i] == "SP"      ) { opcode = 71; microcode = 1; found = true; } else
 
             ///constants
-            if (s[i] == "MAXINT"    ) { opcode = 32767;  microcode = 0; found = true; }
-            if (s[i] == "MININT"    ) { opcode = -32768; microcode = 0; found = true; }
-            if (s[i] == "P_SPEDOMETER"  ) { opcode = 1; microcode = 0; found = true; }
-            if (s[i] == "P_HEAT"        ) { opcode = 2; microcode = 0; found = true; }
-            if (s[i] == "P_COMPASS"     ) { opcode = 3; microcode = 0; found = true; }
-            if (s[i] == "P_TANGLE"      ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "P_TURRET_OFS"  ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "P_THEADING"    ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "P_TURRET_ABS"  ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "P_ARMOR"       ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "P_DAMAGE"      ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "P_SCAN"        ) { opcode = 7; microcode = 0; found = true; }
-            if (s[i] == "P_ACCURACY"    ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "P_RADAR"       ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "P_RANDOM"      ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "P_RAND"        ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "P_THROTTLE"    ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "P_TROTATE"     ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "P_OFS_TURRET"  ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "P_TAIM"        ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "P_ABS_TURRET"  ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "P_STEERING"    ) { opcode = 14; microcode = 0; found = true; }
-            if (s[i] == "P_WEAP"        ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_WEAPON"      ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_FIRE"        ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_SONAR"       ) { opcode = 16; microcode = 0; found = true; }
-            if (s[i] == "P_ARC"         ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "P_SCANARC"     ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "P_OVERBURN"    ) { opcode = 18; microcode = 0; found = true; }
-            if (s[i] == "P_TRANSPONDER" ) { opcode = 19; microcode = 0; found = true; }
-            if (s[i] == "P_SHUTDOWN"    ) { opcode = 20; microcode = 0; found = true; }
-            if (s[i] == "P_CHANNEL"     ) { opcode = 21; microcode = 0; found = true; }
-            if (s[i] == "P_MINELAYER"   ) { opcode = 22; microcode = 0; found = true; }
-            if (s[i] == "P_MINETRIGGER" ) { opcode = 23; microcode = 0; found = true; }
-            if (s[i] == "P_SHIELD"      ) { opcode = 24; microcode = 0; found = true; }
-            if (s[i] == "P_SHIELDS"     ) { opcode = 24; microcode = 0; found = true; }
-            if (s[i] == "I_DESTRUCT"    ) { opcode = 0; microcode = 0; found = true; }
-            if (s[i] == "I_RESET"       ) { opcode = 1; microcode = 0; found = true; }
-            if (s[i] == "I_LOCATE"      ) { opcode = 2; microcode = 0; found = true; }
-            if (s[i] == "I_KEEPSHIFT"   ) { opcode = 3; microcode = 0; found = true; }
-            if (s[i] == "I_OVERBURN"    ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "I_ID"          ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "I_TIMER"       ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "I_ANGLE"       ) { opcode = 7; microcode = 0; found = true; }
-            if (s[i] == "I_TID"         ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "I_TARGETID"    ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "I_TINFO"       ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "I_TARGETINFO"  ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "I_GINFO"       ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "I_GAMEINFO"    ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "I_RINFO"       ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "I_ROBOTINFO"   ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "I_COLLISIONS"  ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "I_RESETCOLCNT" ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "I_TRANSMIT"    ) { opcode = 14; microcode = 0; found = true; }
-            if (s[i] == "I_RECEIVE"     ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "I_DATAREADY"   ) { opcode = 16; microcode = 0; found = true; }
-            if (s[i] == "I_CLEARCOM"    ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "I_KILLS"       ) { opcode = 18; microcode = 0; found = true; }
-            if (s[i] == "I_DEATHS"      ) { opcode = 18; microcode = 0; found = true; }
+            if (s[i] == "MAXINT"    ) { opcode = 32767;  microcode = 0; found = true; } else
+            if (s[i] == "MININT"    ) { opcode = -32768; microcode = 0; found = true; } else
+            if (s[i] == "P_SPEDOMETER"  ) { opcode = 1; microcode = 0; found = true; } else
+            if (s[i] == "P_HEAT"        ) { opcode = 2; microcode = 0; found = true; } else
+            if (s[i] == "P_COMPASS"     ) { opcode = 3; microcode = 0; found = true; } else
+            if (s[i] == "P_TANGLE"      ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "P_TURRET_OFS"  ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "P_THEADING"    ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "P_TURRET_ABS"  ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "P_ARMOR"       ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "P_DAMAGE"      ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "P_SCAN"        ) { opcode = 7; microcode = 0; found = true; } else
+            if (s[i] == "P_ACCURACY"    ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "P_RADAR"       ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "P_RANDOM"      ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "P_RAND"        ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "P_THROTTLE"    ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "P_TROTATE"     ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "P_OFS_TURRET"  ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "P_TAIM"        ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "P_ABS_TURRET"  ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "P_STEERING"    ) { opcode = 14; microcode = 0; found = true; } else
+            if (s[i] == "P_WEAP"        ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_WEAPON"      ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_FIRE"        ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_SONAR"       ) { opcode = 16; microcode = 0; found = true; } else
+            if (s[i] == "P_ARC"         ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "P_SCANARC"     ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "P_OVERBURN"    ) { opcode = 18; microcode = 0; found = true; } else
+            if (s[i] == "P_TRANSPONDER" ) { opcode = 19; microcode = 0; found = true; } else
+            if (s[i] == "P_SHUTDOWN"    ) { opcode = 20; microcode = 0; found = true; } else
+            if (s[i] == "P_CHANNEL"     ) { opcode = 21; microcode = 0; found = true; } else
+            if (s[i] == "P_MINELAYER"   ) { opcode = 22; microcode = 0; found = true; } else
+            if (s[i] == "P_MINETRIGGER" ) { opcode = 23; microcode = 0; found = true; } else
+            if (s[i] == "P_SHIELD"      ) { opcode = 24; microcode = 0; found = true; } else
+            if (s[i] == "P_SHIELDS"     ) { opcode = 24; microcode = 0; found = true; } else
+            if (s[i] == "I_DESTRUCT"    ) { opcode = 0; microcode = 0; found = true; } else
+            if (s[i] == "I_RESET"       ) { opcode = 1; microcode = 0; found = true; } else
+            if (s[i] == "I_LOCATE"      ) { opcode = 2; microcode = 0; found = true; } else
+            if (s[i] == "I_KEEPSHIFT"   ) { opcode = 3; microcode = 0; found = true; } else
+            if (s[i] == "I_OVERBURN"    ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "I_ID"          ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "I_TIMER"       ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "I_ANGLE"       ) { opcode = 7; microcode = 0; found = true; } else
+            if (s[i] == "I_TID"         ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "I_TARGETID"    ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "I_TINFO"       ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "I_TARGETINFO"  ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "I_GINFO"       ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "I_GAMEINFO"    ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "I_RINFO"       ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "I_ROBOTINFO"   ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "I_COLLISIONS"  ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "I_RESETCOLCNT" ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "I_TRANSMIT"    ) { opcode = 14; microcode = 0; found = true; } else
+            if (s[i] == "I_RECEIVE"     ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "I_DATAREADY"   ) { opcode = 16; microcode = 0; found = true; } else
+            if (s[i] == "I_CLEARCOM"    ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "I_KILLS"       ) { opcode = 18; microcode = 0; found = true; } else
+            if (s[i] == "I_DEATHS"      ) { opcode = 18; microcode = 0; found = true; } else
             if (s[i] == "I_CLEARMETERS" ) { opcode = 19; microcode = 0; found = true; }
 
 
             ///memory addresses
-            if ((not found) && (s[i].compare(0, 1, "@") == 0) && isdigit(s[i][1]) ) {
+            if ((!found) && (s[i].compare(0, 1, "@") == 0) && isdigit(s[i][1]) ) {
                 opcode = atr2func::str2int(atr2func::rstr(s[i], s[i].length() - 1));
                 if ((opcode < 0) || (opcode > (max_ram + 1) + (((max_code + 1) << 3) - 1))) {
                     prog_error(3, s[i]);
@@ -843,7 +852,7 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///numbers
-            if ((not found) && (isdigit(s[i][0]) || s[i].compare(0, 1, "-"))) {
+            if ((!found) && (isdigit(s[i][0]) || (s[i][0] == '-'))) {
                 opcode = atr2func::str2int(s[i]);
                 found = true;
             }
@@ -854,6 +863,7 @@ void parse1(int n, int p, parsetype s) {
                     microcode = microcode | 8;
                 }
                 robot[n].code[p].op[max_op] = robot[n].code[p].op[max_op] | (microcode << (i * 4));
+                cout << "robot #" << n << ", opcode being set to " << robot[n].code[p].op[i] << ", microcode being set to " << robot[n].code[p].op[max_op] << endl;
             } else if (!s[i].empty()) {
                 prog_error(2, s[i]);
             }
@@ -899,7 +909,7 @@ void compile(int n, string filename) {
     numvars = 0;
     numlabels = 0;
     for (k = 0; k < max_code; k++) {
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             robot[n].code[k].op[i] = 0;
         }
     }
@@ -962,7 +972,7 @@ void compile(int n, string filename) {
             s = atr2func::lstr(s, k-1);
         }
         s = atr2func::btrim(atr2func::ucase(s));
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             pp[i].clear();
         }
         if (((int)s.length() > 0) && (s[0] != ';')) {
@@ -1089,7 +1099,7 @@ void compile(int n, string filename) {
                 }
             } else if (s[0] == '*') {   //Inline Pre-Compiled Machine Code
                 check_plen(robot[n].plen);
-                for (i = 0; i < max_op; i++) {
+                for (i = 0; i <= max_op; i++) {
                     pp[i].clear();
                 }
                 for (i = 2; i < (int)s.length(); i++) {
@@ -1103,7 +1113,7 @@ void compile(int n, string filename) {
                 if ((int)s.length() > 2) {
                     prog_error(22, s);
                 }
-                while (i < s.length() && k <= max_op) {
+                while ((i < s.length()) && (k <= max_op)) {
                     i++;
                     if ((((int)(s[i]) >= 33) && ((int)(s[i]) <= 41)) ||
                         (((int)(s[i]) >= 43) && ((int)(s[i]) <= 127))) {
@@ -1114,7 +1124,7 @@ void compile(int n, string filename) {
                         k++;
                     }
                 }
-                for (i = 0; i < max_op; i++) {
+                for (i = 0; i <= max_op; i++) {
                     robot[n].code[robot[n].plen].op[i] = atr2func::str2int(pp[i]);
                 }
                 robot[n].plen++;
@@ -1128,6 +1138,7 @@ void compile(int n, string filename) {
                 }
                 robot[n].code[robot[n].plen].op[0] = atr2func::str2int(s1);
                 robot[n].code[robot[n].plen].op[max_op] = 2;
+                cout << ":LABEL: " << s1 << ", op[0]=" << robot[n].code[robot[n].plen].op[0] << ", op[3]=" << robot[n].code[robot[n].plen].op[max_op] << ", plen=" << robot[n].plen << endl;
                 if (show_code) {
                     print_code(n, robot[n].plen);
                 }
@@ -1135,7 +1146,7 @@ void compile(int n, string filename) {
             } else if (s[0] == '!') {   //!labels
                 check_plen(robot[n].plen);
                 s1 = atr2func::btrim(atr2func::rstr(s, s.length() - 1));
-                cout << "LABEL: " << s1 << endl;
+                cout << "!LABEL: " << s1 << endl;
                 k = 0;
                 for (i = s1.length() - 1; i >= 0; i--) {
                     if ((s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
@@ -1148,7 +1159,7 @@ void compile(int n, string filename) {
                     s1 = atr2func::lstr(s1, k - 1);
                 }
                 k = 0;
-                for (i = 0; i < numlabels; i++) {
+                for (i = 1; i <= numlabels; i++) {
                     if (labelname[i] == s1) {
                         if (labelnum[i] >= 0) {
                             prog_error(13, "\"!" + s1 + "\" (" + atr2func::cstr(labelnum[i]) + ")");
@@ -1180,10 +1191,10 @@ void compile(int n, string filename) {
                 }
                 //setup variables for parsing
                 k = 0;
-                for (j = 0; j > max_op; j++) {
+                for (j = 0; j <= max_op; j++) {
                     pp[j].clear();
                 }
-                for (j = 0; j > s.length(); j++) {
+                for (j = 0; j < s.length(); j++) {
                     c = s[j];
                     if (!((c == '\b') || (c == '\t') || (c == '\n') || (c == ',') || (c == '\r') ||
                           (c == ' ')) && (k <= max_op)) {
@@ -1201,7 +1212,7 @@ void compile(int n, string filename) {
     }
     f.close();
     if (robot[n].plen <= maxcode) {
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             pp[i].clear();
             parse1(n, robot[n].plen, pp);
         }
@@ -1209,9 +1220,10 @@ void compile(int n, string filename) {
         robot[n].plen--;
     }
 
+    //second pass, resolving !labels
     if (numlabels > 0) {
         for (i = 0; i < robot[n].plen; i++) {
-            for (j = 0; j < (max_op - 1); j++) {
+            for (j = 0; j <= (max_op - 1); j++) {
                 if ((robot[n].code[i].op[max_op] >> (j*4)) == 3) {
                     k = robot[n].code[i].op[j];
                     if ((k > 0) && (k <= numlabels)) {
@@ -1487,7 +1499,7 @@ void init_robot(int n) {
     robot[n].ram[71] = 768;
 
     for (i = 0; i < max_code; i++) {
-        for (k = 0; k < max_op; k++) {
+        for (k = 0; k <= max_op; k++) {
             robot[n].code[i].op[k] = 0;
         }
     }
@@ -1554,7 +1566,7 @@ void shutdown() {
     if (logging_errors) {
 
         for (i = 0; i < num_robots; i++) {
-            cout << "Robot error-log created: " << filelib::base_name(robot[i].fn) << ".ERR" << endl;
+            cout << "Robot error-log created: " << filelib::base_name(robot[i].fn) << "-" << to_string(i + 1) << ".ERR" << endl;
             robot[i].errorlog.close();
         }
     }
@@ -1755,7 +1767,7 @@ void init(int argc, char *argv[]) {
         //readkey;
     }
     step_mode = 0; //stepping disabled
-    logging_errors = false;
+    logging_errors = true;
     stats_mode = 0;
     insane_missiles = false;
     insanity = 0;
@@ -1777,7 +1789,7 @@ void init(int argc, char *argv[]) {
     report = false;
     kill_count = 0;
     maxcode = max_code;
-    atr2func::make_tables;
+    atr2func::make_tables();
     srand (time(NULL)); //randomize;
     num_robots = 0; //originally -1
     game_limit = 100000;
@@ -1820,8 +1832,7 @@ void init(int argc, char *argv[]) {
     temp_mode = step_mode;
     if (logging_errors) {
         for (i = 0; i < num_robots; i++) {
-            string errlogtemp;
-            robot[i].errorlog.open(filelib::base_name(robot[i].fn) + ".ERR");
+            robot[i].errorlog.open(filelib::base_name(robot[i].fn) + "-" + to_string(i + 1) + ".ERR");
         }
     }
     if (compile_only) {
@@ -1938,12 +1949,13 @@ void put_val(int n, int c, int o, int v) {
                 } else {
                     robot[n].ram[i] = v;
                 }
+            } else {
+                robot[n].ram[i] = v;
             }
         }
     } else {
-        robot[n].ram[i] = v;
+        robot_error(n, 3, "");
     }
-    robot_error(n, 3, "");
 }
 
 void push(int n, int v) {
@@ -2019,7 +2031,7 @@ int count_missiles(){
     return k;
 }
 
-void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int blast,bool ob){
+void init_missile(double xx, double yy, double xxv, double yyv, int dir, int s, int blast, bool ob){
     int i, j, k;
     double m;
     bool sound;
@@ -2749,10 +2761,12 @@ void execute_instruction(int n) {
         //graphix stuff
     }
 
+    //cout << "Robot #" << n << " trying to execute line " << robot[n].ip << ", op=" << get_val(n, robot[n].ip, 0) << ", " << mnemonic(get_val(n, robot[n].ip, 0), 0) << endl;
     if(((robot[n].code[robot[n].ip].op[max_op] & 7) != 0) && ((robot[n].code[robot[n].ip].op[max_op] & 7) != 1)) {
         time_used = 0;
     } else {
-        cout << "Robot #" << n << " executing instruction #" << get_val(n, robot[n].ip, 0) << endl;
+        //cout << "   Robot #" << n << " executing instruction #" << get_val(n, robot[n].ip, 0) << ", "
+             //<< mnemonic(get_val(n, robot[n].ip, 0), 0) << endl;
         switch (get_val(n, robot[n].ip, 0)) {
             case 0: //NOP
                 executed++;
@@ -2789,7 +2803,7 @@ void execute_instruction(int n) {
             case 8: //DIV
                 j = get_val(n, robot[n].ip, 2);
                 if (j != 0) {
-                    put_val(n, robot[n].ip, 1, (int)(get_val(n, robot[n].ip, 1) / j));
+                    put_val(n, robot[n].ip, 1, (int) (get_val(n, robot[n].ip, 1) / j));
                 } else {
                     robot_error(n, 8, "");
                 }
@@ -2813,11 +2827,12 @@ void execute_instruction(int n) {
                 }
                 executed++;
                 break;
-            case 11: //GSB
-                loc = find_label(n, get_val(n, robot[n].ip, 1), robot[n].code[robot[n].ip].op[max_op] >> (1*4));
+            case 11: //GSB,CALL
+                loc = find_label(n, get_val(n, robot[n].ip, 1), robot[n].code[robot[n].ip].op[max_op] >> (1 * 4));
                 if (loc >= 0) {
                     push(n, robot[n].ip);
                     inc_ip = false;
+                    robot[n].ip = loc;
                 } else {
                     robot_error(n, 2, atr2func::cstr(get_val(n, robot[n].ip, 1)));
                 }
@@ -2925,7 +2940,7 @@ void execute_instruction(int n) {
                 break;
             case 25: //PUT
                 k = get_val(n, robot[n].ip, 2);
-                if ((k >= 0) && (k <= max_ram)){
+                if ((k >= 0) && (k <= max_ram)) {
                     robot[n].ram[k] = get_val(n, robot[n].ip, 1);
                 } else {
                     robot_error(n, 4, atr2func::cstr(k));
@@ -2934,7 +2949,7 @@ void execute_instruction(int n) {
                 executed++;
                 break;
             case 26: //INT
-                call_int(n, get_val(n, robot[n].ip, 1),time_used);
+                call_int(n, get_val(n, robot[n].ip, 1), time_used);
                 executed++;
                 break;
             case 27: //IPO,IN
@@ -3033,8 +3048,7 @@ void execute_instruction(int n) {
                 if ((loc >= 0) && (loc <= robot[n].plen)) {
                     inc_ip = false;
                     robot[n].ip = loc;
-                }
-                else {
+                } else {
                     robot_error(n, 2, atr2func::cstr(loc));
                 }
                 break;
@@ -3042,13 +3056,14 @@ void execute_instruction(int n) {
                 robot_error(n, 6, "");
                 cout << "Error executing instruction!" << endl;
         }
-        robot[n].delay_left = robot[n].delay_left + time_used;
-        if (inc_ip) {
-            robot[n].ip++;
-        }
-        if ((graphix) && (n == 0) && (step_mode > 0)) {
-            //update_debug_window();
-        }
+    }
+
+    robot[n].delay_left = robot[n].delay_left + time_used;
+    if (inc_ip) {
+        robot[n].ip++;
+    }
+    if ((graphix) && (n == 0) && (step_mode > 0)) {
+        //update_debug_window();
     }
 }
 
@@ -3326,7 +3341,7 @@ void do_missile(int n) {
             if (missile[n].a > 0) {
                 missile[n].hd = (missile[n].hd + 256) & 255;
                 xv = atr2func::sint[missile[n].hd] * missile[n].mspd;
-                yv = -(atr2func::cost[missile[n].hd] * missile[n].mspd);
+                yv = -(atr2func::cost[missile[n].hd]) * missile[n].mspd;
                 missile[n].x = missile[n].x + xv;
                 missile[n].y = missile[n].y + yv;
             }
@@ -3341,7 +3356,7 @@ void do_missile(int n) {
                     xx = (int)round(atr2func::sint[missile[n].hd] * d + missile[n].lx);
                     yy = (int)round(-(atr2func::cost[missile[n].hd]) * d + missile[n].ly);
                     r = atr2func::distance(xx, yy, robot[i].x, robot[i].y);
-                    if ((d <= missile[n].mspd) && (r < hit_range) && (round(d) <= 1)) {
+                    if ((d <= missile[n].mspd) && (r < hit_range) && (round(d) <= l)) {
                         k = i;
                         l = (int)round(d);
                         dd = (int)round(r);
