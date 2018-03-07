@@ -185,8 +185,8 @@ void atr2func::make_tables() {
     int i, j, k;
 
     for (i = 0; i <= 255; i++) {
-        atr2func::sint[i] = std::sin(i / 128 * pi);
-        atr2func::cost[i] = std::cos(i / 128 * pi);
+        atr2func::sint[i] = std::sin((double)i / 128 * pi);
+        atr2func::cost[i] = std::cos((double)i / 128 * pi);
     }
 }
 
