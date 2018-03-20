@@ -691,6 +691,125 @@ void score_robots(){
     }
 }
 
+void do_mine(int n,m){
+    int i,j,k,l;
+    double d,r;
+    bool source_alive;
+
+    if ((x >= 0) && (x <= 1000) && (y >= 0) && (y <= 1000) && (yield>0)){
+        for (i = 0; i < num_robots; i++){
+            if ((robot[i].armor > 0) && (i != n)){
+                d = distance(x,y,robot[i].x,robot[i].y);
+                if (d <= detect){
+                    detonate = true;
+                }
+            }
+        }
+        if (detonate == true){
+            init_missile(x,y,0,0,0,n,mine_circle,false);
+            kill_count = 0;
+            if (robot[n].armor > 0){
+                source_alive = true;
+            } else {
+                source_alive = false;
+            }
+            for (i = 0; i < num_robots; i++){
+                if (robot[i].armor > 0) {
+                    k = round(distance(x,y,robot[i].x,robot[i].y));
+                    if (k < yield){
+                        damage(i,round(abs(yield-k)),false);
+                        if ((n >= 0) && (n <= num_robots) && (i != n)){
+                            robot[n].damage_total = robot[n].damage_total + round(abs(yield-k));
+                        }
+                    }
+                }
+                if ((kill_count > 0) && (source_alive) && (robot[n].armor <= 0)){
+                    kill_count--;
+                }
+                if (kill_count > 0){
+                    robot[n].kills = robot[n].kills + kill_count;
+                    update_lives(n);
+                }
+//                if graphix then
+//                 putpixel(round(x*screen_scale)+screen_x,round(y*screen_scale)+screen_y,0);
+//                yield:=0; x:=-1; y:=-1;
+//               end
+//              else
+//               begin
+//                (* Draw mine *)
+//                if graphix and (game_cycle and 1=0) then
+//                 begin
+//                  main_viewport;
+//                  setcolor(robot_color(n));
+//                  line(round(x*screen_scale)+screen_x,round(y*screen_scale)+screen_y-1,
+//                       round(x*screen_scale)+screen_x,round(y*screen_scale)+screen_y+1);
+//                  line(round(x*screen_scale)+screen_x+1,round(y*screen_scale)+screen_y,
+//                       round(x*screen_scale)+screen_x-1,round(y*screen_scale)+screen_y);
+
+            }
+        }
+    }
+}
+
+procedure process_keypress(c:char);
+begin
+ case c of
+   'C':calibrate_timing;
+   'T':timing:=not timing;
+   'A':show_arcs:=not show_arcs;
+   'S','Q':begin
+            if sound_on then chirp;
+            sound_on:=not sound_on;
+            if sound_on then chirp;
+           end;
+   '$':debug_info:=not debug_info;
+   'W':windoze:=not windoze;
+    #8:bout_over:=true;
+   #27:begin quit:=true; step_loop:=false; end;
+ end;
+end;
+
+void process_keypress(char c){
+    switch(c){
+    case "C":
+        calibrate_timing();
+    case "T":
+        timing = false;
+    case "A":
+        show_arcs = false;
+    case "S","Q":
+        if (sound_on){
+            chirp();
+        }
+        sound_on = false;
+        if (sound_on){
+            chirp();
+        }
+    case "$":
+        debug_info = false;
+    case "W":
+        windoze = false;
+    case "\b":
+        bout_over = true;
+    case GetAsyncKeyState(VK_ESCAPE):
+        quit = true;
+        step_loop = false
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

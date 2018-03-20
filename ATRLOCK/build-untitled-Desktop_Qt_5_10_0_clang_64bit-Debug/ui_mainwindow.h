@@ -31,6 +31,7 @@ public:
     QPushButton *pushButton_3;
     QLabel *label_2;
     QLabel *label_3;
+    QPushButton *pushButton_4;
 
     void setupUi(QMainWindow *MainWindow)
     {
@@ -47,27 +48,27 @@ public:
         centralWidget->setObjectName(QStringLiteral("centralWidget"));
         pushButton = new QPushButton(centralWidget);
         pushButton->setObjectName(QStringLiteral("pushButton"));
-        pushButton->setGeometry(QRect(480, 330, 121, 71));
+        pushButton->setGeometry(QRect(290, 340, 161, 71));
         QFont font;
         font.setPointSize(30);
         pushButton->setFont(font);
         pushButton_2 = new QPushButton(centralWidget);
         pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
-        pushButton_2->setGeometry(QRect(120, 330, 121, 71));
+        pushButton_2->setGeometry(QRect(80, 340, 161, 71));
         pushButton_2->setFont(font);
         pushButton_2->setFlat(false);
         label = new QLabel(centralWidget);
         label->setObjectName(QStringLiteral("label"));
-        label->setGeometry(QRect(110, 30, 511, 101));
+        label->setGeometry(QRect(20, 30, 711, 101));
         label->setScaledContents(true);
         label->setAlignment(Qt::AlignCenter);
         pushButton_3 = new QPushButton(centralWidget);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
-        pushButton_3->setGeometry(QRect(250, 150, 231, 71));
+        pushButton_3->setGeometry(QRect(260, 150, 231, 71));
         pushButton_3->setFont(font);
         label_2 = new QLabel(centralWidget);
         label_2->setObjectName(QStringLiteral("label_2"));
-        label_2->setGeometry(QRect(160, 240, 411, 41));
+        label_2->setGeometry(QRect(20, 240, 711, 41));
         QFont font1;
         font1.setPointSize(20);
         label_2->setFont(font1);
@@ -77,6 +78,10 @@ public:
         label_3->setGeometry(QRect(20, 280, 711, 31));
         label_3->setFont(font1);
         label_3->setAlignment(Qt::AlignHCenter|Qt::AlignTop);
+        pushButton_4 = new QPushButton(centralWidget);
+        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+        pushButton_4->setGeometry(QRect(500, 340, 161, 71));
+        pushButton_4->setFont(font);
         MainWindow->setCentralWidget(centralWidget);
 
         retranslateUi(MainWindow);
@@ -93,6 +98,7 @@ public:
         pushButton_3->setText(QApplication::translate("MainWindow", "Browse...", nullptr));
         label_2->setText(QApplication::translate("MainWindow", "Selected Robot:", nullptr));
         label_3->setText(QApplication::translate("MainWindow", "None selected", nullptr));
+        pushButton_4->setText(QApplication::translate("MainWindow", "Unlock", nullptr));
     } // retranslateUi
 
 };
