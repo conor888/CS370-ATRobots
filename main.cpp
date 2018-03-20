@@ -31,7 +31,8 @@ const bool
     debugging_compiler  = _F;
 
 const double
-        screen_scale = 0.46;
+        screen_scale = 0.46,
+        pi = 3.1415926535897932385;
 
 const int
     minint          = -32768,
@@ -77,7 +78,7 @@ const int
     //        $AA, $55, $AA, $55);
 
 struct op_rec {
-    int op[max_op];
+    int op[max_op + 1];
 };
 
 typedef op_rec prog_type[max_code];
@@ -116,7 +117,7 @@ struct robot_rec {
     ofstream errorlog;
 };
 
-typedef std::string parsetype[max_op];
+typedef std::string parsetype[max_op + 1];
 
 //typedef &robot_rec robot_ptr;
 
@@ -137,7 +138,7 @@ int max_shown();
 void update_armor(int n);                       //Not done
 void update_heat(int n); //Not done
 void robot_error(int n, int i, string ov);      //Not done
-//void update_lives(int n);
+void update_lives(int n);                       //Not done
 //void update_cycle_window();
 //void setscreen();
 //void graph_mode(bool on);
@@ -157,7 +158,7 @@ void write_compile_report();
 void parse_param(string s);
 void init(int argc, char* argv[]);
 void draw_robot(int n);                         //Not done
-int get_from_ram(int n, int i, int j);          //Not done
+int get_from_ram(int n, int i, int j);
 int get_val(int n, int c, int o);
 void put_val(int n, int c, int o, int v);
 void push(int n, int v);
@@ -166,14 +167,14 @@ int find_label(int n, int l, int m);
 void init_mine(int n, int detectrange, int size);
 int count_missiles();
 void init_missile(double xx, double yy, double xxv, double yyv, int dir, int s, int blast, bool ob);
-void damage(int n, int d, bool physical);       //Not done
-//int scan(int n);
-//void com_transmit(int n, int chan, int data);
-//int com_receive(int n);
-//int in_port(int n, int p, int time_used); //time_used has var label?
-//void out_port(int n, int p, int v, int time_used); //time_used has var label?
-//void call_int(int n, int int_num, int time_used); //time_used has var label?
-void jump(int n, int o, bool inc_ip); //inc_ip has var label?
+void damage(int n, int d, bool physical);
+int scan(int n);
+void com_transmit(int n, int chan, int data);
+int com_receive(int n);
+int in_port(int n, int p, int &time_used);
+void out_port(int n, int p, int v, int &time_used);
+void call_int(int n, int int_num, int &time_used);
+void jump(int n, int o, bool &inc_ip);
 //void update_debug_bars();
 //void update_debug_system();
 //void update_debug_registers();
@@ -190,13 +191,13 @@ bool invalid_microcode(int n, int ip);
 void execute_instruction(int n);
 void do_robot(int n);
 void do_mine(int n, int m);                     //Not done
-void do_missile(int n);                         //Not done
+void do_missile(int n);
 string victor_string(int k, int n);
 void show_statistics();
-//void score_robots();
+void score_robots();
 void init_bout();
 void bout();
-//void write_report();
+void write_report();
 void begin_window();                            //Not done
 
 
@@ -209,9 +210,9 @@ robot_rec robot[max_robots + 4];
 missile_rec missile[max_missiles];
 
 //Compiler variables
-ifstream f;
+//ifstream f;
 int numvars, numlabels, maxcode, lock_pos, lock_dat;
-string varname[max_vars]; //[max_var_len]
+string varname[256]; //[max_var_len]
 int varloc[max_vars];
 string labelname[max_vars]; //[max_var_len]
 int labelnum[max_labels];
@@ -268,7 +269,7 @@ int main(int argc, char *argv[]) {
         cout << endl << endl;
         //graph_mode(false);
         //textcolor(15);
-        cout << "Bout complete! (" << matches << " matches" << endl;
+        cout << "Bout complete! (" << matches << " matches)" << endl;
         k = 0;
         w = 0;
         for (i = 0; i < num_robots; i++) {
@@ -303,7 +304,7 @@ int main(int argc, char *argv[]) {
         //show_statistics();
     }
     if (report) {
-        //write_report();
+        write_report();
     }
 
     shutdown();
@@ -316,10 +317,10 @@ string operand(int n, int m) {
     s = n;
 
     switch (m & 7) {
-        case 1: s = "@" + s;
-        case 2: s = ":" + s;
-        case 3: s = "$" + s;
-        case 4: s = "!" + s;
+        case 1: s = "@" + s; break;
+        case 2: s = ":" + s; break;
+        case 3: s = "$" + s; break;
+        case 4: s = "!" + s; break;
         default: s = n;
     }
 
@@ -336,53 +337,53 @@ string mnemonic(int n, int m)  {
 
     if (m == 0) {
         switch (n) {
-            case 0: s = "NOP";
-            case 1: s = "ADD";
-            case 2: s = "SUB";
-            case 3: s = "OR";
-            case 4: s = "AND";
-            case 5: s = "XOR";
-            case 6: s = "NOT";
-            case 7: s = "MPY";
-            case 8: s = "DIV";
-            case 9: s = "MOD";
-            case 10: s = "RET";
-            case 11: s = "CALL";
-            case 12: s = "JMP";
-            case 13: s = "JLS";
-            case 14: s = "JGR";
-            case 15: s = "JNE";
-            case 16: s = "JE";
-            case 17: s = "SWAP";
-            case 18: s = "DO";
-            case 19: s = "LOOP";
-            case 20: s = "CMP";
-            case 21: s = "TEST";
-            case 22: s = "MOV";
-            case 23: s = "LOC";
-            case 24: s = "GET";
-            case 25: s = "PUT";
-            case 26: s = "INT";
-            case 27: s = "IPO";
-            case 28: s = "OPO";
-            case 29: s = "DELAY";
-            case 30: s = "PUSH";
-            case 31: s = "POP";
-            case 32: s = "ERR";
-            case 33: s = "INC";
-            case 34: s = "DEC";
-            case 35: s = "SHL";
-            case 36: s = "SHR";
-            case 37: s = "ROL";
-            case 38: s = "ROR";
-            case 39: s = "JZ";
-            case 40: s = "JNZ";
-            case 41: s = "JGE";
-            case 42: s = "JLE";
-            case 43: s = "SAL";
-            case 44: s = "SAR";
-            case 45: s = "NEG";
-            case 46: s = "JTL";
+            case 0: s = "NOP"; break;
+            case 1: s = "ADD"; break;
+            case 2: s = "SUB"; break;
+            case 3: s = "OR"; break;
+            case 4: s = "AND"; break;
+            case 5: s = "XOR"; break;
+            case 6: s = "NOT"; break;
+            case 7: s = "MPY"; break;
+            case 8: s = "DIV"; break;
+            case 9: s = "MOD"; break;
+            case 10: s = "RET"; break;
+            case 11: s = "CALL"; break;
+            case 12: s = "JMP"; break;
+            case 13: s = "JLS"; break;
+            case 14: s = "JGR"; break;
+            case 15: s = "JNE"; break;
+            case 16: s = "JE"; break;
+            case 17: s = "SWAP"; break;
+            case 18: s = "DO"; break;
+            case 19: s = "LOOP"; break;
+            case 20: s = "CMP"; break;
+            case 21: s = "TEST"; break;
+            case 22: s = "MOV"; break;
+            case 23: s = "LOC"; break;
+            case 24: s = "GET"; break;
+            case 25: s = "PUT"; break;
+            case 26: s = "INT"; break;
+            case 27: s = "IPO"; break;
+            case 28: s = "OPO"; break;
+            case 29: s = "DELAY"; break;
+            case 30: s = "PUSH"; break;
+            case 31: s = "POP"; break;
+            case 32: s = "ERR"; break;
+            case 33: s = "INC"; break;
+            case 34: s = "DEC"; break;
+            case 35: s = "SHL"; break;
+            case 36: s = "SHR"; break;
+            case 37: s = "ROL"; break;
+            case 38: s = "ROR"; break;
+            case 39: s = "JZ"; break;
+            case 40: s = "JNZ"; break;
+            case 41: s = "JGE"; break;
+            case 42: s = "JLE"; break;
+            case 43: s = "SAL"; break;
+            case 44: s = "SAR"; break;
+            case 45: s = "NEG"; break;
+            case 46: s = "JTL"; break;
             default: s = "XXX";
         }
     } else {
@@ -499,6 +500,13 @@ void update_heat(int n) {
 }
 
 void robot_error(int n, int i, string ov) {
+    if (logging_errors) {
+        log_error(n, i, ov);
+        robot[n].error_count++;
+    }
+}
+
+void update_lives(int n) {
 
 }
 
@@ -512,56 +520,82 @@ void prog_error(int n, string ss) {
     switch(n) {
         case 0:
             cout << "User error.";
+            break;
         case 1:
             cout << "Invalid :label - \"" << ss << "\", silly mortal.";
+            break;
         case 2:
             cout << "Undefined identifier - \"" << ss << "\". A typo perhaps?";
+            break;
         case 3:
             cout << "Memory access out of range - \"" << ss << "\"";
+            break;
         case 4:
             cout << "Not enough robots for combat. Maybe we should just drive in circles.";
+            break;
         case 5:
             cout << "Robot names and settings must be specified. An empty arena is no fun.";
+            break;
         case 6:
             cout << "Config file not found - \"" << ss << "\"";
+            break;
         case 7:
             cout << "Cannot access a config file from a config file - \"" << ss << "\"";
+            break;
         case 8:
             cout << "Robot not found \"" << ss << "\". Perhaps you mistyped it?";
+            break;
         case 9:
             cout << "Insufficient RAM to load robot: \"" << ss << "\"... This is not good.";
+            break;
         case 10:
             cout << "Too many robots! We can only handle " << max_robots + 1 << "! Blah.. limits are limits.";
+            break;
         case 11:
             cout << "You already have a perfectly good #def for \"" << ss << "\", silly.";
+            break;
         case 12:
             cout << "Variable name too long! (Max: " << max_var_len << ") \"" << ss << "\"";
+            break;
         case 13:
             cout << "!Label already defined \"" << ss << "\", silly.";
+            break;
         case 14:
             cout << "Too many variables! (Var Limit: " << max_vars << ")";
+            break;
         case 15:
             cout << "Too many !labels! (!Label Limit: " << max_labels << ")";
+            break;
         case 16:
             cout << "Robot program too long! Boldly we simplify, simplify along... " << ss;
+            break;
         case 17:
             cout << "!Label missing error. !Label #" << ss << ".";
+            break;
         case 18:
             cout << "!Label out of range: " << ss;
+            break;
         case 19:
             cout << "!Label not found. " << ss;
+            break;
         case 20:
             cout << "Invalid config option: \"" << ss << "\". Inventing a new device?";
+            break;
         case 21:
             cout << "Robot is attempting to cheat; Too many config points (" << ss << ")";
+            break;
         case 22:
             cout << "Insufficient data in data statement: \"" << ss << "\"";
+            break;
         case 23:
             cout << "Too many asterisks: \"" << ss << "\"";
+            break;
         case 24:
             cout << "Invalid step count: \"" << ss << "\". 1-9 are valid conditions.";
+            break;
         case 25:
             cout << "\"" << ss << "\"";
+            break;
         default:
             cout << ss;
     }
@@ -572,11 +606,11 @@ void prog_error(int n, string ss) {
 void print_code(int n, int p) {
     int i;
     cout << atr2func::hex(p) << ": ";
-    for (i = 0; i < max_op; i++) {
+    for (i = 0; i <= max_op; i++) {
         cout << atr2func::zero_pad(robot[n].code[p].op[i], 5) << " ";
     }
     cout << " = ";
-    for (i = 0; i < max_op; i++) {
+    for (i = 0; i <= max_op; i++) {
         cout << atr2func::hex(robot[n].code[p].op[i]) << "h " << "\n\n";
     }
 }
@@ -587,12 +621,13 @@ void parse1(int n, int p, parsetype s) {
     string ss;
 
     //with robot[n]^ do
-        for (i = 0; i < max_op-1; i++) {
+        for (i = 0; i <= (max_op - 1); i++) {
             k = 0;
             found = false;
             opcode = 0;
             microcode = 0;
-            //s[i] = btrim(ucase(s[i]));
+            s[i] = atr2func::btrim(atr2func::ucase(s[i]));
+            cout << "s[" << i << "] = " << s[i] << endl;
             indirect = false;
 
             /*
@@ -612,12 +647,17 @@ void parse1(int n, int p, parsetype s) {
                 found = true;
             }
 
+            if ((atr2func::lstr(s[i], 1)[0] == '[') && (atr2func::rstr(s[i], 1)[0] == ']')) {
+                s[i] = atr2func::lstr(atr2func::rstr(s[i], (int)s[i].length() - 1), (int)s[i].length() - 2);
+                indirect = true;
+            }
+
             //!labels
-            if(not found && s[i][0]=='!') {
+            if(!found && s[i][0]=='!') {
                 ss = s[i];
-                //ss = btrim(rstr(ss,length(ss)-1));
+                ss = atr2func::btrim(atr2func::rstr(ss, (int)ss.length()-1));
                 if (numlabels > 0) {
-                    for (j = 1; j < numlabels; j++) {
+                    for (j = 1; j <= numlabels; j++) {
                         if (ss.compare(labelname[j]) == 0) {
                             found = true;
                             if (labelnum[j] >= 0) {
@@ -632,7 +672,7 @@ void parse1(int n, int p, parsetype s) {
                         }
                     }
                 }
-                if (not found) {
+                if (!found) {
                     numlabels++;
                     if (numlabels > max_labels) {
                         exit(15);
@@ -647,8 +687,8 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///variables
-            if (numvars > 0 && not found) {
-                for (j = 1; j < numvars; j++) {
+            if (numvars > 0 && !found) {
+                for (j = 1; j <= numvars; j++) {
                     if (s[i].compare(varname[j]) == 0) {
                         opcode = varloc[j];
                         microcode = 1; //variable
@@ -658,152 +698,152 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///instructions
-            if (s[i] == "NOP"     ) { opcode = 0; found = true; }
-            if (s[i] == "ADD"     ) { opcode = 1; found = true; }
-            if (s[i] == "SUB"     ) { opcode = 2; found = true; }
-            if (s[i] == "OR"      ) { opcode = 3; found = true; }
-            if (s[i] == "AND"     ) { opcode = 4; found = true; }
-            if (s[i] == "XOR"     ) { opcode = 5; found = true; }
-            if (s[i] == "NOT"     ) { opcode = 6; found = true; }
-            if (s[i] == "MPY"     ) { opcode = 7; found = true; }
-            if (s[i] == "DIV"     ) { opcode = 8; found = true; }
-            if (s[i] == "MOD"     ) { opcode = 9; found = true; }
-            if (s[i] == "RET"     ) { opcode = 10; found = true; }
-            if (s[i] == "RETURN"  ) { opcode = 10; found = true; }
-            if (s[i] == "GSB"     ) { opcode = 11; found = true; }
-            if (s[i] == "GOSUB"   ) { opcode = 11; found = true; }
-            if (s[i] == "CALL"    ) { opcode = 11; found = true; }
-            if (s[i] == "JMP"     ) { opcode = 12; found = true; }
-            if (s[i] == "JUMP"    ) { opcode = 12; found = true; }
-            if (s[i] == "GOTO"    ) { opcode = 12; found = true; }
-            if (s[i] == "JLS"     ) { opcode = 13; found = true; }
-            if (s[i] == "JB"      ) { opcode = 13; found = true; }
-            if (s[i] == "JGR"     ) { opcode = 14; found = true; }
-            if (s[i] == "JA"      ) { opcode = 14; found = true; }
-            if (s[i] == "JNE"     ) { opcode = 15; found = true; }
-            if (s[i] == "JEQ"     ) { opcode = 16; found = true; }
-            if (s[i] == "JE"      ) { opcode = 16; found = true; }
-            if (s[i] == "XCHG"    ) { opcode = 17; found = true; }
-            if (s[i] == "SWAP"    ) { opcode = 17; found = true; }
-            if (s[i] == "DO"      ) { opcode = 18; found = true; }
-            if (s[i] == "LOOP"    ) { opcode = 19; found = true; }
-            if (s[i] == "CMP"     ) { opcode = 20; found = true; }
-            if (s[i] == "TEST"    ) { opcode = 21; found = true; }
-            if (s[i] == "SET"     ) { opcode = 22; found = true; }
-            if (s[i] == "MOV"     ) { opcode = 22; found = true; }
-            if (s[i] == "LOC"     ) { opcode = 23; found = true; }
-            if (s[i] == "ADDR"    ) { opcode = 23; found = true; }
-            if (s[i] == "GET"     ) { opcode = 24; found = true; }
-            if (s[i] == "PUT"     ) { opcode = 25; found = true; }
-            if (s[i] == "INT"     ) { opcode = 26; found = true; }
-            if (s[i] == "IPO"     ) { opcode = 27; found = true; }
-            if (s[i] == "IN"      ) { opcode = 27; found = true; }
-            if (s[i] == "OPO"     ) { opcode = 28; found = true; }
-            if (s[i] == "OUT"     ) { opcode = 28; found = true; }
-            if (s[i] == "DEL"     ) { opcode = 29; found = true; }
-            if (s[i] == "DELAY"   ) { opcode = 29; found = true; }
-            if (s[i] == "PUSH"    ) { opcode = 30; found = true; }
-            if (s[i] == "POP"     ) { opcode = 31; found = true; }
-            if (s[i] == "ERR"     ) { opcode = 32; found = true; }
-            if (s[i] == "ERROR"   ) { opcode = 32; found = true; }
-            if (s[i] == "INC"     ) { opcode = 33; found = true; }
-            if (s[i] == "DEC"     ) { opcode = 34; found = true; }
-            if (s[i] == "SHL"     ) { opcode = 35; found = true; }
-            if (s[i] == "SHR"     ) { opcode = 36; found = true; }
-            if (s[i] == "ROL"     ) { opcode = 37; found = true; }
-            if (s[i] == "ROR"     ) { opcode = 38; found = true; }
-            if (s[i] == "JZ"      ) { opcode = 39; found = true; }
-            if (s[i] == "JNZ"     ) { opcode = 40; found = true; }
-            if (s[i] == "JAE"     ) { opcode = 41; found = true; }
-            if (s[i] == "JGE"     ) { opcode = 41; found = true; }
-            if (s[i] == "JLE"     ) { opcode = 42; found = true; }
-            if (s[i] == "JBE"     ) { opcode = 42; found = true; }
-            if (s[i] == "SAL"     ) { opcode = 43; found = true; }
-            if (s[i] == "SAR"     ) { opcode = 44; found = true; }
-            if (s[i] == "NEG"     ) { opcode = 45; found = true; }
-            if (s[i] == "JTL"     ) { opcode = 46; found = true; }
+            if (s[i] == "NOP"     ) { opcode = 0; found = true; } else
+            if (s[i] == "ADD"     ) { opcode = 1; found = true; } else
+            if (s[i] == "SUB"     ) { opcode = 2; found = true; } else
+            if (s[i] == "OR"      ) { opcode = 3; found = true; } else
+            if (s[i] == "AND"     ) { opcode = 4; found = true; } else
+            if (s[i] == "XOR"     ) { opcode = 5; found = true; } else
+            if (s[i] == "NOT"     ) { opcode = 6; found = true; } else
+            if (s[i] == "MPY"     ) { opcode = 7; found = true; } else
+            if (s[i] == "DIV"     ) { opcode = 8; found = true; } else
+            if (s[i] == "MOD"     ) { opcode = 9; found = true; } else
+            if (s[i] == "RET"     ) { opcode = 10; found = true; } else
+            if (s[i] == "RETURN"  ) { opcode = 10; found = true; } else
+            if (s[i] == "GSB"     ) { opcode = 11; found = true; } else
+            if (s[i] == "GOSUB"   ) { opcode = 11; found = true; } else
+            if (s[i] == "CALL"    ) { opcode = 11; found = true; } else
+            if (s[i] == "JMP"     ) { opcode = 12; found = true; } else
+            if (s[i] == "JUMP"    ) { opcode = 12; found = true; } else
+            if (s[i] == "GOTO"    ) { opcode = 12; found = true; } else
+            if (s[i] == "JLS"     ) { opcode = 13; found = true; } else
+            if (s[i] == "JB"      ) { opcode = 13; found = true; } else
+            if (s[i] == "JGR"     ) { opcode = 14; found = true; } else
+            if (s[i] == "JA"      ) { opcode = 14; found = true; } else
+            if (s[i] == "JNE"     ) { opcode = 15; found = true; } else
+            if (s[i] == "JEQ"     ) { opcode = 16; found = true; } else
+            if (s[i] == "JE"      ) { opcode = 16; found = true; } else
+            if (s[i] == "XCHG"    ) { opcode = 17; found = true; } else
+            if (s[i] == "SWAP"    ) { opcode = 17; found = true; } else
+            if (s[i] == "DO"      ) { opcode = 18; found = true; } else
+            if (s[i] == "LOOP"    ) { opcode = 19; found = true; } else
+            if (s[i] == "CMP"     ) { opcode = 20; found = true; } else
+            if (s[i] == "TEST"    ) { opcode = 21; found = true; } else
+            if (s[i] == "SET"     ) { opcode = 22; found = true; } else
+            if (s[i] == "MOV"     ) { opcode = 22; found = true; } else
+            if (s[i] == "LOC"     ) { opcode = 23; found = true; } else
+            if (s[i] == "ADDR"    ) { opcode = 23; found = true; } else
+            if (s[i] == "GET"     ) { opcode = 24; found = true; } else
+            if (s[i] == "PUT"     ) { opcode = 25; found = true; } else
+            if (s[i] == "INT"     ) { opcode = 26; found = true; } else
+            if (s[i] == "IPO"     ) { opcode = 27; found = true; } else
+            if (s[i] == "IN"      ) { opcode = 27; found = true; } else
+            if (s[i] == "OPO"     ) { opcode = 28; found = true; } else
+            if (s[i] == "OUT"     ) { opcode = 28; found = true; } else
+            if (s[i] == "DEL"     ) { opcode = 29; found = true; } else
+            if (s[i] == "DELAY"   ) { opcode = 29; found = true; } else
+            if (s[i] == "PUSH"    ) { opcode = 30; found = true; } else
+            if (s[i] == "POP"     ) { opcode = 31; found = true; } else
+            if (s[i] == "ERR"     ) { opcode = 32; found = true; } else
+            if (s[i] == "ERROR"   ) { opcode = 32; found = true; } else
+            if (s[i] == "INC"     ) { opcode = 33; found = true; } else
+            if (s[i] == "DEC"     ) { opcode = 34; found = true; } else
+            if (s[i] == "SHL"     ) { opcode = 35; found = true; } else
+            if (s[i] == "SHR"     ) { opcode = 36; found = true; } else
+            if (s[i] == "ROL"     ) { opcode = 37; found = true; } else
+            if (s[i] == "ROR"     ) { opcode = 38; found = true; } else
+            if (s[i] == "JZ"      ) { opcode = 39; found = true; } else
+            if (s[i] == "JNZ"     ) { opcode = 40; found = true; } else
+            if (s[i] == "JAE"     ) { opcode = 41; found = true; } else
+            if (s[i] == "JGE"     ) { opcode = 41; found = true; } else
+            if (s[i] == "JLE"     ) { opcode = 42; found = true; } else
+            if (s[i] == "JBE"     ) { opcode = 42; found = true; } else
+            if (s[i] == "SAL"     ) { opcode = 43; found = true; } else
+            if (s[i] == "SAR"     ) { opcode = 44; found = true; } else
+            if (s[i] == "NEG"     ) { opcode = 45; found = true; } else
+            if (s[i] == "JTL"     ) { opcode = 46; found = true; } else
 
             ///registers
-            if (s[i] == "COLCNT"  ) { opcode = 8; microcode = 01; found = true; }
-            if (s[i] == "METERS"  ) { opcode = 9; microcode = 01; found = true; }
-            if (s[i] == "COMBASE" ) { opcode = 10; microcode = 01; found = true; }
-            if (s[i] == "COMEND"  ) { opcode = 11; microcode = 01; found = true; }
-            if (s[i] == "FLAGS"   ) { opcode = 64; microcode = 01; found = true; }
-            if (s[i] == "AX"      ) { opcode = 65; microcode = 01; found = true; }
-            if (s[i] == "BX"      ) { opcode = 66; microcode = 01; found = true; }
-            if (s[i] == "CX"      ) { opcode = 67; microcode = 01; found = true; }
-            if (s[i] == "DX"      ) { opcode = 68; microcode = 01; found = true; }
-            if (s[i] == "EX"      ) { opcode = 69; microcode = 01; found = true; }
-            if (s[i] == "FX"      ) { opcode = 70; microcode = 01; found = true; }
-            if (s[i] == "SP"      ) { opcode = 71; microcode = 01; found = true; }
+            if (s[i] == "COLCNT"  ) { opcode = 8; microcode = 1; found = true; } else
+            if (s[i] == "METERS"  ) { opcode = 9; microcode = 1; found = true; } else
+            if (s[i] == "COMBASE" ) { opcode = 10; microcode = 1; found = true; } else
+            if (s[i] == "COMEND"  ) { opcode = 11; microcode = 1; found = true; } else
+            if (s[i] == "FLAGS"   ) { opcode = 64; microcode = 1; found = true; } else
+            if (s[i] == "AX"      ) { opcode = 65; microcode = 1; found = true; } else
+            if (s[i] == "BX"      ) { opcode = 66; microcode = 1; found = true; } else
+            if (s[i] == "CX"      ) { opcode = 67; microcode = 1; found = true; } else
+            if (s[i] == "DX"      ) { opcode = 68; microcode = 1; found = true; } else
+            if (s[i] == "EX"      ) { opcode = 69; microcode = 1; found = true; } else
+            if (s[i] == "FX"      ) { opcode = 70; microcode = 1; found = true; } else
+            if (s[i] == "SP"      ) { opcode = 71; microcode = 1; found = true; } else
 
             ///constants
-            if (s[i] == "MAXINT"    ) { opcode = 32767;  microcode = 0; found = true; }
-            if (s[i] == "MININT"    ) { opcode = -32768; microcode = 0; found = true; }
-            if (s[i] == "P_SPEDOMETER"  ) { opcode = 1; microcode = 0; found = true; }
-            if (s[i] == "P_HEAT"        ) { opcode = 2; microcode = 0; found = true; }
-            if (s[i] == "P_COMPASS"     ) { opcode = 3; microcode = 0; found = true; }
-            if (s[i] == "P_TANGLE"      ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "P_TURRET_OFS"  ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "P_THEADING"    ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "P_TURRET_ABS"  ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "P_ARMOR"       ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "P_DAMAGE"      ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "P_SCAN"        ) { opcode = 7; microcode = 0; found = true; }
-            if (s[i] == "P_ACCURACY"    ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "P_RADAR"       ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "P_RANDOM"      ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "P_RAND"        ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "P_THROTTLE"    ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "P_TROTATE"     ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "P_OFS_TURRET"  ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "P_TAIM"        ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "P_ABS_TURRET"  ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "P_STEERING"    ) { opcode = 14; microcode = 0; found = true; }
-            if (s[i] == "P_WEAP"        ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_WEAPON"      ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_FIRE"        ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "P_SONAR"       ) { opcode = 16; microcode = 0; found = true; }
-            if (s[i] == "P_ARC"         ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "P_SCANARC"     ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "P_OVERBURN"    ) { opcode = 18; microcode = 0; found = true; }
-            if (s[i] == "P_TRANSPONDER" ) { opcode = 19; microcode = 0; found = true; }
-            if (s[i] == "P_SHUTDOWN"    ) { opcode = 20; microcode = 0; found = true; }
-            if (s[i] == "P_CHANNEL"     ) { opcode = 21; microcode = 0; found = true; }
-            if (s[i] == "P_MINELAYER"   ) { opcode = 22; microcode = 0; found = true; }
-            if (s[i] == "P_MINETRIGGER" ) { opcode = 23; microcode = 0; found = true; }
-            if (s[i] == "P_SHIELD"      ) { opcode = 24; microcode = 0; found = true; }
-            if (s[i] == "P_SHIELDS"     ) { opcode = 24; microcode = 0; found = true; }
-            if (s[i] == "I_DESTRUCT"    ) { opcode = 0; microcode = 0; found = true; }
-            if (s[i] == "I_RESET"       ) { opcode = 1; microcode = 0; found = true; }
-            if (s[i] == "I_LOCATE"      ) { opcode = 2; microcode = 0; found = true; }
-            if (s[i] == "I_KEEPSHIFT"   ) { opcode = 3; microcode = 0; found = true; }
-            if (s[i] == "I_OVERBURN"    ) { opcode = 4; microcode = 0; found = true; }
-            if (s[i] == "I_ID"          ) { opcode = 5; microcode = 0; found = true; }
-            if (s[i] == "I_TIMER"       ) { opcode = 6; microcode = 0; found = true; }
-            if (s[i] == "I_ANGLE"       ) { opcode = 7; microcode = 0; found = true; }
-            if (s[i] == "I_TID"         ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "I_TARGETID"    ) { opcode = 8; microcode = 0; found = true; }
-            if (s[i] == "I_TINFO"       ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "I_TARGETINFO"  ) { opcode = 9; microcode = 0; found = true; }
-            if (s[i] == "I_GINFO"       ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "I_GAMEINFO"    ) { opcode = 10; microcode = 0; found = true; }
-            if (s[i] == "I_RINFO"       ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "I_ROBOTINFO"   ) { opcode = 11; microcode = 0; found = true; }
-            if (s[i] == "I_COLLISIONS"  ) { opcode = 12; microcode = 0; found = true; }
-            if (s[i] == "I_RESETCOLCNT" ) { opcode = 13; microcode = 0; found = true; }
-            if (s[i] == "I_TRANSMIT"    ) { opcode = 14; microcode = 0; found = true; }
-            if (s[i] == "I_RECEIVE"     ) { opcode = 15; microcode = 0; found = true; }
-            if (s[i] == "I_DATAREADY"   ) { opcode = 16; microcode = 0; found = true; }
-            if (s[i] == "I_CLEARCOM"    ) { opcode = 17; microcode = 0; found = true; }
-            if (s[i] == "I_KILLS"       ) { opcode = 18; microcode = 0; found = true; }
-            if (s[i] == "I_DEATHS"      ) { opcode = 18; microcode = 0; found = true; }
+            if (s[i] == "MAXINT"    ) { opcode = 32767;  microcode = 0; found = true; } else
+            if (s[i] == "MININT"    ) { opcode = -32768; microcode = 0; found = true; } else
+            if (s[i] == "P_SPEDOMETER"  ) { opcode = 1; microcode = 0; found = true; } else
+            if (s[i] == "P_HEAT"        ) { opcode = 2; microcode = 0; found = true; } else
+            if (s[i] == "P_COMPASS"     ) { opcode = 3; microcode = 0; found = true; } else
+            if (s[i] == "P_TANGLE"      ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "P_TURRET_OFS"  ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "P_THEADING"    ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "P_TURRET_ABS"  ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "P_ARMOR"       ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "P_DAMAGE"      ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "P_SCAN"        ) { opcode = 7; microcode = 0; found = true; } else
+            if (s[i] == "P_ACCURACY"    ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "P_RADAR"       ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "P_RANDOM"      ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "P_RAND"        ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "P_THROTTLE"    ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "P_TROTATE"     ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "P_OFS_TURRET"  ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "P_TAIM"        ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "P_ABS_TURRET"  ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "P_STEERING"    ) { opcode = 14; microcode = 0; found = true; } else
+            if (s[i] == "P_WEAP"        ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_WEAPON"      ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_FIRE"        ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "P_SONAR"       ) { opcode = 16; microcode = 0; found = true; } else
+            if (s[i] == "P_ARC"         ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "P_SCANARC"     ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "P_OVERBURN"    ) { opcode = 18; microcode = 0; found = true; } else
+            if (s[i] == "P_TRANSPONDER" ) { opcode = 19; microcode = 0; found = true; } else
+            if (s[i] == "P_SHUTDOWN"    ) { opcode = 20; microcode = 0; found = true; } else
+            if (s[i] == "P_CHANNEL"     ) { opcode = 21; microcode = 0; found = true; } else
+            if (s[i] == "P_MINELAYER"   ) { opcode = 22; microcode = 0; found = true; } else
+            if (s[i] == "P_MINETRIGGER" ) { opcode = 23; microcode = 0; found = true; } else
+            if (s[i] == "P_SHIELD"      ) { opcode = 24; microcode = 0; found = true; } else
+            if (s[i] == "P_SHIELDS"     ) { opcode = 24; microcode = 0; found = true; } else
+            if (s[i] == "I_DESTRUCT"    ) { opcode = 0; microcode = 0; found = true; } else
+            if (s[i] == "I_RESET"       ) { opcode = 1; microcode = 0; found = true; } else
+            if (s[i] == "I_LOCATE"      ) { opcode = 2; microcode = 0; found = true; } else
+            if (s[i] == "I_KEEPSHIFT"   ) { opcode = 3; microcode = 0; found = true; } else
+            if (s[i] == "I_OVERBURN"    ) { opcode = 4; microcode = 0; found = true; } else
+            if (s[i] == "I_ID"          ) { opcode = 5; microcode = 0; found = true; } else
+            if (s[i] == "I_TIMER"       ) { opcode = 6; microcode = 0; found = true; } else
+            if (s[i] == "I_ANGLE"       ) { opcode = 7; microcode = 0; found = true; } else
+            if (s[i] == "I_TID"         ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "I_TARGETID"    ) { opcode = 8; microcode = 0; found = true; } else
+            if (s[i] == "I_TINFO"       ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "I_TARGETINFO"  ) { opcode = 9; microcode = 0; found = true; } else
+            if (s[i] == "I_GINFO"       ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "I_GAMEINFO"    ) { opcode = 10; microcode = 0; found = true; } else
+            if (s[i] == "I_RINFO"       ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "I_ROBOTINFO"   ) { opcode = 11; microcode = 0; found = true; } else
+            if (s[i] == "I_COLLISIONS"  ) { opcode = 12; microcode = 0; found = true; } else
+            if (s[i] == "I_RESETCOLCNT" ) { opcode = 13; microcode = 0; found = true; } else
+            if (s[i] == "I_TRANSMIT"    ) { opcode = 14; microcode = 0; found = true; } else
+            if (s[i] == "I_RECEIVE"     ) { opcode = 15; microcode = 0; found = true; } else
+            if (s[i] == "I_DATAREADY"   ) { opcode = 16; microcode = 0; found = true; } else
+            if (s[i] == "I_CLEARCOM"    ) { opcode = 17; microcode = 0; found = true; } else
+            if (s[i] == "I_KILLS"       ) { opcode = 18; microcode = 0; found = true; } else
+            if (s[i] == "I_DEATHS"      ) { opcode = 18; microcode = 0; found = true; } else
             if (s[i] == "I_CLEARMETERS" ) { opcode = 19; microcode = 0; found = true; }
 
 
             ///memory addresses
-            if ((not found) && (s[i].compare(0, 1, "@") == 0) && isdigit(s[i][1]) ) {
-                //opcode = str2int(rstr(s[i],length(s[i])-1));
+            if ((!found) && (s[i].compare(0, 1, "@") == 0) && isdigit(s[i][1]) ) {
+                opcode = atr2func::str2int(atr2func::rstr(s[i], s[i].length() - 1));
                 if ((opcode < 0) || (opcode > (max_ram + 1) + (((max_code + 1) << 3) - 1))) {
                     prog_error(3, s[i]);
                 }
@@ -812,7 +852,7 @@ void parse1(int n, int p, parsetype s) {
             }
 
             ///numbers
-            if ((not found) && (isdigit(s[i][0]) || s[i].compare(0, 1, "-"))) {
+            if ((!found) && (isdigit(s[i][0]) || (s[i][0] == '-'))) {
                 opcode = atr2func::str2int(s[i]);
                 found = true;
             }
@@ -823,13 +863,14 @@ void parse1(int n, int p, parsetype s) {
                     microcode = microcode | 8;
                 }
                 robot[n].code[p].op[max_op] = robot[n].code[p].op[max_op] | (microcode << (i * 4));
+                cout << "robot #" << n << ", opcode being set to " << robot[n].code[p].op[i] << ", microcode being set to " << robot[n].code[p].op[max_op] << endl;
             } else if (!s[i].empty()) {
                 prog_error(2, s[i]);
             }
         }
 
     if (show_code) {
-        //print_code(n, p);
+        print_code(n, p);
     }
     if (compile_by_line) {
         //readkey;
@@ -851,6 +892,7 @@ void compile(int n, string filename) {
     int i, j, k, l, linecount, mask, locktype;
     string ss[max_op];
     char c, lc;
+    ifstream f;
 
     lock_code = "";
     lock_pos = 0;
@@ -867,17 +909,18 @@ void compile(int n, string filename) {
     numvars = 0;
     numlabels = 0;
     for (k = 0; k < max_code; k++) {
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             robot[n].code[k].op[i] = 0;
         }
     }
     robot[n].plen = 0;
     //assign(f, filename);
+    f.open(filename);
     //reset(f);
     s = "";
     linecount = 0;
 
-    while(1) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s)) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -891,25 +934,28 @@ void compile(int n, string filename) {
                 }
                 switch(locktype) {
                     case 3:
-                        //s[i] = char((ord(s[i])-1) xor (ord(lock_code[lock_pos]) xor lock_dat));
+                        s[i] = (char)(((int)s[i] - 1) ^ ((int)lock_code[lock_pos] ^ lock_dat));
+                        break;
                     case 2:
                         //s[i] = char(ord(s[i]) xor (ord(lock_code[lock_pos]) xor 1));
+                        s[i] = (char)(((int)s[i]) ^ ((int)lock_code[lock_pos] ^ 1));
+                        break;
                     default:
-                        exit(0);
                         //s[i] = char(ord(s[i]) xor ord(lock_code[lock_pos]));
+                        s[i] = (char)(((int)s[i]) ^ ((int)lock_code[lock_pos]));
                 }
                 lock_dat = (int)s[i] & 15;
             }
         }
-        //s = btrim(s);
+        s = atr2func::btrim(s);
         orig_s = s;
-        for (i = 1; i < (int)s.length(); i++) {
+        for (i = 0; i < (int)s.length(); i++) {
             if (((int)(s[i]) <= 32) || ((int)(s[i]) >= 128) || s[i] == ',') { //s[i] in [#0..#32,',',#128..#255]
                 s.replace(i, 1, " ");
             }
         }
-        if (show_source && ((lock_code.empty() || debugging_compiler))) {
-            //cout << zero_pad(linecount, 3) << ":" << zero_pad(plen, 3) << " " << s << endl;
+        if (show_source && (lock_code.empty() || debugging_compiler)) {
+            cout << atr2func::zero_pad(linecount, 3) << ":" << atr2func::zero_pad(robot[n].plen, 3) << " " << s << endl;
         }
         if (debugging_compiler) {
             //if ((int)robot[n].readkey == 27) {
@@ -917,7 +963,7 @@ void compile(int n, string filename) {
             //}
         }
         k = 0;
-        for (i = (int)s.length(); i > 0; i--) {
+        for (i = (int)s.length() - 1; i >= 0; i--) {
             if (s[i] == ';') {
                 k = i;
             }
@@ -926,7 +972,7 @@ void compile(int n, string filename) {
             s = atr2func::lstr(s, k-1);
         }
         s = atr2func::btrim(atr2func::ucase(s));
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             pp[i].clear();
         }
         if (((int)s.length() > 0) && (s[0] != ';')) {
@@ -941,8 +987,9 @@ void compile(int n, string filename) {
                 }
                 k--;
                 if (k > 1) {
-                    s2 = atr2func::lstr(s1, k);
-                    s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k)));
+                    s2 = atr2func::lstr(s1, k + 1);
+                    s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k - 1)));
+                    cout << "s2=" << s2 << ", s3=" << s3 << endl;
                     k = 0;
                     if (numvars > 0) {
                         for (i = 0; i < numvars; i++) {
@@ -987,18 +1034,19 @@ void compile(int n, string filename) {
                     } else if (s2 == "CONFIG") {
                         if (atr2func::lstr(s3, 8) == "SCANNER=") {
                             robot[n].config.scanner = atr2func::value(atr2func::rstr(s3, s3.length() - 8));
+                            cout << "ROBOT SCANNER = " << robot[n].config.scanner << endl;
                         } else if (atr2func::lstr(s3, 7) == "SHIELD=") {
                             robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
                         } else if (atr2func::lstr(s3, 7) == "WEAPON=") {
-                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                            robot[n].config.weapon = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
                         } else if (atr2func::lstr(s3, 6) == "ARMOR=") {
-                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 6));
+                            robot[n].config.armor = atr2func::value(atr2func::rstr(s3, s3.length() - 6));
                         } else if (atr2func::lstr(s3, 7) == "ENGINE=") {
-                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                            robot[n].config.engine = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
                         } else if (atr2func::lstr(s3, 10) == "HEATSINKS=") {
-                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 10));
+                            robot[n].config.heatsinks = atr2func::value(atr2func::rstr(s3, s3.length() - 10));
                         } else if (atr2func::lstr(s3, 6) == "MINES=") {
-                            robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                            robot[n].config.mines = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
                         } else {
                             prog_error(20, s3);
                         }
@@ -1051,7 +1099,7 @@ void compile(int n, string filename) {
                 }
             } else if (s[0] == '*') {   //Inline Pre-Compiled Machine Code
                 check_plen(robot[n].plen);
-                for (i = 0; i < max_op; i++) {
+                for (i = 0; i <= max_op; i++) {
                     pp[i].clear();
                 }
                 for (i = 2; i < (int)s.length(); i++) {
@@ -1065,7 +1113,7 @@ void compile(int n, string filename) {
                 if ((int)s.length() > 2) {
                     prog_error(22, s);
                 }
-                while (i < s.length() && k <= max_op) {
+                while ((i < s.length()) && (k <= max_op)) {
                     i++;
                     if ((((int)(s[i]) >= 33) && ((int)(s[i]) <= 41)) ||
                         (((int)(s[i]) >= 43) && ((int)(s[i]) <= 127))) {
@@ -1076,7 +1124,7 @@ void compile(int n, string filename) {
                         k++;
                     }
                 }
-                for (i = 0; i < max_op; i++) {
+                for (i = 0; i <= max_op; i++) {
                     robot[n].code[robot[n].plen].op[i] = atr2func::str2int(pp[i]);
                 }
                 robot[n].plen++;
@@ -1090,6 +1138,7 @@ void compile(int n, string filename) {
                 }
                 robot[n].code[robot[n].plen].op[0] = atr2func::str2int(s1);
                 robot[n].code[robot[n].plen].op[max_op] = 2;
+                cout << ":LABEL: " << s1 << ", op[0]=" << robot[n].code[robot[n].plen].op[0] << ", op[3]=" << robot[n].code[robot[n].plen].op[max_op] << ", plen=" << robot[n].plen << endl;
                 if (show_code) {
                     print_code(n, robot[n].plen);
                 }
@@ -1097,8 +1146,9 @@ void compile(int n, string filename) {
             } else if (s[0] == '!') {   //!labels
                 check_plen(robot[n].plen);
                 s1 = atr2func::btrim(atr2func::rstr(s, s.length() - 1));
+                cout << "!LABEL: " << s1 << endl;
                 k = 0;
-                for (i = s1.length(); i >= 0; i--) {
+                for (i = s1.length() - 1; i >= 0; i--) {
                     if ((s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
                         (s1.compare(i, 1, "\n") == 0) || (s1.compare(i, 1, ",") == 0) || (s1.compare(i, 1, "\r") == 0) ||
                         (s1.compare(i, 1, " ") == 0) || (s1.compare(i, 1, ";") == 0)) {
@@ -1109,7 +1159,7 @@ void compile(int n, string filename) {
                     s1 = atr2func::lstr(s1, k - 1);
                 }
                 k = 0;
-                for (i = 0; i < numlabels; i++) {
+                for (i = 1; i <= numlabels; i++) {
                     if (labelname[i] == s1) {
                         if (labelnum[i] >= 0) {
                             prog_error(13, "\"!" + s1 + "\" (" + atr2func::cstr(labelnum[i]) + ")");
@@ -1131,7 +1181,7 @@ void compile(int n, string filename) {
                 //parse instructions
                 //remove comments
                 k = 0;
-                for (i = s1.length(); i >= 0; i--) {
+                for (i = s1.length() - 1; i >= 0; i--) {
                     if (s[i] == ';') {
                         k = i;
                     }
@@ -1141,10 +1191,10 @@ void compile(int n, string filename) {
                 }
                 //setup variables for parsing
                 k = 0;
-                for (j = 0; j > max_op; j++) {
+                for (j = 0; j <= max_op; j++) {
                     pp[j].clear();
                 }
-                for (j = 0; j > s.length(); j++) {
+                for (j = 0; j < s.length(); j++) {
                     c = s[j];
                     if (!((c == '\b') || (c == '\t') || (c == '\n') || (c == ',') || (c == '\r') ||
                           (c == ' ')) && (k <= max_op)) {
@@ -1162,7 +1212,7 @@ void compile(int n, string filename) {
     }
     f.close();
     if (robot[n].plen <= maxcode) {
-        for (i = 0; i < max_op; i++) {
+        for (i = 0; i <= max_op; i++) {
             pp[i].clear();
             parse1(n, robot[n].plen, pp);
         }
@@ -1170,9 +1220,10 @@ void compile(int n, string filename) {
         robot[n].plen--;
     }
 
+    //second pass, resolving !labels
     if (numlabels > 0) {
         for (i = 0; i < robot[n].plen; i++) {
-            for (j = 0; j < (max_op - 1); j++) {
+            for (j = 0; j <= (max_op - 1); j++) {
                 if ((robot[n].code[i].op[max_op] >> (j*4)) == 3) {
                     k = robot[n].code[i].op[j];
                     if ((k > 0) && (k <= numlabels)) {
@@ -1204,14 +1255,19 @@ void robot_config(int n) {
     switch (robot[n].config.scanner) {
         case 5:
             robot[n].scanrange = 1500;
+            break;
         case 4:
             robot[n].scanrange = 1000;
+            break;
         case 3:
             robot[n].scanrange = 700;
+            break;
         case 2:
             robot[n].scanrange = 500;
+            break;
         case 1:
             robot[n].scanrange = 350;
+            break;
         default:
             robot[n].scanrange = 250;
     }
@@ -1219,14 +1275,19 @@ void robot_config(int n) {
     switch (robot[n].config.weapon) {
         case 5:
             robot[n].shotstrength = 1.5;
+            break;
         case 4:
             robot[n].shotstrength = 1.35;
+            break;
         case 3:
             robot[n].shotstrength = 1.2;
+            break;
         case 2:
             robot[n].shotstrength = 1.0;
+            break;
         case 1:
             robot[n].shotstrength = 0.8;
+            break;
         default:
             robot[n].shotstrength = 0.5;
     }
@@ -1235,18 +1296,23 @@ void robot_config(int n) {
         case 5:
             robot[n].damageadj = 0.66;
             robot[n].speedadj  = 0.66;
+            break;
         case 4:
             robot[n].damageadj = 0.77;
             robot[n].speedadj  = 0.75;
+            break;
         case 3:
             robot[n].damageadj = 0.83;
             robot[n].speedadj  = 0.85;
+            break;
         case 2:
             robot[n].damageadj = 1.0;
             robot[n].speedadj  = 1.0;
+            break;
         case 1:
             robot[n].damageadj = 1.5;
             robot[n].speedadj  = 1.2;
+            break;
         default:
             robot[n].damageadj = 2.0;
             robot[n].speedadj  = 1.33;
@@ -1255,14 +1321,19 @@ void robot_config(int n) {
     switch (robot[n].config.engine) {
         case 5:
             robot[n].speedadj = robot[n].speedadj * 1.5;
+            break;
         case 4:
             robot[n].speedadj = robot[n].speedadj * 1.35;
+            break;
         case 3:
             robot[n].speedadj = robot[n].speedadj * 1.2;
+            break;
         case 2:
             robot[n].speedadj = robot[n].speedadj * 1.0;
+            break;
         case 1:
             robot[n].speedadj = robot[n].speedadj * 0.8;
+            break;
         default:
             robot[n].speedadj = robot[n].speedadj * 0.5;
     }
@@ -1270,14 +1341,19 @@ void robot_config(int n) {
     switch (robot[n].config.mines) {
         case 5:
             robot[n].mines = 24;
+            break;
         case 4:
             robot[n].mines = 16;
+            break;
         case 3:
             robot[n].mines = 10;
+            break;
         case 2:
             robot[n].mines = 6;
+            break;
         case 1:
             robot[n].mines = 4;
+            break;
         default:
             robot[n].mines = 2;
             robot[n].config.mines = 0;
@@ -1345,7 +1421,39 @@ void reset_hardware(int n) {
                 dd = d;
             }
         }
-    } while (dd > 32);
+    } while (!(dd > 32));
+
+    for (i = 0; i < max_mines; i++) {
+        robot[n].mine[i].x = -1;
+        robot[n].mine[i].y = -1;
+        robot[n].mine[i].yield = 0;
+        robot[n].mine[i].detonate = false;
+        robot[n].mine[i].detect = 0;
+    }
+    robot[n].lx = -1;
+    robot[n].ly = -1;
+    robot[n].hd = rand() % 256;
+    robot[n].shift = 0;
+    robot[n].lhd = robot[n].hd +1;
+    robot[n].lshift = robot[n].shift + 1;
+    robot[n].spd = 0;
+    robot[n].speed = 0;
+    robot[n].cooling = false;
+    robot[n].armor = 100;
+    robot[n].larmor = 0;
+    robot[n].heat = 0;
+    robot[n].lheat = 1;
+    robot[n].match_shots = 0;
+    robot[n].won = false;
+    robot[n].last_damage = 0;
+    robot[n].last_hit = 0;
+    robot[n].transponder = n + 1;
+    robot[n].meters = 0;
+    robot[n].shutdown = 400;
+    robot[n].shields_up = false;
+    robot[n].channel = robot[n].transponder;
+    robot[n].startkills = robot[n].kills;
+    robot_config(n);
 }
 
 void init_robot(int n) {
@@ -1391,7 +1499,7 @@ void init_robot(int n) {
     robot[n].ram[71] = 768;
 
     for (i = 0; i < max_code; i++) {
-        for (k = 0; k < max_op; k++) {
+        for (k = 0; k <= max_op; k++) {
             robot[n].code[i].op[k] = 0;
         }
     }
@@ -1427,6 +1535,8 @@ void create_robot(int n, string filename) {
     k = robot[n].config.scanner + robot[n].config.armor + robot[n].config.weapon + robot[n].config.engine +
             robot[n].config.heatsinks + robot[n].config.shield + robot[n].config.mines;
     if (k > max_config_points) {
+        cout << robot[n].config.scanner << robot[n].config.armor << robot[n].config.weapon << robot[n].config.engine <<
+                robot[n].config.heatsinks << robot[n].config.shield << robot[n].config.mines << endl;
         prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(max_config_points));
     }
 }
@@ -1453,10 +1563,10 @@ void shutdown() {
     }
     //textcolor(7);
     cout << "\n";
-    if (logging_errors = true) {
+    if (logging_errors) {
 
         for (i = 0; i < num_robots; i++) {
-            cout << "Robot error-log created: " << filelib::base_name(robot[i].fn) << ".ERR";
+            cout << "Robot error-log created: " << filelib::base_name(robot[i].fn) << "-" << to_string(i + 1) << ".ERR" << endl;
             robot[i].errorlog.close();
         }
     }
@@ -1632,9 +1742,9 @@ void parse_param(string s) {
         }
     } else if (s[0] == ';'){
         found = true;
-    } else if (num_robots < max_robots && s != ""){
+    } else if ((num_robots < max_robots) && !s.empty()){
         num_robots++;
-        create_robot(num_robots,s);
+        create_robot(num_robots - 1, s); //originally create_robot(num_robots, s);
         found = true;
         if (num_robots == max_robots){
             cout << "Maximum number of robots reached." << "\n";
@@ -1657,7 +1767,7 @@ void init(int argc, char *argv[]) {
         //readkey;
     }
     step_mode = 0; //stepping disabled
-    logging_errors = false;
+    logging_errors = true;
     stats_mode = 0;
     insane_missiles = false;
     insanity = 0;
@@ -1679,9 +1789,9 @@ void init(int argc, char *argv[]) {
     report = false;
     kill_count = 0;
     maxcode = max_code;
-    atr2func::make_tables;
-    //randomize;
-    num_robots = -1;
+    atr2func::make_tables();
+    srand (time(NULL)); //randomize;
+    num_robots = 0; //originally -1
     game_limit = 100000;
     game_cycle = 0;
     game_delay = default_delay;
@@ -1713,7 +1823,7 @@ void init(int argc, char *argv[]) {
 
     delete_compile_report();
     if (argc > 1) {
-        for (i = 1; i <= argc; i++) {
+        for (i = 1; i < argc; i++) {
             parse_param(atr2func::btrim(atr2func::ucase(argv[i])));
         }
     } else {
@@ -1722,7 +1832,7 @@ void init(int argc, char *argv[]) {
     temp_mode = step_mode;
     if (logging_errors) {
         for (i = 0; i < num_robots; i++) {
-            robot[i].errorlog.open(filelib::base_name(robot[i].fn) + ".ERR");
+            robot[i].errorlog.open(filelib::base_name(robot[i].fn) + "-" + to_string(i + 1) + ".ERR");
         }
     }
     if (compile_only) {
@@ -1784,7 +1894,22 @@ void draw_robot(int n) {
 }
 
 int get_from_ram(int n, int i, int j) {
-    return 0;
+    int k, l;
+
+    if ((i < 0) || (i > (max_ram + 1) + (((max_code + 1) << 3) - 1))) {
+        k = 0;
+        robot_error(n, 4, atr2func::cstr(i));
+    } else {
+        if (i < max_ram)
+        {
+            k = robot[n].ram[i];
+        } else {
+            l = i - max_ram - 1;
+            k = robot[n].code[l >> 2].op[l & 3] ;
+        }
+    }
+
+    return k;
 }
 
 int get_val(int n, int c, int o) {
@@ -1824,12 +1949,13 @@ void put_val(int n, int c, int o, int v) {
                 } else {
                     robot[n].ram[i] = v;
                 }
+            } else {
+                robot[n].ram[i] = v;
             }
         }
     } else {
-        robot[n].ram[i] = v;
+        robot_error(n, 3, "");
     }
-    robot_error(n, 3, "");
 }
 
 void push(int n, int v) {
@@ -1905,7 +2031,7 @@ int count_missiles(){
     return k;
 }
 
-void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int blast,bool ob){
+void init_missile(double xx, double yy, double xxv, double yyv, int dir, int s, int blast, bool ob){
     int i, j, k;
     double m;
     bool sound;
@@ -1977,11 +2103,590 @@ void init_missile(double xx,double yy,double xxv,double yyv,int dir,int s,int bl
     // outtextxy(5,5,cstr(count_missiles));}
 }
 
-void damage(int n, int d, bool physical) {
+void damage(int n, int d, bool physical){
 
+    int i, k, h, dd;
+    double m;
+
+    if ((n < 0) || (n > num_robots) || (robot[n].armor <= 0)){
+        return;
+    }
+    if (robot[n].config.shield < 3){
+        robot[n].shields_up = false;
+    }
+
+    h = 0;
+    if (robot[n].shields_up && !physical){
+        dd = d;
+        if ((old_shields) && (robot[n].config.shield >= 3)){
+            d = 0;
+            h = 0;
+        } else {
+            switch(robot[n].config.shield){
+                case 3:
+                    d = (int)round(dd*2/3);
+                    if (d < 1){
+                        d = 1;
+                        h = (int)round(dd*2/3);
+                    }
+                    break;
+                case 4:
+                    h = (int)trunc(dd/2);
+                    d = dd - h;
+                    break;
+                case 5:
+                    d = (int)round(dd*1/3);
+                    if (d < 1){
+                        d = 1;
+                    }
+                    h = (int)round(dd*1/3);
+                    if (h < 1){
+                        h = 1;
+                    }
+                    break;
+            }
+        }
+    }
+    if (d < 0) {
+        d = 0;
+    }
+    /*if (debug_info) {
+        do {
+            cout << "\n" << atr2func::zero_pad(game_cycle,5) << " D " << n << ": " << robot[n].armor << "-" << d << "=" << robot[n].armor - d << "           " << endl;
+        } while (!keypressed);
+        atr2func::FlushKey(); //still have to port FlushKey
+    }*/
+    if (d > 0){
+        d = (int)round(d*robot[n].damageadj);
+        if (d < 1){
+            d = 1;
+        }
+    }
+    robot[n].armor = robot[n].armor - d;
+    robot[n].heat = robot[n].heat + h;
+    robot[n].last_damage = 0;
+    if (robot[n].armor <= 0){
+        robot[n].armor = 0;
+        update_armor(n);
+        robot[n].heat = 500;
+        update_heat(n);
+        robot[n].armor = 0;
+        kill_count++;
+        robot[n].deaths++;
+        update_lives(n);
+        //     if graphix and timing then time_delay(10);
+        //     draw_robot(n);
+        robot[n].heat = 0;
+        update_heat(n);
+        init_missile(robot[n].x, robot[n].y, 0, 0, 0, n, blast_circle, false);
+        if (robot[n].overburn){
+            m = 1.3;
+        } else {
+            m = 1;
+        }
+        for (i = 0; i < num_robots; i++){
+            if ((i != n) && (robot[i].armor > 0)){
+                k = (int)round(atr2func::distance(robot[n].x,robot[n].y,robot[i].x,robot[i].y));
+                if (k < blast_radius){
+                    damage(i,(int)round(abs(blast_radius - k) * m), false);
+                }
+            }
+        }
+    }
 }
 
-void jump(int n, int o, bool inc_ip) {
+int scan(int n) {
+    double r, d, acc;
+    int dir, range, i, j, k, l, nn, xx, yy, sign;
+
+    nn = -1;
+    range = maxint;
+    if(!((n >= 0) && (n <= num_robots))) {
+        return 0;
+    }
+
+    if (robot[n].scanarc < 0) {
+        robot[n].scanarc = 0;
+    }
+    robot[n].accuracy = 0;
+    nn = -1;
+    dir = (robot[n].shift + robot[n].hd) & 255;
+    if (debug_info) {
+        cout << "<SCAN Arc=" << robot[n].scanarc << ", Dir=" << dir << ">" << endl;
+    }
+    for (i = 0; i < num_robots; i++) {
+        if ((i != n) && (robot[i].armor > 0)) {
+            j = atr2func::find_anglei(robot[n].x, robot[n].y, robot[i].x, robot[i].y);
+            d = atr2func::distance(robot[n].x, robot[n].y, robot[i].x, robot[i].y);
+            k = (int)round(d);
+
+            if ((k < range) && (k <= robot[n].scanrange) && ((abs(j - dir) <= abs(robot[n].scanarc)) || (abs(j - dir) >= 256 - abs(robot[n].scanarc)))) {
+                dir = (dir + 1024) & 255;
+                xx = (int)round(atr2func::sint[dir] * d + robot[n].x);
+                yy = (int)round(-(atr2func::cost[dir]) * d + robot[n].y);
+                r = atr2func::distance(xx, yy, robot[i].x, robot[i].y);
+                if (debug_info) {
+                    cout << "SCAN HIT! Scan X,Y: " << round(xx) << "," << round(yy) << " Robot X,Y: "
+                         << round(robot[i].x) << "," << round(robot[i].y) << " Dist=" << round(r) << endl;
+                } //repeat until keypressed; flushkey;
+                if ((robot[n].scanarc > 0) || (r < hit_range - 2)) {
+                    range = k;
+                    robot[n].accuracy = 0;
+                    if (robot[n].scanarc > 0) {
+                        j = (j + 1024) & 255;
+                        dir = (dir + 1024) & 255;
+                        if (j < dir) {
+                            sign = -1;
+                        }
+                        if (j > dir) {
+                            sign = 1;
+                        }
+                        if ((j > 190) && (dir < 66)) {
+                            dir = dir + 256;
+                            sign = -1;
+                        }
+                        if ((dir > 190) && (j < 66)) {
+                            j = j + 256;
+                            sign = 1;
+                        }
+                        acc = abs(j - dir) / robot[n].scanarc * 2;
+                        if (sign < 0) {
+                            robot[n].accuracy = (int)-abs(round(acc));
+                        } else {
+                            robot[n].accuracy = (int)abs(round(acc));
+                        }
+                        if (robot[n].accuracy > 2) {
+                            robot[n].accuracy = 2;
+                        }
+                        if (robot[n].accuracy < -2) {
+                            robot[n].accuracy = -2;
+                        }
+                    }
+                    nn = i;
+                    if (debug_info) {
+                        cout << "\n" << atr2func::zero_pad(game_cycle, 5) << " S " << n << ": nn=" << nn << ", range="
+                             << range << ", acc=" << robot[n].accuracy << "           " << endl;
+                    } //repeat until keypressed; flushkey;
+                }
+            }
+        }
+    }
+
+    if ((nn >= 0) && (nn <= num_robots)) {
+        robot[n].ram[5] = robot[nn].transponder;
+        robot[n].ram[6] = (robot[nn].hd - (robot[n].hd + robot[n].shift) + 1024) & 255;
+        robot[n].ram[7] = robot[nn].spd;
+        robot[n].ram[13] = (int)round(robot[nn].speed * 100);
+    }
+
+    return range;
+}
+
+void com_transmit(int n, int chan, int data) {
+    int i, j, k;
+
+    for (i = 0; i < num_robots; i++) {
+        if ((robot[n].armor > 0) && (i != n) && (robot[n].channel == chan)) {
+            if ((robot[n].ram[10] < 0) || (robot[n].ram[10] > max_queue)) {
+                robot[n].ram[10] = 0;
+            }
+            if ((robot[n].ram[11] < 0) || (robot[n].ram[11] > max_queue)) {
+                robot[n].ram[11] = 0;
+            }
+            robot[n].ram[robot[n].ram[11] + com_queue] = data;
+            robot[n].ram[11]++;
+            if (robot[n].ram[11] > max_queue) {
+                robot[n].ram[11] = 0;
+            }
+            if (robot[n].ram[11] == robot[n].ram[10]) {
+                robot[n].ram[10]++;
+            }
+            if (robot[n].ram[10] > max_queue) {
+                robot[n].ram[10] = 0;
+            }
+        }
+    }
+}
+
+int com_receive(int n) {
+    int i, j, k;
+
+    k = 0;
+    if (robot[n].ram[10] != robot[n].ram[11]) {
+        if ((robot[n].ram[10] < 0) || (robot[n].ram[10] > max_queue)) {
+            robot[n].ram[10] = 0;
+        }
+        if ((robot[n].ram[11] < 0) || (robot[n].ram[11] > max_queue)) {
+            robot[n].ram[11] = 0;
+        }
+        k = robot[n].ram[robot[n].ram[10] + com_queue];
+        robot[n].ram[10]++;
+        if (robot[n].ram[10] > max_queue) {
+            robot[n].ram[10] = 0;
+        }
+    } else {
+        robot_error(n, 12, "");
+    }
+
+    return k;
+}
+
+int in_port(int n, int p, int &time_used) {
+    int v, i, j, k, l, nn;
+
+    v = 0;
+    switch(p) {
+        case 1:
+            v = robot[n].spd;
+            break;
+        case 2:
+            v = robot[n].heat;
+            break;
+        case 3:
+            v = robot[n].hd;
+            break;
+        case 4:
+            v = robot[n].shift;
+            break;
+        case 5:
+            v = (robot[n].shift + robot[n].hd) & 255;
+            break;
+        case 6:
+            v = robot[n].armor;
+            break;
+        case 7:
+            v = scan(n);
+            time_used++;
+            if (show_arcs) {
+                robot[n].arc_count = 2;
+            }
+            break;
+        case 8:
+            v = robot[n].accuracy;
+            time_used++;
+            break;
+        case 9:
+            nn = -1;
+            time_used = time_used + 3;
+            k = maxint;
+            for (i = 0; i < num_robots; i++) {
+                j = (int)round(atr2func::distance(robot[n].x, robot[n].y, robot[i].x, robot[i].y));
+                if ((n != i) && (j < k) && (robot[i].armor > 0)) {
+                    k = j;
+                    nn = i;
+                }
+            }
+            v = k;
+            if ((nn >= 0) && (nn <= num_robots)) {
+                robot[n].ram[5] = robot[nn].transponder;
+            }
+            break;
+        case 10:
+            v = (rand() % 65535) + (rand() % 2);
+            break;
+        case 16:
+            nn = -1;
+            if (show_arcs) {
+                robot[n].sonar_count = 2;
+            }
+            time_used = time_used + 40;
+            l = -1;
+            k = maxint;
+            nn = -1;
+            for (i = 0; i < num_robots; i++) {
+                j = (int)round(atr2func::distance(robot[n].x, robot[n].y, robot[i].x, robot[i].y));
+                if ((n != i) && (j < k) && (j < max_sonar) && (robot[i].armor > 0)) {
+                    k = j;
+                    l = i;
+                    nn = i;
+                }
+            }
+            if (l >= 0) {
+                v = (int)round(atr2func::find_angle(robot[n].x, robot[n].y, robot[l].x, robot[l].y) / pi * 128 + 1024 + (rand() % 65) - 32) & 255;
+            } else {
+                v = minint;
+            }
+            if ((nn >= 0) && (nn <= num_robots)) {
+                robot[n].ram[5] = robot[nn].transponder;
+            }
+            break;
+        case 17:
+            v = robot[n].scanarc;
+            break;
+        case 18:
+            if (robot[n].overburn) {
+                v = 1;
+            } else {
+                v = 0;
+            }
+            break;
+        case 19:
+            v = robot[n].transponder;
+            break;
+        case 20:
+            v = robot[n].shutdown;
+            break;
+        case 21:
+            v = robot[n].channel;
+            break;
+        case 22:
+            v = robot[n].mines;
+            break;
+        case 23:
+            if (robot[n].config.mines >= 0) {
+                k = 0;
+                for (i = 0; i < max_mines; i++) {
+                    if ((robot[n].mine[i].x >= 0) && (robot[n].mine[i].x <= 1000) && (robot[n].mine[i].y >= 0) && (robot[n].mine[i].y <= 1000) && (robot[n].mine[i].yield > 0)) {
+                        k++;
+                    }
+                }
+                v = k;
+            } else {
+                v = 0;
+            }
+            break;
+        case 24:
+            if (robot[n].config.shield > 0) {
+                if (robot[n].shields_up) {
+                    v = 1;
+                } else {
+                    v = 0;
+                }
+            } else {
+                v = 0;
+                robot[n].shields_up = false;
+            }
+            break;
+        default:
+            robot_error(n, 11, atr2func::cstr(p));
+    }
+
+    return v;
+}
+
+void out_port(int n, int p, int v, int &time_used) {
+    int i;
+
+    switch(p) {
+        case 11:
+            robot[n].tspd = v;
+            break;
+        case 12:
+            robot[n].shift = (robot[n].shift + v + 1024) & 255;
+            break;
+        case 13:
+            robot[n].shift = (v + 1024) & 255;
+            break;
+        case 14:
+            robot[n].thd = (robot[n].thd + v + 1024) & 255;
+            break;
+        case 15:
+            time_used = time_used + 3;
+            if (v > 4) {
+                v = 4;
+            }
+            if (v < -4) {
+                v = -4;
+            }
+            init_missile(robot[n].x, robot[n].y, robot[n].xv, robot[n].yv, (robot[n].hd + robot[n].shift + v) & 255, n, 0, robot[n].overburn);
+            break;
+        case 17:
+            robot[n].scanarc = v;
+            break;
+        case 18:
+            if (v == 0) {
+                robot[n].overburn = false;
+            } else {
+                robot[n].overburn = true;
+            }
+            break;
+        case 19:
+            robot[n].transponder = v;
+            break;
+        case 20:
+            robot[n].shutdown = v;
+            break;
+        case 21:
+            robot[n].channel = v;
+            break;
+        case 22:
+            if (robot[n].config.mines >= 0) {
+                if (robot[n].mines > 0) {
+                    init_mine(n, v, mine_blast);
+                    robot[n].mines--;
+                } else {
+                    robot_error(n, 14, "");
+                }
+            } else {
+                robot_error(n, 13, "");
+            }
+            break;
+        case 23:
+            if (robot[n].config.mines >= 0) {
+                for (i = 0; i < max_mines; i++) {
+                    robot[n].mine[i].detonate = true;
+                }
+            } else {
+                robot_error(n, 13, "");
+            }
+            break;
+        case 24:
+            if (robot[n].config.shield >= 3) {
+                if (v == 0) {
+                    robot[n].shields_up = false;
+                } else {
+                    robot[n].shields_up = true;
+                }
+            } else {
+                robot[n].shields_up = false;
+                robot_error(n, 15, "");
+            }
+            break;
+        default:
+            robot_error(n, 11, atr2func::cstr(p));
+    }
+    if (robot[n].scanarc > 64) {
+        robot[n].scanarc = 64;
+    }
+    if (robot[n].scanarc < 0) {
+        robot[n].scanarc = 0;
+    }
+}
+
+void call_int(int n, int int_num, int &time_used) {
+    int i, j, k;
+
+    switch(int_num) {
+        case 0:
+            damage(n, 1000, true);
+            break;
+        case 1:
+            reset_software(n);
+            time_used = 10;
+            break;
+        case 2:
+            time_used = 5;
+            robot[n].ram[69] = (int)round(robot[n].x);
+            robot[n].ram[70] = (int)round(robot[n].y);
+            break;
+        case 3:
+            time_used = 2;
+            if (robot[n].ram[65] == 0) {
+                robot[n].keepshift = false;
+            } else {
+                robot[n].keepshift = true;
+            }
+            robot[n].ram[70] = robot[n].shift & 255;
+            break;
+        case 4:
+            if (robot[n].ram[65] == 0) {
+                robot[n].overburn = false;
+            } else {
+                robot[n].overburn = true;
+            }
+            break;
+        case 5:
+            time_used = 2;
+            robot[n].ram[70] = robot[n].transponder;
+            break;
+        case 6:
+            time_used = 2;
+            robot[n].ram[69] = game_cycle >> 16;
+            robot[n].ram[70] = game_cycle & 65535;
+            break;
+        case 7:
+            j = robot[n].ram[69];
+            k = robot[n].ram[70];
+            if (j < 0) {
+                j = 0;
+            }
+            if (j > 1000) {
+                j = 1000;
+            }
+            if (k < 0) {
+                k = 0;
+            }
+            if (k > 1000) {
+                k = 1000;
+            }
+            robot[n].ram[65] = (int)round(atr2func::find_angle(round(robot[n].x), round(robot[n].y), j, k) / pi * 128 + 256) & 255;
+            time_used = 32;
+            break;
+        case 8:
+            robot[n].ram[70] = robot[n].ram[5];
+            time_used = 1;
+            break;
+        case 9:
+            robot[n].ram[69] = robot[n].ram[6];
+            robot[n].ram[70] = robot[n].ram[7];
+            time_used = 2;
+            break;
+        case 10:
+            k = 0;
+            for (i = 0; i < num_robots; i++) {
+                if (robot[n].armor > 0) {
+                    k++;
+                }
+            }
+            robot[n].ram[68] = k;
+            robot[n].ram[69] = played;
+            robot[n].ram[70] = matches;
+            time_used = 4;
+            break;
+        case 11:
+            robot[n].ram[68] = (int)round(robot[n].speed * 100);
+            robot[n].ram[69] = robot[n].last_damage;
+            robot[n].ram[70] = robot[n].last_hit;
+            time_used = 5;
+            break;
+        case 12:
+            robot[n].ram[70] = robot[n].ram[8];
+            time_used = 1;
+            break;
+        case 13:
+            robot[n].ram[8] = 0;
+            time_used = 1;
+            break;
+        case 14:
+            com_transmit(n, robot[n].channel, robot[n].ram[65]);
+            time_used = 1;
+            break;
+        case 15:
+            if (robot[n].ram[10] != robot[n].ram[11]) {
+                robot[n].ram[70] = com_receive(n);
+            } else {
+                robot_error(n, 12, "");
+            }
+            time_used = 1;
+            break;
+        case 16:
+            if (robot[n].ram[11] >= robot[n].ram[10]) {
+                robot[n].ram[70] = robot[n].ram[11] - robot[n].ram[10];
+            } else {
+                robot[n].ram[70] = max_queue + 1 - robot[n].ram[10] + robot[n].ram[11];
+            }
+            time_used = 1;
+            break;
+        case 17:
+            robot[n].ram[10] = 0;
+            robot[n].ram[11] = 0;
+            time_used = 1;
+        case 18:
+            robot[n].ram[68] = robot[n].kills;
+            robot[n].ram[69] = robot[n].kills - robot[n].startkills;
+            robot[n].ram[70] = robot[n].deaths;
+            time_used = 3;
+            break;
+        case 19:
+            robot[n].ram[9] = 0;
+            robot[n].meters = 0;
+            break;
+        default:
+            robot_error(n, 10, atr2func::cstr(int_num));
+    }
+}
+
+void jump(int n, int o, bool &inc_ip) {
     int i, j, k, l, loc;
 
     loc = find_label(n, get_val(n, robot[n].ip, o), robot[n].code[robot[n].ip].op[max_op] >> (o * 4));
@@ -2025,7 +2730,7 @@ bool invalid_microcode(int n, int ip) {
     for (i = 0; i <= 2; i++) {
         k = (robot[n].code[ip].op[max_op] >> (i << 2)) & 7;
         if ((k != 1) && (k != 2) && (k != 3) && (k != 4)) {
-            invalid = true;
+            //invalid = true;
         }
     }
     return invalid;
@@ -2056,9 +2761,12 @@ void execute_instruction(int n) {
         //graphix stuff
     }
 
-    if(((robot[n].code[robot[n].ip].op[max_op] & 7) == 0) || ((robot[n].code[robot[n].ip].op[max_op] & 7) == 1)) {
+    //cout << "Robot #" << n << " trying to execute line " << robot[n].ip << ", op=" << get_val(n, robot[n].ip, 0) << ", " << mnemonic(get_val(n, robot[n].ip, 0), 0) << endl;
+    if(((robot[n].code[robot[n].ip].op[max_op] & 7) != 0) && ((robot[n].code[robot[n].ip].op[max_op] & 7) != 1)) {
         time_used = 0;
     } else {
+        //cout << "   Robot #" << n << " executing instruction #" << get_val(n, robot[n].ip, 0) << ", "
+             //<< mnemonic(get_val(n, robot[n].ip, 0), 0) << endl;
         switch (get_val(n, robot[n].ip, 0)) {
             case 0: //NOP
                 executed++;
@@ -2095,7 +2803,7 @@ void execute_instruction(int n) {
             case 8: //DIV
                 j = get_val(n, robot[n].ip, 2);
                 if (j != 0) {
-                    put_val(n, robot[n].ip, 1, (int)(get_val(n, robot[n].ip, 1) / j));
+                    put_val(n, robot[n].ip, 1, (int) (get_val(n, robot[n].ip, 1) / j));
                 } else {
                     robot_error(n, 8, "");
                 }
@@ -2119,11 +2827,12 @@ void execute_instruction(int n) {
                 }
                 executed++;
                 break;
-            case 11: //GSB
-                loc = find_label(n, get_val(n, robot[n].ip, 1), robot[n].code[robot[n].ip].op[max_op] >> (1*4));
+            case 11: //GSB,CALL
+                loc = find_label(n, get_val(n, robot[n].ip, 1), robot[n].code[robot[n].ip].op[max_op] >> (1 * 4));
                 if (loc >= 0) {
                     push(n, robot[n].ip);
                     inc_ip = false;
+                    robot[n].ip = loc;
                 } else {
                     robot_error(n, 2, atr2func::cstr(get_val(n, robot[n].ip, 1)));
                 }
@@ -2229,14 +2938,132 @@ void execute_instruction(int n) {
                 time_used = 2;
                 executed++;
                 break;
+            case 25: //PUT
+                k = get_val(n, robot[n].ip, 2);
+                if ((k >= 0) && (k <= max_ram)) {
+                    robot[n].ram[k] = get_val(n, robot[n].ip, 1);
+                } else {
+                    robot_error(n, 4, atr2func::cstr(k));
+                }
+                time_used = 2;
+                executed++;
+                break;
+            case 26: //INT
+                call_int(n, get_val(n, robot[n].ip, 1), time_used);
+                executed++;
+                break;
+            case 27: //IPO,IN
+                time_used = 4;
+                put_val(n, robot[n].ip, 2, in_port(n, get_val(n, robot[n].ip, 1), time_used));
+                executed++;
+                break;
+            case 28: //OPO,OUT
+                time_used = 4;
+                out_port(n, get_val(n, robot[n].ip, 1), get_val(n, robot[n].ip, 2), time_used);
+                executed++;
+                break;
+            case 29: //DEL,DELAY
+                time_used = get_val(n, robot[n].ip, 1);
+                executed++;
+                break;
+            case 30: //PUSH
+                push(n, get_val(n, robot[n].ip, 1));
+                executed++;
+                break;
+            case 31: //POP
+                put_val(n, robot[n].ip, 1, pop(n));
+                executed++;
+                break;
+            case 32: //ERR
+                robot_error(n, get_val(n, robot[n].ip, 1), "");
+                time_used = 0;
+                executed++;
+                break;
+            case 33: //INC
+                put_val(n, robot[n].ip, 1, get_val(n, robot[n].ip, 1) + 1);
+                executed++;
+                break;
+            case 34: //DEC
+                put_val(n, robot[n].ip, 1, get_val(n, robot[n].ip, 1) - 1);
+                executed++;
+                break;
+            case 35: //SHL
+                put_val(n, robot[n].ip, 1, get_val(n, robot[n].ip, 1) << get_val(n, robot[n].ip, 2));
+                executed++;
+                break;
+            case 36: //SHR
+                put_val(n, robot[n].ip, 1, get_val(n, robot[n].ip, 1) >> get_val(n, robot[n].ip, 2));
+                executed++;
+                break;
+            case 37: //ROL
+                put_val(n, robot[n].ip, 1, atr2func::rol(get_val(n, robot[n].ip, 1), get_val(n, robot[n].ip, 2)));
+                executed++;
+                break;
+            case 38: //ROR
+                put_val(n, robot[n].ip, 1, atr2func::ror(get_val(n, robot[n].ip, 1), get_val(n, robot[n].ip, 2)));
+                executed++;
+                break;
+            case 39: //JZ
+                time_used = 0;
+                if ((robot[n].ram[64] & 8) > 0) {
+                    jump(n, 1, inc_ip);
+                }
+                executed++;
+                break;
+            case 40: //JNZ
+                time_used = 0;
+                if ((robot[n].ram[64] & 8) == 0) {
+                    jump(n, 1, inc_ip);
+                }
+                executed++;
+                break;
+            case 41: //JAE,JGE
+                if (((robot[n].ram[64] & 1) > 0) || ((robot[n].ram[64] & 4) > 0)) {
+                    jump(n, 1, inc_ip);
+                }
+                time_used = 0;
+                executed++;
+                break;
+            case 42: //JBE,JLE
+                if (((robot[n].ram[64] & 1) > 0) || ((robot[n].ram[64] & 2) > 0)) {
+                    jump(n, 1, inc_ip);
+                }
+                time_used = 0;
+                executed++;
+                break;
+            case 43: //SAL
+                put_val(n, robot[n].ip, 1, atr2func::sal(get_val(n, robot[n].ip, 1), get_val(n, robot[n].ip, 2)));
+                executed++;
+                break;
+            case 44: //SAR
+                put_val(n, robot[n].ip, 1, atr2func::sar(get_val(n, robot[n].ip, 1), get_val(n, robot[n].ip, 2)));
+                executed++;
+                break;
+            case 45: //NEG
+                put_val(n, robot[n].ip, 1, 0 - get_val(n, robot[n].ip, 1));
+                executed++;
+                break;
+            case 46: //JTL
+                loc = get_val(n, robot[n].ip, 1);
+                if ((loc >= 0) && (loc <= robot[n].plen)) {
+                    inc_ip = false;
+                    robot[n].ip = loc;
+                } else {
+                    robot_error(n, 2, atr2func::cstr(loc));
+                }
+                break;
+            default:
+                robot_error(n, 6, "");
+                cout << "Error executing instruction!" << endl;
         }
-        robot[n].delay_left = robot[n].delay_left + time_used;
-        if (inc_ip) {
-            robot[n].ip++;
-        }
-        if ((graphix) && (n ==0) && (step_mode > 0)) {
-            //update_debug_window();
-        }
+    }
+
+    robot[n].delay_left = robot[n].delay_left + time_used;
+    if (inc_ip) {
+        robot[n].ip++;
+    }
+    if ((graphix) && (n == 0) && (step_mode > 0)) {
+        //update_debug_window();
     }
 }
 
@@ -2493,7 +3320,106 @@ void do_mine(int n, int m) {
 }
 
 void do_missile(int n) {
+    double llx, lly, r, d, dir, xv, yv;
+    int i, j, k, l, xx, yy, tx, ty, dd, dam;
+    bool source_alive;
 
+    if(missile[n].a == 0) {
+        return;
+    } else {
+        if (missile[n].a == 1) {
+            //Look for collision w/ wall
+            if ((missile[n].x <- 20) || (missile[n].x > 1020) || (missile[n].y <- 20) || (missile[n].y > 1020)) {
+                missile[n].a = 0;
+            }
+
+            //move missile
+            llx = missile[n].lx;
+            lly = missile[n].ly;
+            missile[n].lx = missile[n].x;
+            missile[n].ly = missile[n].y;
+            if (missile[n].a > 0) {
+                missile[n].hd = (missile[n].hd + 256) & 255;
+                xv = atr2func::sint[missile[n].hd] * missile[n].mspd;
+                yv = -(atr2func::cost[missile[n].hd]) * missile[n].mspd;
+                missile[n].x = missile[n].x + xv;
+                missile[n].y = missile[n].y + yv;
+            }
+
+            //look for hit on a robot
+            k = -1;
+            l = maxint;
+            for (i = 0; i < num_robots; i++) {
+                if ((robot[i].armor > 0) && (i != missile[n].source)) {
+                    d = atr2func::distance(missile[n].lx, missile[n].ly, robot[i].x, robot[i].y);
+                    missile[n].hd = missile[n].hd & 255;
+                    xx = (int)round(atr2func::sint[missile[n].hd] * d + missile[n].lx);
+                    yy = (int)round(-(atr2func::cost[missile[n].hd]) * d + missile[n].ly);
+                    r = atr2func::distance(xx, yy, robot[i].x, robot[i].y);
+                    if ((d <= missile[n].mspd) && (r < hit_range) && (round(d) <= l)) {
+                        k = i;
+                        l = (int)round(d);
+                        dd = (int)round(r);
+                        tx = xx;
+                        ty = yy;
+                    }
+                }
+            }
+            if (k >= 0) { //hit a robot!
+                missile[n].x = tx;
+                missile[n].y = ty;
+                missile[n].a = 2;
+                missile[n].rad = 0;
+                missile[n].lrad = 0;
+                if ((missile[n].source >= 0) && (missile[n].source <= num_robots)) {
+                    robot[missile[n].source].last_hit = 0;
+                    robot[missile[n].source].hits++;
+                }
+                for (i = 0; i < num_robots; i++) {
+                    dd = (int)round(atr2func::distance(missile[n].x, missile[n].y, robot[i].x, robot[i].y));
+                    if (dd <= hit_range) {
+                        dam = (int)round(abs(hit_range - dd) * missile[n].mult);
+                        if (dam <= 0) {
+                            dam = 1;
+                        }
+                        kill_count = 0;
+                        if (robot[missile[n].source].armor > 0) {
+                            source_alive = true;
+                        } else {
+                            source_alive = false;
+                        }
+                        damage(i, dam, false);
+                        if (((missile[n].source >= 0) && (missile[n].source <= num_robots)) && (i != missile[n].source)) {
+                            robot[missile[n].source].damage_total = robot[missile[n].source].damage_total + dam;
+                        }
+                        if ((kill_count > 0) && (source_alive) && (robot[missile[n].source].armor <= 0)) {
+                            kill_count = kill_count - 1;
+                        }
+                        if (kill_count > 0) {
+                            robot[missile[n].source].kills = robot[missile[n].source].kills + kill_count;
+                            update_lives(missile[n].source);
+                        }
+                    }
+                }
+            }
+
+            //draw missile
+            if (graphix) {
+
+            }
+        }
+
+        if (missile[n].a == 2) {
+            missile[n].lrad = missile[n].rad;
+            missile[n].rad++;
+            if (missile[n].rad > missile[n].max_rad) {
+                missile[n].a = 0;
+            }
+            if (graphix) {
+                //
+            }
+        }
+    }
 }
 
 string victor_string(int k, int n) {
@@ -2552,6 +3478,26 @@ void show_statistics() {
         cout << endl;
         cout << victor_string(k, n);
         cout << endl;
+    }
+}
+
+void score_robots() {
+    int n, i, j, k, l;
+
+    k = 0;
+    n = -1;
+
+    for (i = 0; i < num_robots; i++) {
+        robot[i].trials++;
+        if (robot[i].armor > 0) {
+            k++;
+            n = i;
+        }
+    }
+
+    if ((k == 1) && (n >= 0)) {
+        robot[n].wins++;
+        robot[n].won = true;
     }
 }
 
@@ -2688,11 +3634,42 @@ void bout() {
                 update_timer = mem[0:$46C] >> 1;
             }
         }*/
-    } while (!(quit || gameover() || bout_over));
+    } while(!(quit || gameover() || bout_over));
 
     //update_cycle_window();
-    //score_robots();
-    //show_statistics();
+    score_robots();
+    show_statistics();
+}
+
+void write_report() {
+    int i, j, k;
+    ofstream f;
+
+    f.open(main_filename + report_ext);
+
+    f << num_robots + 1 << endl;
+    for (i = 0; i < num_robots; i++) {
+        switch(report_type) {
+            case 2:
+                f << robot[i].wins << " " << robot[i].trials << " " << robot[i].kills << " " << robot[i].deaths << " "
+                  << robot[i].fn << " " << endl;
+                break;
+            case 3:
+                f << robot[i].wins << " " << robot[i].trials << " " << robot[i].kills << " " << robot[i].deaths << " "
+                  << robot[i].armor << " " << robot[i].heat << " " << robot[i].shots_fired << " " << robot[i].fn << " "
+                  << endl;
+                break;
+            case 4:
+                f << robot[i].wins << " " << robot[i].trials << " " << robot[i].kills << " " << robot[i].deaths << " "
+                  << robot[i].armor << " " << robot[i].heat << " " << robot[i].shots_fired << " " << robot[i].hits << " "
+                  << robot[i].damage_total << " " << robot[i].cycles_lived << " " << robot[i].error_count << " "
+                  << robot[i].fn << " " << endl;
+                break;
+            default:
+                f << robot[i].wins << " " << robot[i].trials << " " << robot[i].fn << " " << endl;
+        }
+    }
+    f.close();
 }
 
 void begin_window() {

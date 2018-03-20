@@ -9,6 +9,11 @@
 //#include <sstream>
 #include "atr2func.h"
 
+const double pi = 3.1415926535897932385;
+
+double atr2func::sint[] = {0.0};
+double atr2func::cost[] = {0.0};
+
 atr2func::atr2func() {
 
 }
@@ -143,10 +148,10 @@ std::string atr2func::btrim(std::string s1) {
 }
 
 std::string atr2func::lstr(std::string s1, int l) {
-    if ((int)s1.length() <= 1) {
+    if ((int)s1.length() <= l) {
         return s1;
     } else {
-        s1.erase((unsigned int)(l + 1), std::string::npos);
+        s1.erase((unsigned int)(l), std::string::npos);
         return s1;
     }
 }
@@ -160,12 +165,28 @@ std::string atr2func::rstr(std::string s1, int l) {
     }
 }
 
+int atr2func::rol(int n, int k) {
+    return 0;
+}
+
+int atr2func::ror(int n, int k) {
+    return 0;
+}
+
+int atr2func::sal(int n, int k) {
+    return 0;
+}
+
+int atr2func::sar(int n, int k) {
+    return 0;
+}
+
 void atr2func::make_tables() {
     int i, j, k;
 
     for (i = 0; i <= 255; i++) {
-        atr2func::sint[i] = sin(i / 128 * 3.1415926535897932385);
-        atr2func::cost[i] = cos(i / 128 * 3.1415926535897932385);
+        atr2func::sint[i] = std::sin((double)i / 128 * pi);
+        atr2func::cost[i] = std::cos((double)i / 128 * pi);
     }
 }
 
@@ -246,5 +267,62 @@ int atr2func::str2int(std::string s) {
 }
 
 double atr2func::distance(double x1, double y1, double x2, double y2) {
-    return abs(sqrt(pow(y1-y2, 2)+pow(x1-x2, 2)));
+    return std::abs(std::sqrt(std::pow(y1-y2, 2) + std::pow(x1-x2, 2)));
+}
+
+double atr2func::find_angle(double xx, double yy, double tx, double ty) {
+    int i, j, k, v, z;
+    double q;
+
+    q = 0;
+    v = (int)std::abs(std::round(tx - xx));
+    if (v == 0) {
+        if ((tx == xx) && (ty > yy)) {
+            q = pi;
+        }
+        if ((tx == xx) && (ty < yy)) {
+            q = 0;
+        }
+    } else {
+        z = (int)std::abs(std::round(ty - yy));
+        q = std::abs(std::atan(z / v));
+        if ((tx > xx) && (ty > yy)) {
+            q = pi / 2 + q;
+        }
+        if ((tx > xx) && (ty < yy)) {
+            q = pi / 2 - q;
+        }
+        if ((tx < xx) && (ty < yy)) {
+            q = pi + pi / 2 + q;
+        }
+        if ((tx < xx) && (ty > yy)) {
+            q = pi + pi / 2 - q;
+        }
+        if ((tx == xx) && (ty > yy)) {
+            q = pi / 2;
+        }
+        if ((tx == xx) && (ty < yy)) {
+            q = 0;
+        }
+        if ((tx < xx) && (ty == yy)) {
+            q = pi + pi / 2;
+        }
+        if ((tx > xx) && (ty == yy)) {
+            q = pi / 2;
+        }
+    }
+
+    return q;
+}
+
+int atr2func::find_anglei(double xx, double yy, double tx, double ty) {
+    int i;
+
+    i = (int)std::round(atr2func::find_angle(xx, yy, tx, ty) / pi * 128 + 256);
+    while (i < 0) {
+        i = i + 256;
+    }
+    i = i & 255;
+
+    return i;
 }
