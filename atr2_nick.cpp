@@ -797,14 +797,97 @@ void process_keypress(char c){
     }
 }
 
+bool graph_check(int n){
+    bool ok;
+    ok = true;
+    if ((graphix == false) || (n < 0) || (n > num_robots) || (n >= max_shown)){
+        ok = false;
+    }
+    return ok;
+}
 
+void robot_graph(int n){
+    switch(stats_mode){
+        case 1:
+//            viewport(480,4+n*35,635,37+n*35);
+            max_gx = 155;
+            max_gy = 33;
 
+        case 2:
+//            viewport(480,4+n*13,635,15+n*13);
+            max_gx = 155;
+            max_gy = 11;
 
+        else {
+            viewport(480,4+n*70,635,70+n*70);
+            max_gx = 155;
+            max_gy = 66;
+    }
+    }
+//    setfillstyle(1,robot_color(n));
+//    setcolor(robsot_color(n));
+}
 
+void update_armor(int n){
+    if (graph_check(n) && (step_mode <= 0)){
+        robot_graph(n);
+        if (robot[n].armor > 0){
+            switch(stats_mode){
+            case 1:
+//                bar(30,13,29+robot[n].armor,18);
 
+            case 2:
+//                bar(88,03,87+(robot[n].armor shr 2),08);
 
+            else {
+//                bar(30,25,29+robot[n].armor,30);
+            }
+            }
+        }
+//        setfillstyle(1,8);
+        if (robot[n].armor < 100){
+            switch(stats_mode){
+            case 1:
+//                bar(30+robot[n].armor,13,129,18);
 
+            case 2:
+//                bar(88+(robot[n].armor shr 2),03,111,08);
 
+            else {
+//                bar(30+robot[n].armor,25,129,30);
+            }
+            }
+        }
+    }
+}
+
+void robot_error(int n, int i, string ov){
+    if ((graph_check(n)) && (step_mode <= 0)){
+        if (stats_mode == 0){
+            robot_graph(n);
+//            setfillstyle(1,0);
+//            bar(66,56,154,64);
+//            setcolor(robot_color(n));
+//            outtextxy(66,56,addrear(cstr(i),7)+hex(i));
+            chirp();
+        }
+        if (logging_errors){
+            log_error(n,i,ov);
+        }
+        error_count++;
+    }
+}
+
+void toggle_graphix(){
+    graph_mode(!graphix);
+    if (!graphix){
+//        textcolor(7);
+        cout << "Match " << played << "/" << matches << ", Battle in progress..." << "\n\n";
+    }
+    else {
+        setscreen();
+    }
+}
 
 
 
