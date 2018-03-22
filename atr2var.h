@@ -35,7 +35,8 @@ public:
             debugging_compiler  = _F;
 
     static constexpr const double
-            screen_scale = 0.46,
+            //screen_scale = 0.46,
+            screen_scale = 0.92,
             pi = 3.1415926535897932385;
 
     static const int
@@ -71,9 +72,10 @@ public:
     //screen_scale   =0.46,
             screen_x        = 5,
             screen_y        = 5,
-            robot_scale     = 06,
+            //robot_scale     = 6,
+            robot_scale     = 12,
             default_delay   = 1,
-            default_slice   = 05,
+            default_slice   = 5,
             mine_circle     = (int)trunc(mine_blast*screen_scale)+1,
             blast_circle    = (int)trunc(blast_radius*screen_scale)+1,
             mis_radius      = (int)trunc(hit_range/2)+1,
