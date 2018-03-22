@@ -28,6 +28,14 @@ void arena::update_vars(int nn) {
     n = nn;
 }
 
+void arena::clear_arena() {
+    /*QPainter p(this);
+
+    p.save();
+    p.fillRect(0, 0, 470, 470, Qt::magenta);
+    p.restore();*/
+}
+
 void arena::paintEvent(QPaintEvent *)
 {
     int side = qMin(width(), height());
@@ -40,11 +48,11 @@ void arena::paintEvent(QPaintEvent *)
 
     //p->begin(this);
 
-    p.setPen(Qt::white);
     p.setBrush(Qt::NoBrush);
 
     p.save();
 
+    p.setPen(QPen(Qt::black, 10));
     //erase
     if (av->robot[n].lshields) {
         p.drawEllipse(av->robot[n].ltx[4], av->robot[n].lty[4], atr2var::robot_scale, atr2var::robot_scale);

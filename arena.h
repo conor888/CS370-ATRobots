@@ -17,6 +17,7 @@ public:
     arena(atr2var* avtemp, QWidget *parent = 0);
 
     void update_vars(int n);
+    void clear_arena();
 
 private:
     void paintEvent(QPaintEvent *event) override;
