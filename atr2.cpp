@@ -3136,6 +3136,7 @@ void atr2::do_robot(int n) {
             update_heat(n);
         }
         draw_robot(n);
+        atr2func::time_delay(1000);
     }
     av->robot[n].lheat = av->robot[n].heat;
     av->robot[n].larmor = av->robot[n].armor;
@@ -3382,7 +3383,6 @@ void atr2::bout() {
     if (av->graphix && (av->step_mode > 0)) {
         //atr2a->clear_arena();
         for (i = 0; i < av->num_robots; i++) {
-            atr2func::time_delay(20);
             draw_robot(i);
         }
     }
@@ -3408,7 +3408,7 @@ void atr2::bout() {
         }
 
         if (av->graphix && av->timing) {
-            atr2func::time_delay(av->game_delay);
+            //atr2func::time_delay(av->game_delay);
         }
 
         /*if (keypressed) {
