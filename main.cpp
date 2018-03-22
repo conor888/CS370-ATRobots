@@ -23,6 +23,8 @@ int main(int argc, char *argv[]) {
     atr2var av;
 
     arena atr2a(&av);
+    atr2a.setStyleSheet("background-color:black;");
+    atr2a.setAttribute(Qt::WA_OpaquePaintEvent, true);
     atr2a.show();
 
     WorkerThread *workerThread = new WorkerThread(&av, argc, args, &atr2a);
