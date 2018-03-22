@@ -38,7 +38,7 @@ public:
     static std::string rstr(std::string s1, int l);
     //void FlushKey();
     //void calibrate_timing();
-    //void time_delay(int n); //{n=milliseconds}
+    static void time_delay(int n); //{n=milliseconds}
     //void check_registration();
     static int rol(int n, int k);
     static int ror(int n, int k);

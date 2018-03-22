@@ -1713,7 +1713,7 @@ void atr2::draw_robot(int n) {
         av->robot[n].lhd = av->robot[n].hd;
         av->robot[n].lshift = av->robot[n].shift;
         av->robot[n].lshields = av->robot[n].shields_up;
-        for (i = 1; i <= atr2var::max_robot_lines; i++) {
+        for (i = 1; i < atr2var::max_robot_lines; i++) {
             av->robot[n].ltx[i] = av->robot[n].tx[i];
             av->robot[n].lty[i] = av->robot[n].ty[i];
         }
@@ -3380,7 +3380,9 @@ void atr2::bout() {
     }
     av->step_count = -1;
     if (av->graphix && (av->step_mode > 0)) {
+        //atr2a->clear_arena();
         for (i = 0; i < av->num_robots; i++) {
+            atr2func::time_delay(20);
             draw_robot(i);
         }
     }
@@ -3406,7 +3408,7 @@ void atr2::bout() {
         }
 
         if (av->graphix && av->timing) {
-            //time_delay(av->game_delay);
+            atr2func::time_delay(av->game_delay);
         }
 
         /*if (keypressed) {

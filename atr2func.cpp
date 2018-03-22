@@ -9,6 +9,8 @@
 #include <QtGui/QColor>
 //#include <sstream>
 #include "atr2func.h"
+#include <chrono>
+#include <thread>
 
 const double pi = 3.1415926535897932385;
 
@@ -164,6 +166,17 @@ std::string atr2func::rstr(std::string s1, int l) {
         s1.erase(0, (s1.length() - l));
         return s1;
     }
+}
+
+void atr2func::time_delay(int n) {
+    long i, l;
+
+    /*if(delay_per_sec == 0) {
+        calibrate_timing();
+    }*/
+
+    //l = (long)round(n / 1000 * delay_per_sec)
+    std::this_thread::sleep_for(std::chrono::milliseconds(n));
 }
 
 int atr2func::rol(int n, int k) {
