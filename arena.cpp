@@ -10,7 +10,8 @@
 arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 {
     setWindowTitle(tr("ATR2"));
-    resize(470, 470);
+    //resize(470, 470);
+    resize(940, 940);
 
     av = avtemp;
     
@@ -52,7 +53,7 @@ void arena::paintEvent(QPaintEvent *)
 
     p.save();
 
-    p.setPen(QPen(Qt::black, 10));
+    p.setPen(QPen(Qt::black, 18));
     //erase
     if (av->robot[n].lshields) {
         p.drawEllipse(av->robot[n].ltx[4], av->robot[n].lty[4], atr2var::robot_scale, atr2var::robot_scale);
