@@ -6,6 +6,7 @@
 //#include <fstream>
 #include <cmath>
 #include <sstream>
+#include <QtGui/QColor>
 //#include <sstream>
 #include "atr2func.h"
 
@@ -187,6 +188,42 @@ void atr2func::make_tables() {
     for (i = 0; i <= 255; i++) {
         atr2func::sint[i] = std::sin((double)i / 128 * pi);
         atr2func::cost[i] = std::cos((double)i / 128 * pi);
+    }
+}
+
+QColor atr2func::robot_color(int n) {
+
+    switch(n % 14) {
+        case 0:
+            return QColor(0, 255, 0);   //light green   - 10
+        case 1:
+            return QColor(255, 0, 0);   //light red     - 12
+        case 2:
+            return QColor(0, 0, 255);   //light blue    - 9
+        case 3:
+            return QColor(0, 255, 255); //light cyan    - 11
+        case 4:
+            return QColor(255, 0 ,255); //light magenta - 13
+        case 5:
+            return QColor(255, 255, 0); //yellow        - 14
+        case 6:
+            return QColor(200, 200, 200); //light gray  - 7
+        case 7:
+            return QColor(102, 51, 0);  //brown         - 6
+        case 8:
+            return QColor(0, 127, 0);   //dark green    - 2
+        case 9:
+            return QColor(127, 0, 0);   //dark red      - 4
+        case 10:
+            return QColor(0, 0 , 127);  //dark blue     - 1
+        case 11:
+            return QColor(0, 127, 127); //dark cyan     - 3
+        case 12:
+            return QColor(127, 0, 127); //dark magenta  - 5
+        case 13:
+            return QColor(255, 255, 255); //white       - 15
+        default:
+            return QColor(255, 255, 255); //white
     }
 }
 

@@ -2,6 +2,7 @@
 // Created by conor on 2/18/2018.
 //
 #include <iostream>
+#include <QtGui/QColor>
 
 #ifndef CS370_CYCLE1_ATR2FUNC_H
 #define CS370_CYCLE1_ATR2FUNC_H
@@ -46,7 +47,7 @@ public:
     //void viewport(int x1, int y1, int x2, int y2);
     //void main_viewport();
     static void make_tables();
-    //int robot_color(int n);
+    static QColor robot_color(int n);
     //void box(int x1, int y1, int x2, int y2);
     //void hole(int x1, int y1, int x2, int y2);
     //void chirp();
