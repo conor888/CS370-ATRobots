@@ -7,19 +7,20 @@
 
 #include <QWidget>
 #include "atr2var.h"
+#include "atr2.h"
 
 class arena : public QWidget
 {
 Q_OBJECT
 
 public:
-    arena(QWidget *parent = 0);
+    arena(atr2var* avtemp, QWidget *parent = 0);
 
-    void update_vars(atr2var av, int n);
+    void update_vars(int n);
 
 private:
     void paintEvent(QPaintEvent *event) override;
-    atr2var ag;
+    atr2var *av;
     int n = 0;
 };
 
