@@ -72,7 +72,7 @@ public:
             screen_x        = 5,
             screen_y        = 5,
             robot_scale     = 06,
-            default_delay   = 20,
+            default_delay   = 1,
             default_slice   = 05,
             mine_circle     = (int)trunc(mine_blast*screen_scale)+1,
             blast_circle    = (int)trunc(blast_radius*screen_scale)+1,
