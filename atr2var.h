@@ -12,8 +12,6 @@ class atr2var
 public:
     atr2var();
 
-    atr2var(const atr2var&);
-
     std::string
             progname        = "AT-Robots",
             version         = "2.11",
@@ -32,7 +30,7 @@ public:
             _F = false,
 
     //debugging/compiler
-            show_code           = _F,
+            show_code           = false,
             compile_by_line     = _F,
             debugging_compiler  = _F;
 

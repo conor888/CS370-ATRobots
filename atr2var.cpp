@@ -4,7 +4,3 @@ atr2var::atr2var()
 {
 
 }
-
-atr2var::atr2var(const atr2var&) {
-
-}
