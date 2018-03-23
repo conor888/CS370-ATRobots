@@ -39,3 +39,5 @@ HEADERS += \
     atr2var.h
 
 FORMS +=
+
+CONFIG += c++11
