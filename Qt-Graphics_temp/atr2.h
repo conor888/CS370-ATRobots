@@ -86,7 +86,7 @@ public:
     void bout();
     void write_report();
     void begin_window();                            //Not done
-
+    
 private:
     atr2var *av;
     arena *atr2a;
