@@ -3286,7 +3286,7 @@ void atr2::show_statistics() {
         n = -1;
         k = 0;
         for (i = 0; i < av->num_robots; i++) {
-            if ((av->robot[i].armor > 0) || (av->robot[n].won)) {
+            if ((av->robot[i].armor > 0) || (av->robot[i].won)) {
                 k++;
                 n = i;
             }
@@ -3369,6 +3369,8 @@ void atr2::bout() {
     if(av->quit) {
         exit(0);
     }
+
+    //atr2a->clear_arena();
 
     av->played++;
     init_bout();
