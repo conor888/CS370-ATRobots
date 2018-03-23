@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
 
     QApplication a(argc, argv);
 
-    std::string args[argc];
+    std::string args[55];
 
     for (int i = 0; i < argc; i++) {
         args[i] = argv[i];
