@@ -1630,9 +1630,9 @@ void atr2::draw_robot(int n) {
     av->robot[n].tx[5] = (int)round(xx + atr2func::sint[t] * atr2var::robot_scale * 0.8);
     av->robot[n].ty[5] = (int)round(yy - atr2func::cost[t] * atr2var::robot_scale * 0.8);
     av->robot[n].tx[6] = (int)round(xx + atr2func::sint[(t + av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
-    av->robot[n].ty[6] = (int)round(yy - atr2func::sint[(t + av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
+    av->robot[n].ty[6] = (int)round(yy - atr2func::cost[(t + av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
     av->robot[n].tx[7] = (int)round(xx + atr2func::sint[(t - av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
-    av->robot[n].ty[7] = (int)round(yy - atr2func::sint[(t - av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
+    av->robot[n].ty[7] = (int)round(yy - atr2func::cost[(t - av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
     av->robot[n].startarc = (int)round(((256 - ((t + av->robot[n].scanarc + 1024) & 255)) / 256 * 360) + 90);
     av->robot[n].endarc = (int)round(((256 - ((t - av->robot[n].scanarc + 1024) & 255)) / 256 * 360) + 90);
 
@@ -1704,7 +1704,7 @@ void atr2::draw_robot(int n) {
         }
 
         if (av->graphix) {
-            atr2a->update_vars(n);
+            atr2a->update_vars(n, 1);
             atr2a->update();
         }
 
@@ -3136,7 +3136,7 @@ void atr2::do_robot(int n) {
             update_heat(n);
         }
         draw_robot(n);
-        atr2func::time_delay(1000);
+        atr2func::time_delay(av->game_delay);
     }
     av->robot[n].lheat = av->robot[n].heat;
     av->robot[n].larmor = av->robot[n].armor;
@@ -3235,7 +3235,10 @@ void atr2::do_missile(int n) {
 
             //draw missile
             if (av->graphix) {
-
+                atr2a->update_missile(llx, lly);
+                atr2a->update_vars(n, 2);
+                atr2a->update();
+                atr2func::time_delay(av->game_delay);
             }
         }
 
@@ -3371,6 +3374,9 @@ void atr2::bout() {
     }
 
     //atr2a->clear_arena();
+    atr2a->update_vars(0, 0);
+    atr2a->update();
+    atr2func::time_delay(1);
 
     av->played++;
     init_bout();

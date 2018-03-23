@@ -176,7 +176,7 @@ void atr2func::time_delay(int n) {
     }*/
 
     //l = (long)round(n / 1000 * delay_per_sec)
-    std::this_thread::sleep_for(std::chrono::microseconds(n));
+    std::this_thread::sleep_for(std::chrono::milliseconds(n));
 }
 
 int atr2func::rol(int n, int k) {
