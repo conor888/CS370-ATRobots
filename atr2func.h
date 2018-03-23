@@ -2,7 +2,6 @@
 // Created by conor on 2/18/2018.
 //
 #include <iostream>
-#include <QtGui/QColor>
 
 #ifndef CS370_CYCLE1_ATR2FUNC_H
 #define CS370_CYCLE1_ATR2FUNC_H
@@ -38,7 +37,7 @@ public:
     static std::string rstr(std::string s1, int l);
     //void FlushKey();
     //void calibrate_timing();
-    static void time_delay(int n); //{n=milliseconds}
+    //void time_delay(int n); //{n=milliseconds}
     //void check_registration();
     static int rol(int n, int k);
     static int ror(int n, int k);
@@ -47,7 +46,7 @@ public:
     //void viewport(int x1, int y1, int x2, int y2);
     //void main_viewport();
     static void make_tables();
-    static QColor robot_color(int n);
+    //int robot_color(int n);
     //void box(int x1, int y1, int x2, int y2);
     //void hole(int x1, int y1, int x2, int y2);
     //void chirp();
