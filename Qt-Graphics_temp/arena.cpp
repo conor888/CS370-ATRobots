@@ -13,7 +13,7 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 {
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
 
-    this->setUpdatesEnabled(false);
+    //this->setUpdatesEnabled(false);
 
     setWindowTitle(tr("ATR2"));
     resize(470, 470);
@@ -50,7 +50,7 @@ void arena::clear_arena() {
 }
 
 void arena::update_robot(int rn) {
-    this->setUpdatesEnabled(false);
+    //this->setUpdatesEnabled(false);
     QPixmap clear(470, 470);
     clear.fill(QColor(0, 0, 0, 0));
     pix[rn]->swap(clear);
@@ -117,7 +117,7 @@ void arena::update_robot(int rn) {
         pp.drawPixmap(0, 0, *pix[i]);
     }
 
-    this->setUpdatesEnabled(true);
+    //this->setUpdatesEnabled(true);
     this->update();
 }
 
