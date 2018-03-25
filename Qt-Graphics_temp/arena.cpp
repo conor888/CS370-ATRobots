@@ -132,6 +132,20 @@ void arena::paintEvent(QPaintEvent *)
                        (int)round(av->missile[n].lx * atr2var::screen_scale) + atr2var::screen_x,
                        (int)round(av->missile[n].ly * atr2var::screen_scale) + atr2var::screen_y);
         }
+
+        else if (av->missile[n].a == 2) {
+            p.setPen(QPen(Qt::black, 8));
+            p.drawEllipse((int)round(av->missile[n].x * atr2var::screen_scale) + atr2var::screen_x,
+                          (int)round(av->missile[n].y * atr2var::screen_scale) + atr2var::screen_y,
+                          av->missile[n].lrad * 2, av->missile[n].lrad * 2);
+
+            if (av->missile[n].a > 0) {
+                p.setPen(QPen(Qt::white, 1));
+                p.drawEllipse((int)round(av->missile[n].x * atr2var::screen_scale) + atr2var::screen_x,
+                              (int)round(av->missile[n].y * atr2var::screen_scale) + atr2var::screen_y,
+                              av->missile[n].rad * 2, av->missile[n].rad * 2);
+            }
+        }
     }
 
     p.restore();
