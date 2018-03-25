@@ -3249,7 +3249,9 @@ void atr2::do_missile(int n) {
                 av->missile[n].a = 0;
             }
             if (av->graphix) {
-                //
+                atr2a->update_vars(n, 2);
+                atr2a->update();
+                atr2func::time_delay(av->game_delay);
             }
         }
     }
