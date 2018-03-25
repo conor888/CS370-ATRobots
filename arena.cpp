@@ -16,8 +16,8 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
     //this->setUpdatesEnabled(false);
 
     setWindowTitle(tr("ATR2"));
-    resize(470, 470);
-    //resize(940, 940);
+    //resize(470, 470);
+    setFixedSize(470, 470);
 
     av = avtemp;
 
@@ -25,8 +25,6 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
         pix[i] = new QPixmap(470, 470);
         pix[i]->fill(QColor(0, 0, 0, 0));
     }
-
-    //clear = new QPixmap(470, 470);
     
     //p = new QPainter(this);
     //p->setBackgroundMode(Qt::NoBackground);
