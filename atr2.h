@@ -9,12 +9,15 @@
 #include "arena.h"
 #include <QThread>
 #include "atr2func.h"
+#include <QEventLoop>
+#include <QObject>
 
 class arena;
 
 class atr2 {
 public:
     atr2(atr2var* avtemp, arena* parent);
+    atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy);
 
     std::string operand(int n, int m);
     std::string mnemonic(int n, int m);
@@ -90,21 +93,28 @@ public:
 private:
     atr2var *av;
     arena *atr2a;
+    //QEventLoop *loop;
 };
-
 
 class WorkerThread : public QThread
 {
 Q_OBJECT
 public:
+    //QEventLoop *loop;
+
     WorkerThread(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent) {
         av = avtemp;
         argc = argctemp;
         argv = argvtemp;
         atr2a = parent;
+
+        //loop = new QEventLoop();
+
+        //QObject::connect(parent, SIGNAL(donePainting()), loop, SLOT(quit()));
     }
 
     void run() override {
+        //atr2 atr2(av, atr2a, loop);
         atr2 atr2(av, atr2a);
 
         atr2.init(argc, argv);

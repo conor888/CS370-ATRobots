@@ -6,10 +6,17 @@
 #include "atr2func.h"
 #include "filelib.h"
 #include "arena.h"
+#include <QEventLoop>
 
 atr2::atr2(atr2var* avtemp, arena* parent) {
     av = avtemp;
     atr2a = parent;
+}
+
+atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
+    av = avtemp;
+    atr2a = parent;
+    //loop = loopy;
 }
 
 std::string atr2::operand(int n, int m) {
@@ -1704,8 +1711,11 @@ void atr2::draw_robot(int n) {
         }
 
         if (av->graphix) {
-            atr2a->update_vars(n, 1);
-            atr2a->update();
+            //atr2a->update_vars(n, 1);
+            atr2a->update_robot(n);
+            //atr2a->update();
+            //loop->exec();
+            atr2func::time_delay(av->game_delay);
         }
 
         av->robot[n].lx = av->robot[n].x;
@@ -3136,7 +3146,6 @@ void atr2::do_robot(int n) {
             update_heat(n);
         }
         draw_robot(n);
-        atr2func::time_delay(av->game_delay);
     }
     av->robot[n].lheat = av->robot[n].heat;
     av->robot[n].larmor = av->robot[n].armor;
@@ -3238,6 +3247,7 @@ void atr2::do_missile(int n) {
                 atr2a->update_missile(llx, lly);
                 atr2a->update_vars(n, 2);
                 atr2a->update();
+                //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
         }
@@ -3251,6 +3261,7 @@ void atr2::do_missile(int n) {
             if (av->graphix) {
                 atr2a->update_vars(n, 2);
                 atr2a->update();
+                //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
         }
@@ -3377,7 +3388,7 @@ void atr2::bout() {
 
     //atr2a->clear_arena();
     atr2a->update_vars(0, 0);
-    atr2a->update();
+    //atr2a->update();
     atr2func::time_delay(1);
 
     av->played++;

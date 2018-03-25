@@ -41,3 +41,5 @@ HEADERS += \
 FORMS +=
 
 CONFIG += c++11
+
+QMAKE_LFLAGS += -static
