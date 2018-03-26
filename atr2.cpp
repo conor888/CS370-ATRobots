@@ -1918,7 +1918,7 @@ void atr2::init_missile(double xx, double yy, double xxv, double yyv, int dir, i
             }
             av->missile[k].a = 1;
             av->missile[k].hd = dir;
-            av->missile[k].max_rad = atr2var::mis_radius;
+            av->missile[k].max_rad = av->mis_radius;
             /*if (av->debug_info){
                 do {
                     std::cout << "\n" << atr2func::zero_pad(av->game_cycle, 5) << " F " << s << ": hd=" << av->missile[k].hd << "           " << "\n";
@@ -2017,7 +2017,7 @@ void atr2::damage(int n, int d, bool physical){
         draw_robot(n);
         av->robot[n].heat = 0;
         update_heat(n);
-        init_missile(av->robot[n].x, av->robot[n].y, 0, 0, 0, n, atr2var::blast_circle, false);
+        init_missile(av->robot[n].x, av->robot[n].y, 0, 0, 0, n, av->blast_circle, false);
         if (av->robot[n].overburn){
             m = 1.3;
         } else {

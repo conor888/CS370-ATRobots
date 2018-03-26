@@ -76,9 +76,6 @@ public:
             //robot_scale     = 12,
             default_delay   = 1,
             default_slice   = 5,
-            mine_circle     = (int)trunc(mine_blast*screen_scale)+1,
-            blast_circle    = (int)trunc(blast_radius*screen_scale)+1,
-            mis_radius      = (int)trunc(hit_range/2)+1,
             max_robot_lines = 8;
     //Gray50 : FillPatternType = ($AA, $55, $AA, $55,
     //        $AA, $55, $AA, $55);
@@ -133,8 +130,12 @@ public:
     };
 
 
-
-
+    //originally, these were static/const, but compiling failed on macOS (C++11 is supposed to allow it, but
+    //                                                      it still doesn't work on clang for some reason?)
+    int
+    mine_circle     = (int)std::trunc(mine_blast*screen_scale) + 1,
+    blast_circle    = (int)std::trunc(blast_radius*screen_scale) + 1,
+    mis_radius      = (int)std::trunc(hit_range/2) + 1;
 
 
 //Robot variables
