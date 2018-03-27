@@ -19,9 +19,11 @@ public:
     ~arena();
 
     void update_vars(int nn, int new_target);
-    void update_missile(double new_llx, double new_lly);
+    //void update_missile(double new_llx, double new_lly);
     void clear_arena();
     void update_robot(int rn);
+    void update_missile(int mn);
+    void clear_missiles();
 
 private:
     void paintEvent(QPaintEvent *event) override;
@@ -30,7 +32,9 @@ private:
     int n = 0;
     int update_target = 0;
 
-    QPixmap **pix = new QPixmap*[33];
+    QPixmap **pix = new QPixmap*[34];
+
+    //QPixmap *missiles;
 
     //missile coords
     double llx = 0.0, lly = 0.0;

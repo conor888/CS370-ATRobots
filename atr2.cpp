@@ -3244,9 +3244,10 @@ void atr2::do_missile(int n) {
 
             //draw missile
             if (av->graphix) {
-                atr2a->update_missile(llx, lly);
-                atr2a->update_vars(n, 2);
-                atr2a->update();
+                //atr2a->update_missile(llx, lly);
+                //atr2a->update_vars(n, 2);
+                atr2a->update_missile(n);
+                //atr2a->update();
                 //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
@@ -3259,8 +3260,9 @@ void atr2::do_missile(int n) {
                 av->missile[n].a = 0;
             }
             if (av->graphix) {
-                atr2a->update_vars(n, 2);
-                atr2a->update();
+                //atr2a->update_vars(n, 2);
+                atr2a->update_missile(n);
+                //atr2a->update();
                 //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
@@ -3387,7 +3389,7 @@ void atr2::bout() {
     }
 
     //atr2a->clear_arena();
-    atr2a->update_vars(0, 0);
+    //atr2a->update_vars(0, 0);
     //atr2a->update();
     atr2func::time_delay(1);
 
@@ -3415,6 +3417,8 @@ void atr2::bout() {
                 do_robot(i);
             }
         }
+        //atr2a->clear_missiles();
+        atr2a->update_missile(3000);
         for (i = 0; i < atr2var::max_missiles; i++) {
             if (av->missile[i].a > 0) {
                 do_missile(i);
