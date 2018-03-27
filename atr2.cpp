@@ -602,7 +602,7 @@ void atr2::compile(int n, std::string filename) {
     std::string ss[atr2var::max_op];
     char c, lc;
     std::ifstream f;
-    bool done;
+    bool robotdone = false;
 
     av->lock_code = "";
     av->lock_pos = 0;
@@ -630,7 +630,7 @@ void atr2::compile(int n, std::string filename) {
     s = "";
     linecount = 0;
 
-    while(getline(f, s) && (done == false)) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s) && (robotdone == false)) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -691,7 +691,7 @@ void atr2::compile(int n, std::string filename) {
                 msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
 
                 if (s1 == "END") {
-                    done = true;
+                    robotdone = true;
                 }
 
                 k = 0;
