@@ -630,7 +630,7 @@ void atr2::compile(int n, std::string filename) {
     s = "";
     linecount = 0;
 
-    while(getline(f, s) && (done != true)) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s) && (done == false)) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -689,6 +689,11 @@ void atr2::compile(int n, std::string filename) {
             if (s[0] == '#') {          //Compiler directives
                 s1 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s, s.length() - 1)));
                 msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
+
+                if (s1 == "END") {
+                    done = true;
+                }
+
                 k = 0;
                 for (i = 0; i < s1.length(); i++) {
                     if ((k == 0) && (s1[i] == ' ')) {
@@ -803,8 +808,6 @@ void atr2::compile(int n, std::string filename) {
                         if (av->robot[n].config.mines > 5) {
                             av->robot[n].config.mines = 5;
                         }
-                    } else if (s2 = "END") {
-                        done = true;
                     } else {
                         std::cout << "Warning: unknown directive \"" << s2 << "\"" << std::endl;
                     }
