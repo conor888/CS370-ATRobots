@@ -602,6 +602,7 @@ void atr2::compile(int n, std::string filename) {
     std::string ss[atr2var::max_op];
     char c, lc;
     std::ifstream f;
+    bool done;
 
     av->lock_code = "";
     av->lock_pos = 0;
@@ -629,7 +630,7 @@ void atr2::compile(int n, std::string filename) {
     s = "";
     linecount = 0;
 
-    while(getline(f, s) && (s != "#END")) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s) && (done != true)) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -802,6 +803,8 @@ void atr2::compile(int n, std::string filename) {
                         if (av->robot[n].config.mines > 5) {
                             av->robot[n].config.mines = 5;
                         }
+                    } else if (s2 = "END") {
+                        done = true;
                     } else {
                         std::cout << "Warning: unknown directive \"" << s2 << "\"" << std::endl;
                     }
