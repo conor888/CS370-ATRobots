@@ -629,7 +629,7 @@ void atr2::compile(int n, std::string filename) {
     s = "";
     linecount = 0;
 
-    while(getline(f, s)) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s) && (s != "#END")) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -2600,7 +2600,7 @@ void atr2::execute_instruction(int n) {
         //av->graphix stuff
     }
 
-    //std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
+    std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
     if(((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 0) && ((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 1)) {
         time_used = 0;
     } else {
