@@ -70,8 +70,8 @@ public:
 
     //simulator & graphics
     //screen_scale   =0.46,
-            screen_x        = 5,
-            screen_y        = 5,
+            screen_x        = 0,
+            screen_y        = 0,
             robot_scale     = 6,
             //robot_scale     = 12,
             default_delay   = 1,
