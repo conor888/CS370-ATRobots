@@ -6,10 +6,17 @@
 #include "atr2func.h"
 #include "filelib.h"
 #include "arena.h"
+#include <QEventLoop>
 
 atr2::atr2(atr2var* avtemp, arena* parent) {
     av = avtemp;
     atr2a = parent;
+}
+
+atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
+    av = avtemp;
+    atr2a = parent;
+    //loop = loopy;
 }
 
 std::string atr2::operand(int n, int m) {
@@ -595,6 +602,7 @@ void atr2::compile(int n, std::string filename) {
     std::string ss[atr2var::max_op];
     char c, lc;
     std::ifstream f;
+    bool robotdone = false;
 
     av->lock_code = "";
     av->lock_pos = 0;
@@ -622,7 +630,7 @@ void atr2::compile(int n, std::string filename) {
     s = "";
     linecount = 0;
 
-    while(getline(f, s)) { //(not eof(f)) and (s != "#END)
+    while(getline(f, s) && (robotdone == false)) { //(not eof(f)) and (s != "#END)
         //readln(f,s);
         linecount++;
         if (locktype < 3) {
@@ -681,6 +689,11 @@ void atr2::compile(int n, std::string filename) {
             if (s[0] == '#') {          //Compiler directives
                 s1 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s, s.length() - 1)));
                 msg = atr2func::btrim(atr2func::rstr(orig_s, orig_s.length() - 5));
+
+                if (s1 == "END") {
+                    robotdone = true;
+                }
+
                 k = 0;
                 for (i = 0; i < s1.length(); i++) {
                     if ((k == 0) && (s1[i] == ' ')) {
@@ -1704,8 +1717,11 @@ void atr2::draw_robot(int n) {
         }
 
         if (av->graphix) {
-            atr2a->update_vars(n, 1);
-            atr2a->update();
+            //atr2a->update_vars(n, 1);
+            atr2a->update_robot(n);
+            //atr2a->update();
+            //loop->exec();
+            atr2func::time_delay(av->game_delay);
         }
 
         av->robot[n].lx = av->robot[n].x;
@@ -1908,7 +1924,7 @@ void atr2::init_missile(double xx, double yy, double xxv, double yyv, int dir, i
             }
             av->missile[k].a = 1;
             av->missile[k].hd = dir;
-            av->missile[k].max_rad = atr2var::mis_radius;
+            av->missile[k].max_rad = av->mis_radius;
             /*if (av->debug_info){
                 do {
                     std::cout << "\n" << atr2func::zero_pad(av->game_cycle, 5) << " F " << s << ": hd=" << av->missile[k].hd << "           " << "\n";
@@ -2007,7 +2023,7 @@ void atr2::damage(int n, int d, bool physical){
         draw_robot(n);
         av->robot[n].heat = 0;
         update_heat(n);
-        init_missile(av->robot[n].x, av->robot[n].y, 0, 0, 0, n, atr2var::blast_circle, false);
+        init_missile(av->robot[n].x, av->robot[n].y, 0, 0, 0, n, av->blast_circle, false);
         if (av->robot[n].overburn){
             m = 1.3;
         } else {
@@ -2590,7 +2606,7 @@ void atr2::execute_instruction(int n) {
         //av->graphix stuff
     }
 
-    //std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
+    std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
     if(((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 0) && ((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 1)) {
         time_used = 0;
     } else {
@@ -3136,7 +3152,6 @@ void atr2::do_robot(int n) {
             update_heat(n);
         }
         draw_robot(n);
-        atr2func::time_delay(av->game_delay);
     }
     av->robot[n].lheat = av->robot[n].heat;
     av->robot[n].larmor = av->robot[n].armor;
@@ -3235,9 +3250,11 @@ void atr2::do_missile(int n) {
 
             //draw missile
             if (av->graphix) {
-                atr2a->update_missile(llx, lly);
-                atr2a->update_vars(n, 2);
-                atr2a->update();
+                //atr2a->update_missile(llx, lly);
+                //atr2a->update_vars(n, 2);
+                atr2a->update_missile(n);
+                //atr2a->update();
+                //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
         }
@@ -3249,8 +3266,10 @@ void atr2::do_missile(int n) {
                 av->missile[n].a = 0;
             }
             if (av->graphix) {
-                atr2a->update_vars(n, 2);
-                atr2a->update();
+                //atr2a->update_vars(n, 2);
+                atr2a->update_missile(n);
+                //atr2a->update();
+                //loop->exec();
                 atr2func::time_delay(av->game_delay);
             }
         }
@@ -3376,8 +3395,8 @@ void atr2::bout() {
     }
 
     //atr2a->clear_arena();
-    atr2a->update_vars(0, 0);
-    atr2a->update();
+    //atr2a->update_vars(0, 0);
+    //atr2a->update();
     atr2func::time_delay(1);
 
     av->played++;
@@ -3404,6 +3423,8 @@ void atr2::bout() {
                 do_robot(i);
             }
         }
+        //atr2a->clear_missiles();
+        atr2a->update_missile(3000);
         for (i = 0; i < atr2var::max_missiles; i++) {
             if (av->missile[i].a > 0) {
                 do_missile(i);

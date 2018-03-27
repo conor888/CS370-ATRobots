@@ -28,6 +28,8 @@ int main(int argc, char *argv[]) {
     atr2a.show();
 
     WorkerThread *workerThread = new WorkerThread(&av, argc, args, &atr2a);
+    //connect(workerThread, &WorkerThread::resultReady, this, &MyObject::handleResults);
+    //connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
     workerThread->start();
 
     return a.exec();
