@@ -256,7 +256,7 @@ void atr2::prog_error(int n, std::string ss) {
             std::cout << "Insufficient RAM to load robot: \"" << ss << "\"... This is not good.";
             break;
         case 10:
-            std::cout << "Too many robots! We can only handle " << atr2var::max_robots + 1 << "! Blah.. limits are limits.";
+            std::cout << "Too many robots! We can only handle " << atr2var::max_robots << "! Blah.. limits are limits.";
             break;
         case 11:
             std::cout << "You already have a perfectly good #def for \"" << ss << "\", silly.";
@@ -704,7 +704,9 @@ void atr2::compile(int n, std::string filename) {
                 if (k > 1) {
                     s2 = atr2func::lstr(s1, k + 1);
                     s3 = atr2func::ucase(atr2func::btrim(atr2func::rstr(s1, s1.length() - k - 1)));
-                    std::cout << "s2=" << s2 << ", s3=" << s3 << std::endl;
+
+                    //DEBUG CONOR
+                    //std::cout << "s2=" << s2 << ", s3=" << s3 << std::endl;
                     k = 0;
                     if (av->numvars > 0) {
                         for (i = 0; i < av->numvars; i++) {
@@ -749,7 +751,6 @@ void atr2::compile(int n, std::string filename) {
                     } else if (s2 == "CONFIG") {
                         if (atr2func::lstr(s3, 8) == "SCANNER=") {
                             av->robot[n].config.scanner = atr2func::value(atr2func::rstr(s3, s3.length() - 8));
-                            std::cout << "ROBOT SCANNER = " << av->robot[n].config.scanner << std::endl;
                         } else if (atr2func::lstr(s3, 7) == "SHIELD=") {
                             av->robot[n].config.shield = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
                         } else if (atr2func::lstr(s3, 7) == "WEAPON=") {
@@ -863,7 +864,7 @@ void atr2::compile(int n, std::string filename) {
                 check_plen(av->robot[n].plen);
                 s1 = atr2func::btrim(atr2func::rstr(s, s.length() - 1));
                 //DEBUG_CONOR
-                std::cout << "!LABEL: " << s1 << std::endl;
+                //std::cout << "!LABEL: " << s1 << std::endl;
                 k = 0;
                 for (i = s1.length() - 1; i >= 0; i--) {
                     if ((s1.compare(i, 1, "\b") == 0) || (s1.compare(i, 1, "\t") == 0) ||
@@ -1252,7 +1253,8 @@ void atr2::create_robot(int n, std::string filename) {
     k = av->robot[n].config.scanner + av->robot[n].config.armor + av->robot[n].config.weapon + av->robot[n].config.engine +
         av->robot[n].config.heatsinks + av->robot[n].config.shield + av->robot[n].config.mines;
     if (k > atr2var::max_config_points) {
-        std::cout << av->robot[n].config.scanner << av->robot[n].config.armor << av->robot[n].config.weapon << av->robot[n].config.engine <<
+        //DEBUG CONOR
+        //std::cout << av->robot[n].config.scanner << av->robot[n].config.armor << av->robot[n].config.weapon << av->robot[n].config.engine <<
              av->robot[n].config.heatsinks << av->robot[n].config.shield << av->robot[n].config.mines << std::endl;
         prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(atr2var::max_config_points));
     }
@@ -1457,6 +1459,13 @@ void atr2::parse_param(std::string s) {
         if (av->insanity > 15) {
             av->insanity = 15;
         }
+        
+        //CONOR DEBUG
+        if (s1[0] == 'I') {
+            av->show_executions = true;
+            found = true;
+        }
+        
     } else if (s[0] == ';'){
         found = true;
     } else if ((av->num_robots < atr2var::max_robots) && !s.empty()){
@@ -2605,11 +2614,16 @@ void atr2::execute_instruction(int n) {
     if ((av->graphix) && (av->step_mode > 0) && (n == 0)) {
         //av->graphix stuff
     }
-
-    std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
+    
+    //DEBUG CONOR
+    if (av->show_executions) {
+        std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
+    }
+    
     if(((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 0) && ((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 1)) {
         time_used = 0;
     } else {
+        //DEBUG CONOR
         //std::cout << "   Robot #" << n << " executing instruction #" << get_val(n, av->robot[n].ip, 0) << ", "
         //<< mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
         switch (get_val(n, av->robot[n].ip, 0)) {

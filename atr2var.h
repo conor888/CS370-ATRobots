@@ -179,6 +179,9 @@ public:
     bool registered, sound_on, graphix, timing;
     std::string reg_name;
     int delay_per_sec, reg_num;
+    
+//Custom options
+    bool show_executions = false;
 };
 
 #endif // ATR2VAR_H
