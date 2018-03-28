@@ -2617,7 +2617,8 @@ void atr2::execute_instruction(int n) {
     
     //DEBUG CONOR
     if (av->show_executions) {
-        std::cout << "Robot #" << n << " trying to execute line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", " << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << std::endl;
+        std::cout << "Robot #" << n << " (" << av->robot[n].fn << ") executing line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", "
+                  << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << " " << av->robot[n].code[av->robot[n].ip].op[1] << " " << av->robot[n].code[av->robot[n].ip].op[2] << std::endl;
     }
     
     if(((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 0) && ((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 1)) {
