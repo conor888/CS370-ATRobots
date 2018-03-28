@@ -7,13 +7,13 @@ Porting the classic competitive robot game, ATRobots, to modern operating system
 1. [Compiling](https://github.com/conorahern7/CS370-ATRobots#compiling)
    1. [Install Qt & Qt Creator](https://github.com/conorahern7/CS370-ATRobots#1-install-qt--qt-creator)
    1. [Opening ATR2 in Qt Creator](https://github.com/conorahern7/CS370-ATRobots#2-opening-atr2-in-qt-creator)
-   1. [Building & Running ATR2 in Qt Creator](https://github.com/conorahern7/CS370-ATRobots#3-building--running-atr2-in-qt-creator
+   1. [Building & Running ATR2 in Qt Creator](https://github.com/conorahern7/CS370-ATRobots#3-building--running-atr2-in-qt-creator)
 
 
 ## Compiling
 Follow these steps if you want to compile ATR2 from the source code yourself.
 
-#### 1. Install Qt & Qt Creator (Windows)
+#### 1. Install Qt & Qt Creator
 
 1. Go to https://www.qt.io/download, and select "Go open source".
     1. Click "Accept" on the pop-up window.
@@ -25,11 +25,18 @@ Follow these steps if you want to compile ATR2 from the source code yourself.
 1. Choose a directory for Qt to be installed to (you need approximately 5GB of free storage), and optionally check the "associate common file types with Qt Creator".
 1. Close the "Preview" section of components and expand the "Qt" section.
 1. At the time of writing, our ATR2 port uses and has been tested with **Qt 5.10.1**. Expand this section.
-1. Select **MinGW 5.3.0 32-bit** as a component to install.\
-![Image of how to select Qt 5.10.1](https://i.imgur.com/fSn9js6.png)
-1. Scroll to the bottom of the parent "Qt" section and expand the "Tools" subsection.
-1. Select **MinGW 5.3.0**.\
-![Image of how to select Qt Tools](https://i.imgur.com/6wgBMMb.png)
+   ##### Windows
+   1. Select **MinGW 5.3.0 32-bit** as a component to install.\
+   ![Image of how to select Qt 5.10.1](https://i.imgur.com/fSn9js6.png)
+   1. Scroll to the bottom of the parent "Qt" section and expand the "Tools" subsection.
+   1. Select **MinGW 5.3.0**.\
+   ![Image of how to select Qt Tools](https://i.imgur.com/6wgBMMb.png)
+   ##### macOS
+   1. Select **macOS** as a component to install.\
+   ![Image of how to select Qt 5.10.1](https://i.imgur.com/9JpUhe2.png)
+   ##### Linux
+   1. Select **Desktop gcc 64-bit** as a component to install.\
+   ![Image of how to select Qt 5.10.1](https://i.imgur.com/lhL8BIM.png)
 1. Click next and wait for the components to download and install. This can take anywhere from 20 minutes to 1 hour.
 
 #### 2. Opening ATR2 in Qt Creator
