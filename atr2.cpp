@@ -1255,7 +1255,7 @@ void atr2::create_robot(int n, std::string filename) {
     if (k > atr2var::max_config_points) {
         //DEBUG CONOR
         //std::cout << av->robot[n].config.scanner << av->robot[n].config.armor << av->robot[n].config.weapon << av->robot[n].config.engine <<
-             av->robot[n].config.heatsinks << av->robot[n].config.shield << av->robot[n].config.mines << std::endl;
+        //     av->robot[n].config.heatsinks << av->robot[n].config.shield << av->robot[n].config.mines << std::endl;
         prog_error(21, atr2func::cstr(k) + "/" + atr2func::cstr(atr2var::max_config_points));
     }
 }
