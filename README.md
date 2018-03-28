@@ -96,18 +96,25 @@ Running an ATR2 game with 3 CIRCLES.AT2 robots, 20 matches, 5000 cycles per matc
    |-------:|-----------------|-------------|
    |`-D[x]` | Game delay      | Changes the speed of the game. (0 - 100, default = 1) |
    |`-T[x]` | Time slice      | (default = 5) |
-   |`-L[x]` | Game limit      | Maximum cycles matches are allowed to run before ending in a tie. x is multiplied by 1000, so a limit of                                 1 = 1000 cycles. (1 - 100, default = 100) |
+   |`-L[x]` | **Game limit**  | Maximum cycles matches are allowed to run before ending in a tie. x is multiplied by 1000, so a limit of                                 1 = 1000 cycles. (1 - 100, default = 100) |
    |`-Q`    | Quiet mode      | Disables sound. (default = sound on) |
-   |`-M[x]` | Matches         | Number of matches for the game. (1 - 100000, default = 1) |
+   |`-M[x]` | **Matches**     | Number of matches for the game. (1 - 100000, default = 1) |
    |`-S`    | Hide source     | Disables printing robot source to console when compiling. (default = source shown) |
    |`-G`    | No graphics     | Disables graphics, running matches at full speed and printing results in terminal. (default = graphics                                   enabled) |
    |`-R{x}` | Report          | (default = disabled) |
    |`-C`    | Compile only    | Do not run game, only test robot compilation. (default = false) |
    |`-^`    | Hide notices    | Hides program version and copyright info. (default = false) |
-   |`-A`    | Show scan arcs  | Shows scan arcs when graphics are enabled. (default = false) |
+   |`-A`    | **Scan arcs**   | Shows scan arcs when graphics are enabled. (default = false) |
    |`-W`    | Not Windoze     | (default = disabled) |
    |`-$`    | Debug info      | Prints various debug info to console throughout program execution. |
    |`-#[x]` | Max code        | Sets max code length of robots. (1 - 1023, default = 1023) |
    |`-!{x}` | Insane missiles | (default = disabled) |
    |`-@`    | Old shields     | (default = disabled) |
    |`-E`    | Log errors      | Logs robot errors to file, file name = (ROBOTNAME).ERR (default = disabled) |
+   
+#### Custom options:
+   We've implemented some of our own custom options for debugging purposes only.
+   
+   | Option | Name            | Description |
+   |-------:|-----------------|-------------|
+   |`-I`    | Instructions    | Prints robot instructions as they try to execute. |
