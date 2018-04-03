@@ -2237,7 +2237,7 @@ int16_t atr2::in_port(int n, int p, int &time_used) {
             }
             break;
         case 10:
-            v = ((int)(rand() % 65535) + (int)(rand() % 2));
+            v = ((rand() % 65535) << 1) ^ (rand() % 65535);
             break;
         case 16:
             nn = -1;
