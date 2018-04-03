@@ -247,7 +247,6 @@ int atr2func::hex2int(std::string s) {
     i = 0;
     w = 0;
     while(i < s.length()) {
-        i++;
         if (s[i] == '0') {
             w = (uint16_t)((w << 4) | 0);
         } else if (s[i] == '1') {
@@ -283,6 +282,7 @@ int atr2func::hex2int(std::string s) {
         } else {
             i = s.length();
         }
+        i++;
     }
 
     return (int)w;
