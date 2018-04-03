@@ -51,37 +51,36 @@ void arena::clear_arena() {
 }
 
 void arena::update_robot(int rn) {
-    QPixmap clear(470, 470);
-    clear.fill(QColor(0, 0, 0, 0));
-    pix[rn]->swap(clear);
+    //QPixmap clear(470, 470);
+    //clear.fill(QColor(0, 0, 0, 0));
+    //pix[rn]->swap(clear);
+    pix[rn]->fill(QColor(0,0,0,0));
     QPainter p(pix[rn]);
 
-    if (av->robot[rn].armor > 0) {
-        //setcolor(robot_color(n) & 7);
-        if (av->robot[rn].shields_up) {
-            p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], atr2var::robot_scale, atr2var::robot_scale);
+    //setcolor(robot_color(n) & 7);
+    if (av->robot[rn].shields_up) {
+        p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], atr2var::robot_scale, atr2var::robot_scale);
+    }
+    //setcolor(robot_color(n));
+    p.setPen(QPen(atr2func::robot_color(rn), 2));
+    p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
+    p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
+    p.drawLine(av->robot[rn].tx[3], av->robot[rn].ty[3], av->robot[rn].tx[1], av->robot[rn].ty[1]);
+    //setcolor(7);
+    p.setPen(QPen(QColor(200,200,200), 1));
+    p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[5], av->robot[rn].ty[5]);
+    //setcolor(8);
+    p.setPen(QPen(QColor(100,100,100), 1));
+    if ((av->show_arcs) && (av->robot[rn].arc_count > 0)) {
+        p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[6], av->robot[rn].ty[6]);
+        p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
+        if (av->robot[rn].scanrange < 1500) {
+            p.drawArc(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(av->robot[rn].scanrange * atr2var::screen_scale),
+                    (int)round(av->robot[rn].scanrange * atr2var::screen_scale), av->robot[rn].startarc, av->robot[rn].endarc);
         }
-        //setcolor(robot_color(n));
-        p.setPen(QPen(atr2func::robot_color(rn), 2));
-        p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
-        p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
-        p.drawLine(av->robot[rn].tx[3], av->robot[rn].ty[3], av->robot[rn].tx[1], av->robot[rn].ty[1]);
-        //setcolor(7);
-        p.setPen(QPen(QColor(200,200,200), 1));
-        p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[5], av->robot[rn].ty[5]);
-        //setcolor(8);
-        p.setPen(QPen(QColor(100,100,100), 1));
-        if ((av->show_arcs) && (av->robot[rn].arc_count > 0)) {
-            p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[6], av->robot[rn].ty[6]);
-            p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
-            if (av->robot[rn].scanrange < 1500) {
-                p.drawArc(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(av->robot[rn].scanrange * atr2var::screen_scale),
-                        (int)round(av->robot[rn].scanrange * atr2var::screen_scale), av->robot[rn].startarc, av->robot[rn].endarc);
-            }
-        }
-        if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {
-            p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(atr2var::max_sonar * atr2var::screen_scale), (int)round(atr2var::max_sonar * atr2var::screen_scale));
-        }
+    }
+    if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {
+        p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(atr2var::max_sonar * atr2var::screen_scale), (int)round(atr2var::max_sonar * atr2var::screen_scale));
     }
 
     QPainter pp(pix[32]);
