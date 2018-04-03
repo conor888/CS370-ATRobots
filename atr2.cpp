@@ -2185,9 +2185,10 @@ int atr2::com_receive(int n) {
     return k;
 }
 
-int16_t atr2::in_port(int n, int p, int &time_used) {
-    int i, j, k, l, nn;
-    int16_t v;
+int atr2::in_port(int n, int p, int &time_used) {
+    int i, j, k, l, nn, v;
+    int16_t randv = 0;
+    //int v;
 
     v = 0;
     switch(p) {
@@ -2237,7 +2238,8 @@ int16_t atr2::in_port(int n, int p, int &time_used) {
             }
             break;
         case 10:
-            v = ((rand() % 65535) << 1) ^ (rand() % 65535);
+            randv = ((rand() % 65535) << 1) ^ (rand() % 65535);
+            v = (int)randv;
             break;
         case 16:
             nn = -1;
@@ -2316,7 +2318,7 @@ int16_t atr2::in_port(int n, int p, int &time_used) {
             robot_error(n, 11, atr2func::cstr(p));
     }
 
-    return v;
+    return (int)v;
 }
 
 void atr2::out_port(int n, int p, int v, int &time_used) {
