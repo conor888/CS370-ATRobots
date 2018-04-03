@@ -61,7 +61,7 @@ public:
     int scan(int n);
     void com_transmit(int n, int chan, int data);
     int com_receive(int n);
-    int in_port(int n, int p, int &time_used);
+    int16_t in_port(int n, int p, int &time_used);
     void out_port(int n, int p, int v, int &time_used);
     void call_int(int n, int int_num, int &time_used);
     void jump(int n, int o, bool &inc_ip);

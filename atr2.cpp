@@ -2185,8 +2185,9 @@ int atr2::com_receive(int n) {
     return k;
 }
 
-int atr2::in_port(int n, int p, int &time_used) {
-    int v, i, j, k, l, nn;
+int16_t atr2::in_port(int n, int p, int &time_used) {
+    int i, j, k, l, nn;
+    int16_t v;
 
     v = 0;
     switch(p) {
@@ -2236,7 +2237,7 @@ int atr2::in_port(int n, int p, int &time_used) {
             }
             break;
         case 10:
-            v = (rand() % 65535) + (rand() % 2);
+            v = ((int)(rand() % 65535) + (int)(rand() % 2));
             break;
         case 16:
             nn = -1;
@@ -2814,7 +2815,7 @@ void atr2::execute_instruction(int n) {
                 break;
             case 27: //IPO,IN
                 time_used = 4;
-                put_val(n, av->robot[n].ip, 2, in_port(n, get_val(n, av->robot[n].ip, 1), time_used));
+                put_val(n, av->robot[n].ip, 2, (int)in_port(n, get_val(n, av->robot[n].ip, 1), time_used));
                 av->executed++;
                 break;
             case 28: //OPO,OUT
