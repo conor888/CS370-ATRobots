@@ -3412,7 +3412,6 @@ void atr2::bout() {
         exit(0);
     }
 
-    //atr2a->clear_arena();
     //atr2a->update_vars(0, 0);
     //atr2a->update();
     atr2func::time_delay(1);
@@ -3428,7 +3427,6 @@ void atr2::bout() {
     }
     av->step_count = -1;
     if (av->graphix && (av->step_mode > 0)) {
-        //atr2a->clear_arena();
         for (i = 0; i < av->num_robots; i++) {
             draw_robot(i);
         }

@@ -13,8 +13,6 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 {
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
 
-    //this->setUpdatesEnabled(false);
-
     setWindowTitle(tr("ATR2"));
     //resize(470, 470);
     setFixedSize(470, 470);
@@ -25,12 +23,6 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
         pix[i] = new QPixmap(470, 470);
         pix[i]->fill(QColor(0, 0, 0, 0));
     }
-
-    //missiles = new QPixmap(470, 470);
-    //missiles->fill(QColor(0, 0, 0, 0));
-    
-    //p = new QPainter(this);
-    //p->setBackgroundMode(Qt::NoBackground);
 }
 
 void arena::update_vars(int nn, int new_target) {
@@ -38,22 +30,7 @@ void arena::update_vars(int nn, int new_target) {
     update_target = new_target;
 }
 
-/*void arena::update_missile(double new_llx, double new_lly) {
-    llx = new_llx;
-    lly = new_lly;
-}*/
-
-void arena::clear_arena() {
-    QPainter p(this);
-
-    p.save();
-    p.restore();
-}
-
 void arena::update_robot(int rn) {
-    //QPixmap clear(470, 470);
-    //clear.fill(QColor(0, 0, 0, 0));
-    //pix[rn]->swap(clear);
     pix[rn]->fill(QColor(0,0,0,0));
     QPainter p(pix[rn]);
 
@@ -61,7 +38,6 @@ void arena::update_robot(int rn) {
     if (av->robot[rn].shields_up) {
         p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], atr2var::robot_scale, atr2var::robot_scale);
     }
-    //setcolor(robot_color(n));
     p.setPen(QPen(atr2func::robot_color(rn), 2));
     p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
     p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
@@ -148,24 +124,8 @@ void arena::paintEvent(QPaintEvent *)
 
     p.save();
 
-    //p.fillRect(0, 0, 470, 470, Qt::black);
     p.drawPixmap(0, 0, *pix[32]);
     p.drawPixmap(0, 0, *pix[33]);
-
-    if (update_target == 0) { //clear arena
-        //p.fillRect(0, 0, 470, 470, Qt::black);
-    } else if (update_target == 1) { //draw robot
-
-        //p.fillRect(0, 0, 470, 470, Qt::black);
-        //for (int i = 0; i < num_robots; i++) {
-        //    p.drawPixmap(0, 0, *pix[i]);
-        //}
-
-    } else if (update_target == 2) { //missile
-
-
-
-    }
 
     p.restore();
 
