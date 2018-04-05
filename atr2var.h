@@ -181,7 +181,7 @@ public:
     int delay_per_sec, reg_num;
     
 //Custom options
-    bool show_executions = false, select_robot_e = false;
+    bool show_executions = false, select_robot_e = false, game_paused = false;
     int r_e = 0;
 };
 

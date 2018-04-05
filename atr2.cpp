@@ -3439,6 +3439,11 @@ void atr2::bout() {
     }
 
     do {
+        while (av->game_paused) {
+            //wait until game not paused
+            atr2func::time_delay(1);
+        }
+
         av->game_cycle++;
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
@@ -3486,7 +3491,7 @@ void atr2::bout() {
             av->game_delay = 100;
         }
 
-        switch(av->game_delay) {
+        /*switch(av->game_delay) {
             case 0 ... 1:
                 k = 100;
             case 2 ... 5:
@@ -3507,7 +3512,7 @@ void atr2::bout() {
 
         if (!av->graphix) {
             k = 100;
-        }
+        }*/
         /*if (av->graphix) {
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
