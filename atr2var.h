@@ -181,7 +181,8 @@ public:
     int delay_per_sec, reg_num;
     
 //Custom options
-    bool show_executions = false;
+    bool show_executions = false, select_robot_e = false;
+    int r_e = 0;
 };
 
 #endif // ATR2VAR_H

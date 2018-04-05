@@ -1464,6 +1464,10 @@ void atr2::parse_param(std::string s) {
         if (s1[0] == 'I') {
             av->show_executions = true;
             found = true;
+            if (s1.length() > 1) {
+                av->select_robot_e = true;
+                av->r_e = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
+            }
         }
         
     } else if (s[0] == ';'){
@@ -2620,8 +2624,10 @@ void atr2::execute_instruction(int n) {
     
     //DEBUG CONOR
     if (av->show_executions) {
-        std::cout << "Robot #" << n << " (" << av->robot[n].fn << ") executing line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", "
-                  << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << " " << av->robot[n].code[av->robot[n].ip].op[1] << " " << av->robot[n].code[av->robot[n].ip].op[2] << std::endl;
+        if (((av->select_robot_e) && (av->r_e == n)) || (!av->select_robot_e)) {
+            std::cout << "Robot #" << n << " (" << av->robot[n].fn << ") executing line " << av->robot[n].ip << ", op=" << get_val(n, av->robot[n].ip, 0) << ", "
+                      << mnemonic(get_val(n, av->robot[n].ip, 0), 0) << " " << av->robot[n].code[av->robot[n].ip].op[1] << " " << av->robot[n].code[av->robot[n].ip].op[2] << std::endl;
+        }
     }
     
     if(((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 0) && ((av->robot[n].code[av->robot[n].ip].op[atr2var::max_op] & 7) != 1)) {
