@@ -117,4 +117,4 @@ Running an ATR2 game with 3 CIRCLES.AT2 robots, 20 matches, 5000 cycles per matc
    
    | Option | Name            | Description |
    |-------:|-----------------|-------------|
-   |`-I`    | Instructions    | Prints robot instructions as they try to execute. |
+   |`-I{x}` | Instructions    | Prints robot instructions as they try to execute. (x = robot to filter instructions from,     default = all robots) |
