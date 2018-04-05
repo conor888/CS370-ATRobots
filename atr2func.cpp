@@ -321,8 +321,7 @@ double atr2func::distance(double x1, double y1, double x2, double y2) {
 }
 
 double atr2func::find_angle(double xx, double yy, double tx, double ty) {
-    int i, j, k, v, z;
-    double q;
+    double v, z, q;
 
     q = 0;
     v = (int)std::abs(std::round(tx - xx));
