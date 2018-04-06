@@ -222,7 +222,6 @@ void arena::keyPressEvent(QKeyEvent *event){
     } else if (event->key() == Qt::Key_Space) {
         if (av->game_paused == false) {
             av->game_paused = true;
-            setWindowTitle(QString::fromStdString("ATR2 - Paused"));
         } else {
             av->game_paused = false;
         }
