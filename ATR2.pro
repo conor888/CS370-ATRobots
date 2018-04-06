@@ -43,3 +43,6 @@ FORMS +=
 CONFIG += c++11
 
 QMAKE_CXXFLAGS += -std=c++11
+
+RC_FILE = Extra\atr2.rc
+ICON = Extra\atr2.icns
