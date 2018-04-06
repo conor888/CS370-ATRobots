@@ -1818,7 +1818,7 @@ void atr2::put_val(int n, int c, int o, int v) {
 
 void atr2::push(int n, int v) {
     if ((av->robot[n].ram[71] >= atr2var::stack_base) && (av->robot[n].ram[71] < (atr2var::stack_base + atr2var::stack_size))) {
-        av->robot[n].ram[71] = v;
+        av->robot[n].ram[av->robot[n].ram[71]] = v;
         av->robot[n].ram[71] = av->robot[n].ram[71] + 1;
     } else {
         robot_error(n, 1, atr2func::cstr(av->robot[n].ram[71]));
