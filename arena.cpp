@@ -13,7 +13,7 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 {
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
 
-    setWindowTitle(QString::fromStdString("ATR2 - Delay (ms): 1"));
+    setWindowTitle(QString::fromStdString("ATR2"));
     //resize(470, 470);
     setFixedSize(470, 470);
 
@@ -118,6 +118,9 @@ void arena::paintEvent(QPaintEvent *)
     //p->translate(width() / 2, height() / 2);
     //p->scale(side / 200.0, side / 200.0);
 
+    setWindowTitle(QString::fromStdString("ATR2 | Match: " + std::to_string(av->played) + "/" + std::to_string(av->matches)
+                                                         + " - Cycle: " + std::to_string(av->game_cycle) + "/" + std::to_string(av->game_limit / 1000) + "k - Delay (ms): " + std::to_string(av->game_delay)));
+
     QPainter p(this);
 
     p.setBrush(Qt::NoBrush);
@@ -175,8 +178,6 @@ void arena::keyPressEvent(QKeyEvent *event){
             default:
                 av->game_delay = 1;
         }
-
-        setWindowTitle(QString::fromStdString("ATR2 - Delay (ms): " + std::to_string(av->game_delay)));
     }
     else if ((event->key() == Qt::Key_Minus) || (event->key() == Qt::Key_Underscore)){
         switch(av->game_delay) {
@@ -218,15 +219,12 @@ void arena::keyPressEvent(QKeyEvent *event){
             default:
                 av->game_delay = 1;
         }
-
-        setWindowTitle(QString::fromStdString("ATR2 - Delay (ms): " + std::to_string(av->game_delay)));
     } else if (event->key() == Qt::Key_Space) {
         if (av->game_paused == false) {
             av->game_paused = true;
             setWindowTitle(QString::fromStdString("ATR2 - Paused"));
         } else {
             av->game_paused = false;
-            setWindowTitle(QString::fromStdString("ATR2 - Delay (ms): " + std::to_string(av->game_delay)));
         }
     }
 }
