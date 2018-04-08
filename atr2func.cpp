@@ -180,19 +180,30 @@ void atr2func::time_delay(int n) {
 }
 
 int atr2func::rol(int n, int k) {
-    return 0;
+
+    return n;
 }
 
 int atr2func::ror(int n, int k) {
-    return 0;
+    return n;
 }
 
 int atr2func::sal(int n, int k) {
-    return 0;
+
+    if (k >= 0) {
+        n = n << k;
+    }
+
+    return n;
 }
 
 int atr2func::sar(int n, int k) {
-    return 0;
+
+    if (k >= 0) {
+        n = n >> k;
+    }
+
+    return n;
 }
 
 void atr2func::make_tables() {
