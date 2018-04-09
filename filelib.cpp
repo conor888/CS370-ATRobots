@@ -35,12 +35,12 @@ std::string filelib::no_path(std::string fn) {
 
     k = 0;
     for (i = fn.length() - 1; i >= 0; i--) {
-        if(((fn[i] == '\\') || (fn[i] == ':')) && (k < i)) {
+        if(((fn[i] == '\\') || (fn[i] == ':') || (fn[i] == '/')) && (k < i)) {
             k = i;
         }
     }
     if (k != 0) {
-        return atr2func::rstr(fn, fn.length() - k);
+        return atr2func::rstr(fn, fn.length() - k - 1);
     } else {
         return fn;
     }
