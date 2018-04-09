@@ -36,4 +36,4 @@ FORMS += \
 DISTFILES +=
 
 RESOURCES += \
-    logo.qrc
+    atrobs.qrc

@@ -2,4 +2,7 @@
     <qresource prefix="/images">
         <file>atrobs.png</file>
     </qresource>
+    <qresource prefix="/fonts">
+        <file>FUTURE.TTF</file>
+    </qresource>
 </RCC>
