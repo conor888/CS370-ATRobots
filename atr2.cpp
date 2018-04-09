@@ -1235,7 +1235,8 @@ void atr2::create_robot(int n, std::string filename) {
     //Do we need to create with new?
     //new(av->robot[n]);
     init_robot(n);
-    filename = atr2func::ucase(atr2func::btrim(filename));
+    filename = atr2func::btrim(filename);
+    //ucase() removed ^
     if (filename == filelib::base_name(filename)) {
         if (filename[0] == '?') {
             filename = filename + av->locked_ext;
@@ -1324,7 +1325,8 @@ void atr2::parse_param(std::string s) {
     bool found;
 
     found = false;
-    s = atr2func::btrim(atr2func::ucase(s));
+    s = atr2func::btrim(s);
+    //ucase() removed ^
 
     if (s.empty()){
         exit(0);
@@ -1348,7 +1350,7 @@ void atr2::parse_param(std::string s) {
         //   found:=true;
     }
 
-    else if (s[0] == '/' || s[0] == '-' || s[0] == '=') {
+    else if (s[0] == '-' || s[0] == '=') {
         s1 = atr2func::rstr(s, s.length() - 1);
         if (s1[0] == 'X') {
             av->step_mode = atr2func::value(atr2func::rstr(s1, s1.length() - 1));
@@ -1554,7 +1556,8 @@ void atr2::init(int argc, std::string argv[]) {
     delete_compile_report();
     if (argc > 1) {
         for (i = 1; i < argc; i++) {
-            parse_param(atr2func::btrim(atr2func::ucase(argv[i])));
+            parse_param(atr2func::btrim(argv[i]));
+            //ucase() removed ^
         }
     } else {
         prog_error(5, "");
