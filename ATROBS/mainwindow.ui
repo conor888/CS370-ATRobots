@@ -1618,16 +1618,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 255, 0);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_7">
@@ -1641,16 +1642,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 0, 0);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_8">
@@ -1664,16 +1666,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 0, 255);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_9">
@@ -1687,16 +1690,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(0, 255, 255);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
@@ -1710,16 +1714,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 0, 255);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_11">
@@ -1733,16 +1738,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
+      <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
+      <weight>50</weight>
+      <bold>false</bold>
      </font>
     </property>
     <property name="styleSheet">
      <string notr="true">color: rgb(255, 255, 0);</string>
     </property>
     <property name="text">
-     <string>                   .</string>
+     <string>        .</string>
     </property>
    </widget>
   </widget>
