@@ -1620,8 +1620,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -1644,8 +1644,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -1668,8 +1668,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -1692,8 +1692,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -1716,8 +1716,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">
@@ -1740,8 +1740,8 @@ border-color: rgb(43, 43, 43);</string>
      <font>
       <family>Courier New</family>
       <pointsize>18</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <weight>75</weight>
+      <bold>true</bold>
      </font>
     </property>
     <property name="styleSheet">

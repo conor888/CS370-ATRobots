@@ -16,11 +16,22 @@ public:
     ~MainWindow();
     std::string no_path(std::string fn);
     std::string rstr(std::string s1, int l);
+    std::string base_name_pad(std::string name);
 
 private slots:
     void on_pushButton_13_clicked();
 
     void on_pushButton_clicked();
+
+    void on_pushButton_2_clicked();
+
+    void on_pushButton_3_clicked();
+
+    void on_pushButton_4_clicked();
+
+    void on_pushButton_5_clicked();
+
+    void on_pushButton_6_clicked();
 
 private:
     Ui::MainWindow *ui;
