@@ -52,8 +52,12 @@ void arena::update_robot(int rn) {
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
         if (av->robot[rn].scanrange < 1500) {
             p.setPen(QPen(QColor(0,0,255), 1));
-            p.drawArc(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(av->robot[rn].scanrange * atr2var::screen_scale),
-                    (int)round(av->robot[rn].scanrange * atr2var::screen_scale), av->robot[rn].startarc, av->robot[rn].endarc);
+            p.drawArc(av->robot[0].tx[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //x
+                      av->robot[0].ty[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //y
+                      (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //h
+                      (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //w
+                      av->robot[0].startarc * 16, //startArc
+                      (av->robot[0].endarc - av->robot[0].startarc) * 16); //spanArc
         }
     }
     if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {
@@ -130,11 +134,30 @@ void arena::paintEvent(QPaintEvent *)
     p.drawPixmap(0, 0, *pix[32]);
     p.drawPixmap(0, 0, *pix[33]);
 
+    p.setPen(QPen(QColor(0,0,255), 1));
+
+    /*QPointF const A(av->robot[0].tx[6], av->robot[0].ty[6]);
+    QPointF const B(av->robot[0].tx[7], av->robot[0].ty[7]);
+    QPointF const C(av->robot[0].tx[4], av->robot[0].ty[4]);
+    double  const radius(av->robot[0].scanrange * atr2var::screen_scale);
+
+    QRectF const r(C.x() - radius, C.y() - radius, radius * 2, radius * 2);
+    double const startAngle = 16 * atan2(A.y() - C.y(), A.x() - C.x()) * 180.0 / M_PI;
+    double const endAngle   = 16 * atan2(B.y() - C.y(), B.x() - C.x()) * 180.0 / M_PI;
+    double const spanAngle = endAngle - startAngle;
+    p.drawArc(r, startAngle, spanAngle);*/
+    /*p.drawArc(av->robot[0].tx[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //x
+              av->robot[0].ty[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //y
+              (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //h
+              (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //w
+              av->robot[0].startarc * 16, //startArc
+              (av->robot[0].endarc - av->robot[0].startarc) * 16); //spanArc*/
+
     p.restore();
 
     //p->end();
 
-    emit donePainting();
+    //emit donePainting();
 }
 
 void arena::keyPressEvent(QKeyEvent *event){
