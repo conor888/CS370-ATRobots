@@ -1659,8 +1659,8 @@ void atr2::draw_robot(int n) {
     av->robot[n].ty[6] = (int)round(yy - atr2func::cost[(t + av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
     av->robot[n].tx[7] = (int)round(xx + atr2func::sint[(t - av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
     av->robot[n].ty[7] = (int)round(yy - atr2func::cost[(t - av->robot[n].scanarc + 1024) & 255] * av->robot[n].scanrange * atr2var::screen_scale);
-    av->robot[n].startarc = (int)round(((256 - ((t + av->robot[n].scanarc + 1024) & 255)) / 256 * 360) + 90);
-    av->robot[n].endarc = (int)round(((256 - ((t - av->robot[n].scanarc + 1024) & 255)) / 256 * 360) + 90);
+    av->robot[n].startarc = (int)round(((256 - ((t + av->robot[n].scanarc + 1024) & 255)) / 256.0 * 360) + 90);
+    av->robot[n].endarc = (int)round(((256 - ((t - av->robot[n].scanarc + 1024) & 255)) / 256.0 * 360) + 90);
 
     //DEBUG_CONOR
     /*std::cout << "robot[" << n << "]: ";
