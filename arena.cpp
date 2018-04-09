@@ -52,12 +52,12 @@ void arena::update_robot(int rn) {
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
         if (av->robot[rn].scanrange < 1500) {
             //p.setPen(QPen(QColor(0,0,255), 1));
-            p.drawArc(av->robot[0].tx[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //x
-                      av->robot[0].ty[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //y
-                      (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //h
-                      (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //w
-                      av->robot[0].startarc * 16, //startArc
-                      (av->robot[0].endarc - av->robot[0].startarc) * 16); //spanArc
+            p.drawArc(av->robot[rn].tx[4] - (av->robot[rn].scanrange  * atr2var::screen_scale), //x
+                      av->robot[rn].ty[4] - (av->robot[rn].scanrange  * atr2var::screen_scale), //y
+                      (int)round(av->robot[rn].scanrange * atr2var::screen_scale * 2), //h
+                      (int)round(av->robot[rn].scanrange * atr2var::screen_scale * 2), //w
+                      av->robot[rn].startarc * 16, //startArc
+                      (av->robot[rn].endarc - av->robot[rn].startarc) * 16); //spanArc
         }
     }
     if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {
