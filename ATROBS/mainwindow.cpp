@@ -122,9 +122,8 @@ void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 
 void MainWindow::on_pushButton_14_clicked() //Play button
 {
-    std::string cla = "/home/xubuntu/build-ATR2-Desktop_Qt_5_10_1_GCC_64bit-Debug/ATR2";
+    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2 ";
 
-    //cla += "../../build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app "; // /Contents/MacOS/ATROBS
     cla += "";
 
     for (int i = 0; i < 6; i++) {
