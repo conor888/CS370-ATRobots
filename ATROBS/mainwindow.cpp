@@ -11,6 +11,8 @@ MainWindow::MainWindow(QWidget *parent) :
     for (int i = 0; i < 6; i++) {
         fileName[i] = new QString("");
     }
+
+    atr2 = new QProcess(parent);
 }
 
 MainWindow::~MainWindow()
@@ -110,10 +112,27 @@ void MainWindow::on_pushButton_5_clicked() //Robot 5 browse button
     ui->label_10->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[4]->toStdString()))));
 }
 
-void MainWindow::on_pushButton_6_clicked()
+void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 {
     *fileName[5] = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
     ui->label_11->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[5]->toStdString()))));
+}
+
+void MainWindow::on_pushButton_14_clicked() //Play button
+{
+    std::string cla = "";
+
+    cla += "../build-ATROBS-Desktop_Qt_5_10_0_clang_64bit-Debug/ATROBS.app "; // /Contents/MacOS/ATROBS
+
+    for (int i = 0; i < 6; i++) {
+        if (!fileName[i]->isEmpty()) {
+            cla += fileName[i]->toStdString() + " ";
+        }
+    }
+
+    cla += "-M100 -L5 -A";
+
+    atr2->start(QString::fromStdString(cla));
 }

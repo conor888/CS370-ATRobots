@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QProcess>
 
 namespace Ui {
 class MainWindow;
@@ -18,6 +19,8 @@ public:
     std::string rstr(std::string s1, int l);
     std::string base_name_pad(std::string name);
 
+    QProcess *atr2;
+
 private slots:
     void on_pushButton_13_clicked();
 
@@ -32,6 +35,8 @@ private slots:
     void on_pushButton_5_clicked();
 
     void on_pushButton_6_clicked();
+
+    void on_pushButton_14_clicked();
 
 private:
     Ui::MainWindow *ui;
