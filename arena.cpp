@@ -51,7 +51,7 @@ void arena::update_robot(int rn) {
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[6], av->robot[rn].ty[6]);
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
         if (av->robot[rn].scanrange < 1500) {
-            p.setPen(QPen(QColor(0,0,255), 1));
+            //p.setPen(QPen(QColor(0,0,255), 1));
             p.drawArc(av->robot[0].tx[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //x
                       av->robot[0].ty[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //y
                       (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //h
