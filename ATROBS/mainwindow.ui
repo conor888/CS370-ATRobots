@@ -48,8 +48,7 @@ color: rgb(255, 255, 255);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -71,8 +70,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -266,16 +264,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <stylestrategy>PreferDefault</stylestrategy>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QCheckBox:indicator:checked {
+	background-color: rgb(255, 255, 255);
+}
+
+QCheckBox:indicator:unchecked {
+	background-color: rgb(66, 66, 66);
+}</string>
     </property>
     <property name="text">
      <string> Show scan arcs</string>
@@ -301,8 +300,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -324,8 +322,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -347,8 +344,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -370,8 +366,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -393,8 +388,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -416,8 +410,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -439,8 +432,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -462,8 +454,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -485,8 +476,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -508,8 +498,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -703,19 +692,20 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <stylestrategy>PreferDefault</stylestrategy>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="autoFillBackground">
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QCheckBox:indicator:checked {
+	background-color: rgb(255, 255, 255);
+}
+
+QCheckBox:indicator:unchecked {
+	background-color: rgb(66, 66, 66);
+}</string>
     </property>
     <property name="text">
      <string> Show source</string>
@@ -910,16 +900,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <stylestrategy>PreferDefault</stylestrategy>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QCheckBox:indicator:checked {
+	background-color: rgb(255, 255, 255);
+}
+
+QCheckBox:indicator:unchecked {
+	background-color: rgb(66, 66, 66);
+}</string>
     </property>
     <property name="text">
      <string> Disable graphics</string>
@@ -1114,16 +1105,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <stylestrategy>PreferDefault</stylestrategy>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QCheckBox:indicator:checked {
+	background-color: rgb(255, 255, 255);
+}
+
+QCheckBox:indicator:unchecked {
+	background-color: rgb(66, 66, 66);
+}</string>
     </property>
     <property name="text">
      <string> Quiet mode</string>
@@ -1318,16 +1310,17 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
-      <stylestrategy>PreferDefault</stylestrategy>
-      <kerning>true</kerning>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QCheckBox:indicator:checked {
+	background-color: rgb(255, 255, 255);
+}
+
+QCheckBox:indicator:unchecked {
+	background-color: rgb(66, 66, 66);
+}</string>
     </property>
     <property name="text">
      <string> Compile only</string>
@@ -1350,10 +1343,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
@@ -1371,10 +1361,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
@@ -1392,10 +1379,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
@@ -1413,10 +1397,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
-      <weight>50</weight>
-      <bold>false</bold>
+      <pointsize>14</pointsize>
      </font>
     </property>
     <property name="text">
@@ -1619,7 +1600,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1643,7 +1624,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1667,7 +1648,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1691,7 +1672,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1715,7 +1696,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
@@ -1739,7 +1720,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="font">
      <font>
       <family>Courier New</family>
-      <pointsize>18</pointsize>
+      <pointsize>24</pointsize>
       <weight>75</weight>
       <bold>true</bold>
      </font>
