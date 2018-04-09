@@ -124,7 +124,7 @@ void MainWindow::on_pushButton_14_clicked() //Play button
 {
     std::string cla = "";
 
-    cla += "../build-ATROBS-Desktop_Qt_5_10_0_clang_64bit-Debug/ATROBS.app "; // /Contents/MacOS/ATROBS
+    cla += "../../build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app "; // /Contents/MacOS/ATROBS
 
     for (int i = 0; i < 6; i++) {
         if (!fileName[i]->isEmpty()) {
