@@ -31,7 +31,7 @@ color: rgb(255, 255, 255);</string>
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="logo.qrc">:/images/atrobs.png</pixmap>
+     <pixmap resource="atrobs.qrc">:/images/atrobs.png</pixmap>
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
@@ -134,9 +134,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -190,9 +190,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -571,9 +571,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -627,9 +627,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -778,9 +778,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -834,9 +834,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -982,9 +982,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -1038,9 +1038,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -1186,9 +1186,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -1242,9 +1242,9 @@ border-color: rgb(43, 43, 43);</string>
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>66</red>
-          <green>66</green>
-          <blue>66</blue>
+          <red>34</red>
+          <green>34</green>
+          <blue>34</blue>
          </color>
         </brush>
        </colorrole>
@@ -1607,11 +1607,24 @@ border-color: rgb(43, 43, 43);</string>
      <string>Play</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>100</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Robot 1</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="logo.qrc"/>
+  <include location="atrobs.qrc"/>
  </resources>
  <connections/>
 </ui>
