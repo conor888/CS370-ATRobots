@@ -124,11 +124,11 @@ void MainWindow::on_pushButton_14_clicked() //Play button
 {
     std::string cla = "";
 
-    cla += "../../build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app "; // /Contents/MacOS/ATROBS
+    cla += "/Users/nickspina/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2 ";
 
     for (int i = 0; i < 6; i++) {
         if (!fileName[i]->isEmpty()) {
-            cla += fileName[i]->toStdString() + " ";
+            cla += '"' + fileName[i]->toStdString() + "\" ";
         }
     }
 

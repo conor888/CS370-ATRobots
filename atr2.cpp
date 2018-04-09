@@ -1324,7 +1324,8 @@ void atr2::parse_param(std::string s) {
     bool found;
 
     found = false;
-    s = atr2func::btrim(atr2func::ucase(s));
+//    s = atr2func::btrim(atr2func::ucase(s));
+    s = atr2func::btrim(s);
 
     if (s.empty()){
         exit(0);
@@ -1554,7 +1555,8 @@ void atr2::init(int argc, std::string argv[]) {
     delete_compile_report();
     if (argc > 1) {
         for (i = 1; i < argc; i++) {
-            parse_param(atr2func::btrim(atr2func::ucase(argv[i])));
+//            parse_param(atr2func::btrim(atr2func::ucase(argv[i])));
+            parse_param(atr2func::btrim(argv[i]));
         }
     } else {
         prog_error(5, "");
