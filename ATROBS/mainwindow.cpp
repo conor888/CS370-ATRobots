@@ -149,7 +149,9 @@ void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 void MainWindow::on_pushButton_14_clicked() //Play button
 {
     //full ATR2 program path
-    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app";
+//    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app";
+    std::string cla = "/Users/nickspina/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2";
+
 
     //show robot source
     if (!ui->checkBox_2->isChecked()) {
