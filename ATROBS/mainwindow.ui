@@ -1418,8 +1418,7 @@ QCheckBox:indicator:unchecked {
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
@@ -1441,8 +1440,7 @@ border-color: rgb(43, 43, 43);</string>
     </property>
     <property name="font">
      <font>
-      <family>Terminal</family>
-      <pointsize>12</pointsize>
+      <pointsize>18</pointsize>
      </font>
     </property>
     <property name="styleSheet">
