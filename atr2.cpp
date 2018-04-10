@@ -1571,7 +1571,7 @@ void atr2::init(int argc, std::string argv[]) {
     if (av->compile_only) {
         write_compile_report();
     }
-    if (av->num_robots < 1) {
+    if (av->num_robots < 2) {
         prog_error(4, "");
     }
     if (!av->no_gfx) {
