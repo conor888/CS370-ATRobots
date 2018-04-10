@@ -7,8 +7,26 @@
     <x>0</x>
     <y>0</y>
     <width>750</width>
-    <height>550</height>
+    <height>520</height>
    </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>750</width>
+    <height>520</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>750</width>
+    <height>520</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -24,7 +42,7 @@ color: rgb(255, 255, 255);</string>
       <x>0</x>
       <y>0</y>
       <width>751</width>
-      <height>81</height>
+      <height>71</height>
      </rect>
     </property>
     <property name="text">
@@ -41,7 +59,7 @@ color: rgb(255, 255, 255);</string>
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>100</y>
+      <y>80</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -63,7 +81,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>100</y>
+      <y>80</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -85,7 +103,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>270</y>
+      <y>250</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -293,7 +311,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>150</y>
+      <y>130</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -315,7 +333,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>200</y>
+      <y>180</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -337,7 +355,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>100</y>
+      <y>80</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -359,7 +377,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>150</y>
+      <y>130</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -381,7 +399,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>390</x>
-      <y>200</y>
+      <y>180</y>
       <width>51</width>
       <height>41</height>
      </rect>
@@ -403,7 +421,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>150</y>
+      <y>130</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -425,7 +443,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>200</y>
+      <y>180</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -447,7 +465,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>100</y>
+      <y>80</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -469,7 +487,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>150</y>
+      <y>130</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -491,7 +509,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>200</y>
+      <y>180</y>
       <width>16</width>
       <height>41</height>
      </rect>
@@ -513,7 +531,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>310</y>
+      <y>290</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -724,7 +742,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>350</y>
+      <y>330</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -929,7 +947,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>390</y>
+      <y>370</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -1134,7 +1152,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>430</y>
+      <y>410</y>
       <width>231</width>
       <height>21</height>
      </rect>
@@ -1339,7 +1357,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>270</y>
+      <y>250</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -1357,7 +1375,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>310</y>
+      <y>290</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -1375,7 +1393,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>350</y>
+      <y>330</y>
       <width>201</width>
       <height>21</height>
      </rect>
@@ -1393,7 +1411,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>370</x>
-      <y>390</y>
+      <y>370</y>
       <width>331</width>
       <height>21</height>
      </rect>
@@ -1411,7 +1429,7 @@ QCheckBox:indicator:unchecked {
     <property name="geometry">
      <rect>
       <x>100</x>
-      <y>480</y>
+      <y>455</y>
       <width>241</width>
       <height>41</height>
      </rect>
@@ -1433,7 +1451,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>410</x>
-      <y>480</y>
+      <y>455</y>
       <width>241</width>
       <height>41</height>
      </rect>
@@ -1455,7 +1473,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>100</y>
+      <y>80</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1479,7 +1497,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>150</y>
+      <y>130</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1503,7 +1521,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>130</x>
-      <y>200</y>
+      <y>180</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1527,7 +1545,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>100</y>
+      <y>80</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1551,7 +1569,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>150</y>
+      <y>130</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1575,7 +1593,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>450</x>
-      <y>200</y>
+      <y>180</y>
       <width>221</width>
       <height>41</height>
      </rect>
@@ -1599,7 +1617,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>270</y>
+      <y>250</y>
       <width>81</width>
       <height>25</height>
      </rect>
@@ -1642,7 +1660,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>310</y>
+      <y>290</y>
       <width>81</width>
       <height>25</height>
      </rect>
@@ -1685,7 +1703,7 @@ border-color: rgb(43, 43, 43);</string>
     <property name="geometry">
      <rect>
       <x>610</x>
-      <y>350</y>
+      <y>330</y>
       <width>81</width>
       <height>25</height>
      </rect>
