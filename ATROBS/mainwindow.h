@@ -18,6 +18,7 @@ public:
     std::string no_path(std::string fn);
     std::string rstr(std::string s1, int l);
     std::string base_name_pad(std::string name);
+    void remove_robot(int robot);
 
     QProcess *atr2;
 
@@ -37,6 +38,18 @@ private slots:
     void on_pushButton_6_clicked();
 
     void on_pushButton_14_clicked();
+
+    void on_pushButton_7_clicked();
+
+    void on_pushButton_8_clicked();
+
+    void on_pushButton_9_clicked();
+
+    void on_pushButton_10_clicked();
+
+    void on_pushButton_11_clicked();
+
+    void on_pushButton_12_clicked();
 
 private:
     Ui::MainWindow *ui;

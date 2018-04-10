@@ -75,57 +75,81 @@ void MainWindow::on_pushButton_13_clicked() //Quit button
 
 void MainWindow::on_pushButton_clicked() //Robot 1 browse button
 {
-    *fileName[0] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_6->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[0]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[0] = inputFile;
+        ui->label_6->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[0]->toStdString()))));
+    }
 }
 
 void MainWindow::on_pushButton_2_clicked() //Robot 2 browse button
 {
-    *fileName[1] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_7->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[1]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[1] = inputFile;
+        ui->label_7->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[1]->toStdString()))));
+    }
 }
 
 void MainWindow::on_pushButton_3_clicked() //Robot 3 browse button
 {
-    *fileName[2] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_8->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[2]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[2] = inputFile;
+        ui->label_8->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[2]->toStdString()))));
+    }
 }
 
 void MainWindow::on_pushButton_4_clicked() //Robot 4 browse button
 {
-    *fileName[3] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_9->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[3]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[3] = inputFile;
+        ui->label_9->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[3]->toStdString()))));
+    }
 }
 
 
 void MainWindow::on_pushButton_5_clicked() //Robot 5 browse button
 {
-    *fileName[4] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_10->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[4]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[4] = inputFile;
+        ui->label_10->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[4]->toStdString()))));
+    }
 }
 
 void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 {
-    *fileName[5] = QFileDialog::getOpenFileName(this, tr("Open File"),
+    QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
                                                     tr("ATRobot File (*.AT2)"));
-    ui->label_11->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[5]->toStdString()))));
+
+    if (!inputFile.isEmpty()) {
+        *fileName[5] = inputFile;
+        ui->label_11->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[5]->toStdString()))));
+    }
 }
 
 void MainWindow::on_pushButton_14_clicked() //Play button
 {
     //full ATR2 program path
-    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2";
+    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app";
 
     //show robot source
     if (!ui->checkBox_2->isChecked()) {
@@ -162,4 +186,82 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     }
 
     atr2->start(QString::fromStdString(cla));
+}
+
+void MainWindow::on_pushButton_7_clicked() //Robot 1 remove
+{
+    MainWindow::remove_robot(0);
+}
+
+void MainWindow::on_pushButton_8_clicked() //Robot 2 remove
+{
+    MainWindow::remove_robot(1);
+}
+
+void MainWindow::on_pushButton_9_clicked() //Robot 3 remove
+{
+    MainWindow::remove_robot(2);
+}
+
+void MainWindow::on_pushButton_10_clicked() //Robot 4 remove
+{
+    MainWindow::remove_robot(3);
+}
+
+void MainWindow::on_pushButton_11_clicked() //Robot 5 remove
+{
+    MainWindow::remove_robot(4);
+}
+
+void MainWindow::on_pushButton_12_clicked() //Robot 6 remove
+{
+    MainWindow::remove_robot(5);
+}
+
+void MainWindow::remove_robot(int robot) {
+    //*fileName[robot] = "";
+
+    for (int i = robot + 1; i < 6; i++) {
+        *fileName[i - 1] = *fileName[i];
+    }
+
+    *fileName[5] = "";
+
+    if (fileName[0]->isEmpty()) {
+        ui->label_6->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_6->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[0]->toStdString()))));
+    }
+
+    if (fileName[1]->isEmpty()) {
+        ui->label_7->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_7->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[1]->toStdString()))));
+    }
+
+    if (fileName[2]->isEmpty()) {
+        ui->label_8->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_8->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[2]->toStdString()))));
+    }
+
+    if (fileName[3]->isEmpty()) {
+        ui->label_9->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_9->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[3]->toStdString()))));
+    }
+
+    if (fileName[4]->isEmpty()) {
+        ui->label_10->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_10->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[4]->toStdString()))));
+    }
+
+    if (fileName[5]->isEmpty()) {
+        ui->label_11->setText(QString::fromStdString("        .   "));
+    } else {
+        ui->label_11->setText(QString::fromStdString(MainWindow::base_name_pad(MainWindow::no_path(fileName[5]->toStdString()))));
+    }
+
+
 }
