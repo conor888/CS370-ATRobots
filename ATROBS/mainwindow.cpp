@@ -2,17 +2,19 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 
-MainWindow::MainWindow(QWidget *parent) :
+MainWindow::MainWindow(QProcess *atr2in, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
+    setWindowTitle("ATROBS");
+
     for (int i = 0; i < 6; i++) {
         fileName[i] = new QString("");
     }
 
-    atr2 = new QProcess(parent);
+    atr2 = atr2in;
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +54,7 @@ std::string MainWindow::base_name_pad(std::string name) {
 
     s1.clear();
     k = 0;
-    while ((k < name.length()) && (name[k] != '.')) {
+    while ((k < (int)name.length()) && (name[k] != '.')) {
         s1 = s1 + name[k];
         k++;
     }
@@ -122,17 +124,32 @@ void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 
 void MainWindow::on_pushButton_14_clicked() //Play button
 {
-    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2 ";
+    //full ATR2 program path
+    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2";
 
-    cla += "";
-
+    //add up to 6 robots
     for (int i = 0; i < 6; i++) {
         if (!fileName[i]->isEmpty()) {
-            cla += '"' + fileName[i]->toStdString() + "\" ";
+            cla += " \"" + fileName[i]->toStdString() + "\"";
         }
     }
 
-    cla += "-M100 -L5 -A";
+    //matches
+    QString numMatchesStr = ui->spinBox->cleanText();
+    cla += " -M" + numMatchesStr.toStdString();
+
+    //game delay
+    QString numDelayStr = ui->spinBox_2->cleanText();
+    cla += " -D" + numDelayStr.toStdString();
+
+    //game limit
+    QString numLimitStr = ui->spinBox_3->cleanText();
+    cla += " -L" + numLimitStr.toStdString();
+
+    //show scan arcs
+    if (ui->checkBox->isChecked()) {
+        cla += " -A";
+    }
 
     atr2->start(QString::fromStdString(cla));
 }

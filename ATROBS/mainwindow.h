@@ -13,7 +13,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QProcess *atr2in, QWidget *parent = 0);
     ~MainWindow();
     std::string no_path(std::string fn);
     std::string rstr(std::string s1, int l);
