@@ -127,6 +127,11 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     //full ATR2 program path
     std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2";
 
+    //show robot source
+    if (!ui->checkBox_2->isChecked()) {
+        cla += " -S";
+    }
+
     //add up to 6 robots
     for (int i = 0; i < 6; i++) {
         if (!fileName[i]->isEmpty()) {
@@ -149,6 +154,11 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     //show scan arcs
     if (ui->checkBox->isChecked()) {
         cla += " -A";
+    }
+
+    //disable graphics
+    if (ui->checkBox_3->isChecked()) {
+        cla += " -G";
     }
 
     atr2->start(QString::fromStdString(cla));
