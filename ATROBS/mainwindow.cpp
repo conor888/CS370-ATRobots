@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
+#include <iostream>
 
 MainWindow::MainWindow(QProcess *atr2in, QWidget *parent) :
     QMainWindow(parent),
@@ -150,7 +151,17 @@ void MainWindow::on_pushButton_14_clicked() //Play button
 {
     //full ATR2 program path
 //    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app";
-    std::string cla = "/Users/nickspina/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_0_clang_64bit-Debug/ATR2.app/Contents/MacOS/ATR2";
+    //QString current_dir = QDir::currentPath();
+    QString current_dir = QCoreApplication::applicationDirPath();
+    std::string cla;
+
+    if (QSysInfo::productType() == "windows") {
+        cla = current_dir.toStdString() + "/ATR2.exe";
+    } else if (QSysInfo::productType() == "osx") {
+        cla = current_dir.toStdString() + "/ATR2.app";
+    } else {
+        cla = current_dir.toStdString() + "/ATR2";
+    }
 
 
     //show robot source
@@ -186,6 +197,8 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     if (ui->checkBox_3->isChecked()) {
         cla += " -G";
     }
+
+    std::cout << cla << std::endl;
 
     atr2->start(QString::fromStdString(cla));
 }
