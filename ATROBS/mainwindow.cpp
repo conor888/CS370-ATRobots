@@ -169,10 +169,10 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     if (QSysInfo::productType() == "windows") {
         cla = current_dir.toStdString() + "/ATR2.exe";
     } else if (QSysInfo::productType() == "osx") {
-        cout << "rstr 26 = " << MainWindow::rstr(current_dir, 26) << std::endl;
-        if (MainWindow::rstr(current_dir, 26) == "/ATROBS.app/Contents/MacOS") {
-            current_dir = MainWindow::lstr(current_dir, current_dir.length() - 27);
-            cout << "lstr 27 = " << current_dir << std::endl;
+        std::cout << "rstr 26 = " << MainWindow::rstr(current_dir.toStdString(), 26) << std::endl;
+        if (MainWindow::rstr(current_dir.toStdString(), 26) == "/ATROBS.app/Contents/MacOS") {
+            current_dir = QString::fromStdString(MainWindow::lstr(current_dir.toStdString(), current_dir.toStdString().length() - 27));
+            std::cout << "lstr 27 = " << current_dir.toStdString() << std::endl;
         }
         cla = current_dir.toStdString() + "/ATR2.app";
     } else {
