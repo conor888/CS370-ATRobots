@@ -57,7 +57,7 @@ void arena::update_robot(int rn) {
                       (int)round(av->robot[rn].scanrange * atr2var::screen_scale * 2), //h
                       (int)round(av->robot[rn].scanrange * atr2var::screen_scale * 2), //w
                       av->robot[rn].startarc * 16, //startArc
-                      (av->robot[rn].endarc - av->robot[rn].startarc) * 16); //spanArc
+                      (av->robot[rn].spanarc) * 16); //spanArc
         }
     }
     if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {

@@ -106,7 +106,7 @@ public:
                 plen, scanarc, accuracy, shift, err, delay_left, robot_time_limit,
                 max_time, time_left, lshift, arc_count, sonar_count, scanrange,
                 last_damage, last_hit, transponder, shutdown, channel,
-                lendarc, endarc, lstartarc, startarc, mines;
+                lendarc, endarc, lstartarc, startarc, spanarc, mines;
         int tx[max_robot_lines], ltx[max_robot_lines], ty[max_robot_lines], lty[max_robot_lines];
         long wins,  trials, kills, deaths, startkills, shots_fired, match_shots,
                 hits, damage_total, cycles_lived, error_count;

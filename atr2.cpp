@@ -1665,6 +1665,24 @@ void atr2::draw_robot(int n) {
     av->robot[n].startarc = (int)round(((256 - ((t + av->robot[n].scanarc + 1024) & 255)) / 256.0 * 360) + 90);
     av->robot[n].endarc = (int)round(((256 - ((t - av->robot[n].scanarc + 1024) & 255)) / 256.0 * 360) + 90);
 
+    av->robot[n].spanarc = av->robot[n].endarc - av->robot[n].startarc;
+
+    /*if (av->robot[n].startarc >= 360) {
+        av->robot[n].startarc = av->robot[n].startarc - 360;
+    }
+
+    if (av->robot[n].endarc >= 360) {
+        av->robot[n].endarc = av->robot[n].endarc - 360;
+    }*/
+
+    if ((av->robot[n].spanarc) < 0) {
+        av->robot[n].spanarc = 360 + av->robot[n].spanarc;
+    }
+
+    if ((av->robot[n].spanarc) > 180) {
+        av->robot[n].spanarc = std::abs(av->robot[n].spanarc - 360);
+    }
+
     //DEBUG_CONOR
     /*std::cout << "robot[" << n << "]: ";
 
@@ -3144,6 +3162,35 @@ void atr2::do_robot(int n) {
     } else {
         tty = av->robot[n].y;
     }
+
+
+    if ((ttx < 0) || (tty < 0) || (ttx > 1000) || (tty > 1000)) {
+        av->robot[n].ram[8]++;
+        av->robot[n].tspd = 0;
+        if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+            damage(n, 1, true);
+            av->robot[n].spd = 0;
+        }
+    }
+
+    for (i = 0; i < av->num_robots; i++) {
+        if ((i != n) && (av->robot[i].armor > 0) && (atr2func::distance(ttx, tty, av->robot[i].x, av->robot[i].y) < atr2var::crash_range)) {
+            av->robot[n].tspd = 0;
+            av->robot[n].spd = 0;
+            ttx = av->robot[n].x;
+            tty = av->robot[n].y;
+            av->robot[i].tspd = 0;
+            av->robot[i].spd = 0;
+            av->robot[n].ram[8]++;
+            av->robot[i].ram[8]++;
+            if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+                damage(n, 1, true);
+                damage(i, 1, true);
+            }
+        }
+    }
+
+
     if (ttx < 0) {
         ttx = 0;
     }
