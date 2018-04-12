@@ -2128,7 +2128,7 @@ int atr2::scan(int n) {
                             j = j + 256;
                             sign = 1;
                         }
-                        acc = abs(j - dir) / av->robot[n].scanarc * 2;
+                        acc = (std::abs((double)j - dir) / av->robot[n].scanarc) * 2;
                         if (sign < 0) {
                             av->robot[n].accuracy = (int)-abs(round(acc));
                         } else {
