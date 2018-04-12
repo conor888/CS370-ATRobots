@@ -16,6 +16,7 @@ public:
     explicit MainWindow(QProcess *atr2in, QWidget *parent = 0);
     ~MainWindow();
     std::string no_path(std::string fn);
+    std::string lstr(std::string s1, int l);
     std::string rstr(std::string s1, int l);
     std::string base_name_pad(std::string name);
     void remove_robot(int robot);

@@ -39,6 +39,16 @@ std::string MainWindow::no_path(std::string fn) {
     }
 }
 
+std::string MainWindow::lstr(std::string s1, int l) {
+    if ((int)s1.length() <= l) {
+        return s1;
+    } else {
+        s1.erase((unsigned int)(l), std::string::npos);
+        return s1;
+    }
+}
+
+
 std::string MainWindow::rstr(std::string s1, int l) {
     if ((int)s1.length() <= 1) {
         return s1;
@@ -152,12 +162,18 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     //full ATR2 program path
 //    std::string cla = "/Users/conor/Documents/GitHub/build-ATR2-Desktop_Qt_5_10_1_clang_64bit-Debug/ATR2.app";
     //QString current_dir = QDir::currentPath();
+    // /ATROBS.app/Contents/MacOS
     QString current_dir = QCoreApplication::applicationDirPath();
     std::string cla;
 
     if (QSysInfo::productType() == "windows") {
         cla = current_dir.toStdString() + "/ATR2.exe";
     } else if (QSysInfo::productType() == "osx") {
+        cout << "rstr 26 = " << MainWindow::rstr(current_dir, 26) << std::endl;
+        if (MainWindow::rstr(current_dir, 26) == "/ATROBS.app/Contents/MacOS") {
+            current_dir = MainWindow::lstr(current_dir, current_dir.length() - 27);
+            cout << "lstr 27 = " << current_dir << std::endl;
+        }
         cla = current_dir.toStdString() + "/ATR2.app";
     } else {
         cla = current_dir.toStdString() + "/ATR2";
