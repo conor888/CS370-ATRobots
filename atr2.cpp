@@ -8,9 +8,11 @@
 #include "arena.h"
 #include <QEventLoop>
 
-atr2::atr2(atr2var* avtemp, arena* parent) {
+atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp) {
     av = avtemp;
     atr2a = parent;
+    rgraphs = rgraphstemp;
+    cycleg = cyclegtemp;
 }
 
 atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
@@ -199,11 +201,11 @@ int atr2::max_shown() {
 }
 
 void atr2::update_armor(int n) {
-
+    rgraphs[n]->update();
 }
 
 void atr2::update_heat(int n) {
-
+    rgraphs[n]->update();
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
@@ -214,7 +216,11 @@ void atr2::robot_error(int n, int i, std::string ov) {
 }
 
 void atr2::update_lives(int n) {
+    rgraphs[n]->update();
+}
 
+void atr2::update_cycle_window() {
+    cycleg->update();
 }
 
 void atr2::prog_error(int n, std::string ss) {
@@ -3534,38 +3540,36 @@ void atr2::bout() {
             av->game_delay = 100;
         }
 
-        /*switch(av->game_delay) {
-            case 0 ... 1:
-                k = 100;
-            case 2 ... 5:
-                k = 50;
-            case 6 ... 10:
-                k = 25;
-            case 11 ... 25:
-                k = 20;
-            case 26 ... 40:
-                k = 10;
-            case 41 ... 70:
-                k = 5;
-            case 71 ... atr2var::maxint:
-                k = 1;
-            default:
-                k = 10;
+        if (av->game_delay <= 1) {
+            k = 100;
+        } else if (av->game_delay <= 15) {
+            k = 50;
+        } else if (av->game_delay <= 30) {
+            k = 25;
+        } else if (av->game_delay <= 50) {
+            k = 20;
+        } else if (av->game_delay <= 60) {
+            k = 10;
+        } else if (av->game_delay <= 75) {
+            k = 5;
+        } else if (av->game_delay >= 76) {
+            k = 1;
         }
 
         if (!av->graphix) {
             k = 100;
-        }*/
-        /*if (av->graphix) {
+        }
+
+        if (av->graphix) {
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
-            } else {
+            } /*else {
                 if (av->update_timer != mem[0:$46C] >> 1) {
                     update_cycle_window();
                 }
                 av->update_timer = mem[0:$46C] >> 1;
-            }
-        }*/
+            }*/
+        }
     } while(!(av->quit || gameover() || av->bout_over));
 
     //update_cycle_window();
