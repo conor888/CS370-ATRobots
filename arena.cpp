@@ -6,7 +6,6 @@
 #include "arena.h"
 #include "atr2.h"
 #include "atr2func.h"
-#include <QKeyEvent>
 #include <QPixmap>
 
 arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
@@ -38,7 +37,7 @@ void arena::update_robot(int rn) {
     if (av->robot[rn].shields_up) {
         p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], atr2var::robot_scale, atr2var::robot_scale);
     }
-    p.setPen(QPen(atr2func::robot_color(rn), 2));
+    p.setPen(QPen(atr2func::robot_color(rn), 1));
     p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
     p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
     p.drawLine(av->robot[rn].tx[3], av->robot[rn].ty[3], av->robot[rn].tx[1], av->robot[rn].ty[1]);
@@ -161,97 +160,6 @@ void arena::paintEvent(QPaintEvent *)
     //p->end();
 
     //emit donePainting();
-}
-
-void arena::keyPressEvent(QKeyEvent *event){
-    if ((event->key() == Qt::Key_Equal) || (event->key() == Qt::Key_Plus)){
-        switch(av->game_delay) {
-            case 0:
-                av->game_delay = 1;
-                break;
-            case 1:
-                av->game_delay = 5;
-                break;
-            case 5:
-                av->game_delay = 10;
-                break;
-            case 10:
-                av->game_delay = 15;
-                break;
-            case 15:
-                av->game_delay = 20;
-                break;
-            case 20:
-                av->game_delay = 30;
-                break;
-            case 30:
-                av->game_delay = 40;
-                break;
-            case 40:
-                av->game_delay = 50;
-                break;
-            case 50:
-                av->game_delay = 60;
-                break;
-            case 60:
-                av->game_delay = 75;
-                break;
-            case 75:
-                av->game_delay = 100;
-                break;
-            case 100:
-                break;
-            default:
-                av->game_delay = 1;
-        }
-    }
-    else if ((event->key() == Qt::Key_Minus) || (event->key() == Qt::Key_Underscore)){
-        switch(av->game_delay) {
-            case 0:
-                break;
-            case 1:
-                av->game_delay = 0;
-                break;
-            case 5:
-                av->game_delay = 1;
-                break;
-            case 10:
-                av->game_delay = 5;
-                break;
-            case 15:
-                av->game_delay = 10;
-                break;
-            case 20:
-                av->game_delay = 15;
-                break;
-            case 30:
-                av->game_delay = 20;
-                break;
-            case 40:
-                av->game_delay = 30;
-                break;
-            case 50:
-                av->game_delay = 40;
-                break;
-            case 60:
-                av->game_delay = 50;
-                break;
-            case 75:
-                av->game_delay = 60;
-                break;
-            case 100:
-                av->game_delay = 75;
-                break;
-            default:
-                av->game_delay = 1;
-        }
-    } else if (event->key() == Qt::Key_Space) {
-        if (av->game_paused == false) {
-            av->game_paused = true;
-        } else {
-            av->game_paused = false;
-        }
-    }
 }
 
 arena::~arena() {

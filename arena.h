@@ -25,7 +25,6 @@ public:
 
 private:
     void paintEvent(QPaintEvent *event) override;
-    void keyPressEvent(QKeyEvent * event);
     atr2var *av;
     int n = 0;
     int update_target = 0;
