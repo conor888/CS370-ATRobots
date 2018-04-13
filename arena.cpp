@@ -61,7 +61,10 @@ void arena::update_robot(int rn) {
         }
     }
     if ((av->show_arcs) && (av->robot[rn].sonar_count > 0)) {
-        p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], (int)round(atr2var::max_sonar * atr2var::screen_scale), (int)round(atr2var::max_sonar * atr2var::screen_scale));
+        p.drawEllipse(av->robot[rn].tx[4] - ((int)round(atr2var::max_sonar * atr2var::screen_scale / 2.0)),
+                av->robot[rn].ty[4] - ((int)round(atr2var::max_sonar * atr2var::screen_scale / 2.0)),
+                (int)round(atr2var::max_sonar * atr2var::screen_scale),
+                (int)round(atr2var::max_sonar * atr2var::screen_scale));
     }
 
     QPainter pp(pix[32]);
