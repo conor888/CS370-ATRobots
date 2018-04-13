@@ -219,35 +219,35 @@ QColor atr2func::robot_color(int n) {
 
     switch(n % 14) {
         case 0:
-            return QColor(0, 255, 0);   //light green   - 10
+            return QColor(84, 252, 84);   //light green   - 10
         case 1:
-            return QColor(255, 0, 0);   //light red     - 12
+            return QColor(252, 84, 84);   //light red     - 12
         case 2:
-            return QColor(0, 0, 255);   //light blue    - 9
+            return QColor(84, 84, 252);   //light blue    - 9
         case 3:
-            return QColor(0, 255, 255); //light cyan    - 11
+            return QColor(84, 252, 252); //light cyan    - 11
         case 4:
-            return QColor(255, 0 ,255); //light magenta - 13
+            return QColor(252, 84, 252); //light magenta - 13
         case 5:
-            return QColor(255, 255, 0); //yellow        - 14
+            return QColor(252, 252, 84); //yellow        - 14
         case 6:
-            return QColor(200, 200, 200); //light gray  - 7
+            return QColor(168, 168, 168); //light gray  - 7
         case 7:
-            return QColor(102, 51, 0);  //brown         - 6
+            return QColor(168, 84, 0);  //brown         - 6
         case 8:
-            return QColor(0, 127, 0);   //dark green    - 2
+            return QColor(0, 168, 0);   //dark green    - 2
         case 9:
-            return QColor(127, 0, 0);   //dark red      - 4
+            return QColor(168, 0, 0);   //dark red      - 4
         case 10:
-            return QColor(0, 0 , 127);  //dark blue     - 1
+            return QColor(0, 0, 168);  //dark blue     - 1
         case 11:
-            return QColor(0, 127, 127); //dark cyan     - 3
+            return QColor(0, 168, 168); //dark cyan     - 3
         case 12:
-            return QColor(127, 0, 127); //dark magenta  - 5
+            return QColor(168, 0, 168); //dark magenta  - 5
         case 13:
-            return QColor(255, 255, 255); //white       - 15
+            return QColor(252, 252, 252); //white       - 15
         default:
-            return QColor(255, 255, 255); //white
+            return QColor(252, 252, 252); //white
     }
 }
 
