@@ -1,0 +1,42 @@
+PASCAL COLOR TABLE
+---------------------
+——————————————————————————————————————————
+|#:| Name:        | rgb:                 |
+|——|—————————————————————————————————————|
+| 0|Black         | rgb(0, 0, 0)         |
+| 1|Dark Blue     | rgb(0, 0, 168)       |
+| 2|Dark Green    | rgb(0, 168, 0)       |
+| 3|Dark Cyan     | rgb(0, 168, 168)     |
+| 4|Dark Red      | rgb(168, 0, 0)       |
+| 5|Dark Magenta  | rgb(168, 0, 168)     |
+| 6|Brown         | rgb(168, 84, 0)      |
+| 7|Light Gray    | rgb(168, 168, 168)   |
+| 8|Dark Gray     | rgb(84, 84, 84)      |
+| 9|Light Blue    | rgb(84, 84, 252)     |
+|10|Light Green   | rgb(84, 252, 84)     |
+|11|Light Cyan    | rgb(84, 252, 84)     |
+|12|Light Red     | rgb(252, 84, 84)     |
+|13|Light Magenta | rgb(252, 84, 252)    |
+|14|Yellow        | rgb(252, 252, 84)    |
+|15|White         | rgb(252, 252, 252)   |
+——————————————————————————————————————————
+
+
+ATRobots Robot Colors
+------------------------
+Robot  0: Light Green
+Robot  1: Light Red
+Robot  2: Light Blue
+Robot  3: Light Cyan
+Robot  4: Light Magenta
+Robot  5: Yellow
+Robot  6: Light Gray
+Robot  7: Brown
+Robot  8: Dark Green
+Robot  9: Dark Red
+Robot 10: Dark Blue
+Robot 11: Dark Cyan
+Robot 12: Dark Magenta
+Robot 13: White
+
+(repeats)
