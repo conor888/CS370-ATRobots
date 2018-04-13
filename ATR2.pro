@@ -29,14 +29,20 @@ SOURCES += \
     arena.cpp \
     atr2.cpp \
     atr2func.cpp \
-    atr2var.cpp
+    atr2var.cpp \
+    window.cpp \
+    rgraph.cpp \
+    cgraph.cpp
 
 HEADERS += \
     filelib.h \
     arena.h \
     atr2.h \
     atr2func.h \
-    atr2var.h
+    atr2var.h \
+    window.h \
+    rgraph.h \
+    cgraph.h
 
 FORMS +=
 
@@ -46,3 +52,6 @@ QMAKE_CXXFLAGS += -std=c++11
 
 RC_FILE = Extra\atr2.rc
 ICON = Extra\atr2.icns
+
+RESOURCES += \
+    atr2.qrc
