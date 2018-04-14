@@ -60,6 +60,10 @@ public:
     //std::string bin(int n);
     //std::string decimal(int num, int length);
 
+    //Our custom functions:
+    static QColor pascal_color(int n);
+    static int robot_color_i(int n);
+
 private:
     //long delay_per_sec;
     //bool registered, graphix, sound_on;

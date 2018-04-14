@@ -386,3 +386,80 @@ int atr2func::find_anglei(double xx, double yy, double tx, double ty) {
 
     return i;
 }
+
+
+//Our custom functions:
+QColor atr2func::pascal_color(int n) {
+    switch(n) {
+        case 0: //Black
+            return QColor(0, 0, 0);
+        case 1: //Dark Blue
+            return QColor(0, 0, 168);
+        case 2: //Dark Green
+            return QColor(0, 168, 0);
+        case 3: //Dark Cyan
+            return QColor(0, 168, 168);
+        case 4: //Dark Red
+            return QColor(168, 0, 0);
+        case 5: //Dark Magenta
+            return QColor(168, 0, 168);
+        case 6: //Brown
+            return QColor(168, 84, 0);
+        case 7: //Light Gray
+            return QColor(168, 168, 168);
+        case 8: //Dark Gray
+            return QColor(84, 84, 84);
+        case 9: //Light Blue
+            return QColor(84, 84, 252);
+        case 10: //Light Green
+            return QColor(84, 252, 84);
+        case 11: //Light Cyan
+            return QColor(84, 252, 252);
+        case 12: //Light Red
+            return QColor(252, 84, 84);
+        case 13: //Light Magenta
+            return QColor(252, 84, 252);
+        case 14: //Yellow
+            return QColor(252, 252, 84);
+        case 15: //White
+            return QColor(252, 252, 252);
+        default:
+            std::cout << "Color #" << std::to_string(n) << " not found!" << std::endl;
+            return QColor(0, 0, 0); //Return black
+    }
+}
+
+int atr2func::robot_color_i(int n) {
+    switch(n % 14) {
+        case 0:
+            return 10;
+        case 1:
+            return 12;
+        case 2:
+            return 9;
+        case 3:
+            return 11;
+        case 4:
+            return 13;
+        case 5:
+            return 14;
+        case 6:
+            return 7;
+        case 7:
+            return 6;
+        case 8:
+            return 2;
+        case 9:
+            return 4;
+        case 10:
+            return 1;
+        case 11:
+            return 3;
+        case 12:
+            return 5;
+        case 13:
+            return 15;
+        default:
+            return 15;
+    }
+}
