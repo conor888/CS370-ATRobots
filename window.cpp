@@ -1,6 +1,7 @@
 #include "window.h"
 #include <QKeyEvent>
 #include <QPainter>
+#include "atr2func.h"
 
 window::window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent) : QWidget(parent)
 {
@@ -15,13 +16,51 @@ window::window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent) : QWidget(p
 }
 
 void window::init_window() {
-    QPainter p(windowborder);
+
+    box(0, 0, 639, 479, windowborder);
+    hole(4, 4, 475, 475, windowborder);
+
+    hole(480, 4, 635, 70, windowborder);
+    hole(480, 74, 635, 140, windowborder);
+    hole(480, 144, 635, 210, windowborder);
+    hole(480, 214, 635, 280, windowborder);
+    hole(480, 284, 635, 350, windowborder);
+    hole(480, 354, 635, 420, windowborder);
+
+    hole(480, 430, 635, 475, windowborder);
+
+}
+
+void window::box(int x1, int y1, int x2, int y2, QPixmap* canvas) {
+    QPainter p(canvas);
     p.save();
 
-    //White lines
-    p.setPen(QPen(QColor(252, 252, 252), 1));
-    p.drawLine(0, 0, 0, 479);
-    p.drawLine(0, 0, 639, 0);
+    p.setPen(QPen(atr2func::pascal_color(15), 1));
+    p.drawLine(x1, y1, x2 - 1, y1);
+    p.drawLine(x1, y1, x1, y2 - 1);
+
+    p.setPen(QPen(atr2func::pascal_color(8), 1));
+    p.drawLine(x1 + 1, y2, x2, y2);
+    p.drawLine(x2, y1 + 1, x2, y2);
+
+    p.restore();
+}
+
+void window::hole(int x1, int y1, int x2, int y2, QPixmap* canvas) {
+    QPainter p(canvas);
+    p.save();
+
+    p.setPen(QPen(atr2func::pascal_color(8), 1));
+    p.drawLine(x1, y1, x2 - 1, y1);
+    p.drawLine(x1, y1, x1, y2 - 1);
+
+    p.setPen(QPen(atr2func::pascal_color(15), 1));
+    p.drawLine(x1 + 1, y2, x2, y2);
+    p.drawLine(x2, y1 + 1, x2, y2);
+
+    p.setPen(QPen(atr2func::pascal_color(7), 1));
+    p.drawPoint(x1, y2);
+    p.drawPoint(x2, y1);
 
     p.restore();
 }
