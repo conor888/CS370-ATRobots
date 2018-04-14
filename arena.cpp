@@ -18,15 +18,13 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 
     av = avtemp;
 
-    for (int i = 0; i < 34; i++) {
+    for (int i = 0; i < 35; i++) {
         pix[i] = new QPixmap(470, 470);
         pix[i]->fill(QColor(0, 0, 0, 0));
     }
-}
 
-void arena::update_vars(int nn, int new_target) {
-    n = nn;
-    update_target = new_target;
+    pix[35] = new QPixmap(470, 470);
+    pix[35]->fill(Qt::black);
 }
 
 void arena::update_robot(int rn) {
@@ -66,8 +64,8 @@ void arena::update_robot(int rn) {
                 (int)round(atr2var::max_sonar * atr2var::screen_scale * 2));
     }
 
+    pix[32]->fill(Qt::black);
     QPainter pp(pix[32]);
-    pp.fillRect(0, 0, 470, 470, Qt::black);
     for (int i = 0; i < av->num_robots; i++) {
         pp.drawPixmap(0, 0, *pix[i]);
     }
@@ -110,10 +108,24 @@ void arena::update_missile(int mn) {
     }
 }
 
-void arena::clear_missiles() {
-    QPixmap clear(470, 470);
-    clear.fill(QColor(0, 0, 0, 0));
-    pix[33]->swap(clear);
+void arena::update_mine(int rn, int mn) {
+    if (rn == 3000) {
+        pix[34]->fill(QColor(0,0,0,0));
+    } else if (rn == 4000) {
+        this->update();
+    } else {
+        QPainter p(pix[34]);
+
+        p.setPen(QPen(atr2func::robot_color(rn), 1));
+        p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
+                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y - 1,
+                   (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
+                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y + 1);
+        p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x + 1,
+                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y,
+                   (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x - 1,
+                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y);
+    }
 }
 
 void arena::paintEvent(QPaintEvent *)
@@ -134,9 +146,10 @@ void arena::paintEvent(QPaintEvent *)
     p.save();
 
     p.drawPixmap(0, 0, *pix[32]);
+    p.drawPixmap(0, 0, *pix[34]);
     p.drawPixmap(0, 0, *pix[33]);
 
-    p.setPen(QPen(QColor(0,0,255), 1));
+    //p.setPen(QPen(QColor(0,0,255), 1));
 
     /*QPointF const A(av->robot[0].tx[6], av->robot[0].ty[6]);
     QPointF const B(av->robot[0].tx[7], av->robot[0].ty[7]);

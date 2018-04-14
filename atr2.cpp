@@ -1757,7 +1757,6 @@ void atr2::draw_robot(int n) {
         }
 
         if (av->graphix) {
-            //atr2a->update_vars(n, 1);
             atr2a->update_robot(n);
             //atr2a->update();
             //loop->exec();
@@ -3241,7 +3240,59 @@ void atr2::do_robot(int n) {
 }
 
 void atr2::do_mine(int n, int m) {
+    int i, j, k, l;
+    double d, r;
+    bool source_alive;
 
+    if ((av->robot[n].mine[m].x >= 0) && (av->robot[n].mine[m].x <= 1000) && (av->robot[n].mine[m].y >= 0) && (av->robot[n].mine[m].y <= 1000) && av->robot[n].mine[m].yield > 0) {
+        for (i = 0; i < av->num_robots; i++) {
+            if ((av->robot[i].armor > 0) && (i != n)) {
+                d = atr2func::distance(av->robot[n].mine[m].x, av->robot[n].mine[m].y, av->robot[i].x, av->robot[i].y);
+                if (d <= av->robot[n].mine[m].detect) {
+                    av->robot[n].mine[m].detonate = true;
+                }
+            }
+        }
+        if (av->robot[n].mine[m].detonate) {
+            init_missile(av->robot[n].mine[m].x, av->robot[n].mine[m].y, 0, 0, 0, n, av->mine_circle, false);
+            av->kill_count = 0;
+            if (av->robot[n].armor > 0) {
+                source_alive = true;
+            } else {
+                source_alive = false;
+            }
+            for (i = 0; i < av->num_robots; i++) {
+                if (av->robot[i].armor > 0) {
+                    k = (int)std::round(atr2func::distance(av->robot[n].mine[m].x, av->robot[n].mine[m].y, av->robot[i].x, av->robot[i].y));
+                    if (k < av->robot[n].mine[m].yield) {
+                        damage(i, (int)std::round(std::abs(av->robot[n].mine[m].yield - k)), false);
+                        if ((n >= 0) && (n <= av->num_robots) && (i != n)) {
+                            av->robot[n].damage_total = av->robot[n].damage_total + (int)std::round(std::abs(av->robot[n].mine[m].yield - k));
+                        }
+                    }
+                }
+                if ((av->kill_count) && source_alive && (av->robot[n].armor <= 0)) {
+                    av->kill_count--;
+                }
+                if (av->kill_count > 0) {
+                    av->robot[n].kills = av->robot[n].kills + av->kill_count;
+                    update_lives(n);
+                }
+            }
+            if (av->graphix) {
+                //putpixel(round(x*screen_scale)+screen_x,round(y*screen_scale)+screen_y,0);
+            }
+            av->robot[n].mine[m].yield = 0;
+            av->robot[n].mine[m].x = -1;
+            av->robot[n].mine[m].y = -1;
+        } else {
+            //Draw mine
+
+            if ((av->graphix) /*&& ((av->game_cycle & 1) == 0)*/) {
+                atr2a->update_mine(n, m);
+            }
+        }
+    }
 }
 
 void atr2::do_missile(int n) {
@@ -3467,7 +3518,6 @@ void atr2::bout() {
         exit(0);
     }
 
-    //atr2a->update_vars(0, 0);
     //atr2a->update();
     atr2func::time_delay(1);
 
@@ -3506,13 +3556,16 @@ void atr2::bout() {
                 do_missile(i);
             }
         }
+        atr2a->update_mine(3000, 0);
         for (i = 0; i < av->num_robots; i++) {
             for (k = 0; k < atr2var::max_mines; k++) {
                 if (av->robot[i].mine[k].yield > 0) {
                     do_mine(i, k);
+                    //atr2func::time_delay(1);
                 }
             }
         }
+        atr2a->update_mine(4000, 0);
 
         if (av->graphix && av->timing) {
             //atr2func::time_delay(av->game_delay);
