@@ -31,12 +31,12 @@ void rgraph::paintEvent(QPaintEvent *)
     p.setFont(*P2);
 
     //First row: Robot name and Wins
-    p.drawText(QRect(2, 1, 62, 7), QString::fromStdString(av->robot[n].fn));
-    p.drawText(QRect(79, 1, 154, 7), QString::fromStdString("Wins:" + atr2func::zero_pad(av->robot[n].wins, 4)));
+    p.drawText(QRect(2, 1, 70, 10), QString::fromStdString(av->robot[n].fn));
+    p.drawText(QRect(79, 1, 154, 10), QString::fromStdString("Wins:" + atr2func::zero_pad(av->robot[n].wins, 4)));
 
 
     //Third and fourth rows: Armor and Heat bars
-    p.drawText(QRect(10, 23, 20, 7), QString::fromStdString("A:"));
+    p.drawText(QRect(10, 23, 20, 10), QString::fromStdString("A:"));
     if (av->robot[n].armor < 100) {
         p.fillRect(29, 24, 100, 6, atr2func::pascal_color(8));
     }
@@ -44,7 +44,7 @@ void rgraph::paintEvent(QPaintEvent *)
         p.fillRect(29, 24, av->robot[n].armor, 6, atr2func::robot_color(n));
     }
 
-    p.drawText(QRect(10, 33, 20, 7), QString::fromStdString("H:"));
+    p.drawText(QRect(10, 33, 20, 10), QString::fromStdString("H:"));
     p.fillRect(29, 34, 100, 6, atr2func::pascal_color(8));
     if (av->robot[n].heat > 5) {
         p.fillRect(29, 34, (int)std::round((double)av->robot[n].heat / 5.0), 6, atr2func::robot_color(n));
@@ -52,18 +52,18 @@ void rgraph::paintEvent(QPaintEvent *)
 
 
     //Sixth row: Error
-    p.drawText(QRect(10, 55, 50, 7), QString::fromStdString("Error:"));
+    p.drawText(QRect(10, 55, 50, 10), QString::fromStdString("Error:"));
     p.setPen(QPen(atr2func::pascal_color(8)));
-    p.drawText(QRect(65, 55, 40, 7), QString::fromStdString("None"));
+    p.drawText(QRect(65, 55, 40, 10), QString::fromStdString("None"));
 
     //Second row: Robot MSG
     p.setPen(QPen(atr2func::pascal_color(atr2func::robot_color_i(n) & 7)));
-    p.drawText(QRect(2, 11, 154, 7), QString::fromStdString(av->robot[n].name));
+    p.drawText(QRect(2, 11, 154, 10), QString::fromStdString(av->robot[n].name));
 
 
     //Fifth row: Kills and Deaths
-    p.drawText(QRect(10, 45, 50, 7), QString::fromStdString("K:" + atr2func::zero_pad(av->robot[n].kills, 4)));
-    p.drawText(QRect(79, 45, 50, 7), QString::fromStdString("D:" + atr2func::zero_pad(av->robot[n].deaths, 4)));
+    p.drawText(QRect(10, 45, 50, 10), QString::fromStdString("K:" + atr2func::zero_pad(av->robot[n].kills, 4)));
+    p.drawText(QRect(79, 45, 50, 10), QString::fromStdString("D:" + atr2func::zero_pad(av->robot[n].deaths, 4)));
 
     p.restore();
 
