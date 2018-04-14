@@ -610,7 +610,7 @@ void atr2::compile(int n, std::string filename) {
     std::ifstream f;
     bool robotdone = false;
 
-    av->lock_code = "";
+    av->lock_code.clear();
     av->lock_pos = 0;
     locktype = 0;
     av->lock_dat = 0;
@@ -643,10 +643,9 @@ void atr2::compile(int n, std::string filename) {
             av->lock_pos = 0;
         }
         if (!av->lock_code.empty()) {
-            for (i = 1; i < (int)s.length(); i++) {
-                av->lock_pos++;
-                if (av->lock_pos > (int)av->lock_code.length()) {
-                    av->lock_pos = 1;
+            for (i = 0; i < (int)s.length(); i++) {
+                if (av->lock_pos > (int)av->lock_code.length() - 1) {
+                    av->lock_pos = 0;
                 }
                 switch(locktype) {
                     case 3:
@@ -661,6 +660,7 @@ void atr2::compile(int n, std::string filename) {
                         s[i] = (char)(((int)s[i]) ^ ((int)av->lock_code[av->lock_pos]));
                 }
                 av->lock_dat = (int)s[i] & 15;
+                av->lock_pos++;
             }
         }
         s = atr2func::btrim(s);
@@ -685,7 +685,7 @@ void atr2::compile(int n, std::string filename) {
             }
         }
         if(k > 0) {
-            s = atr2func::lstr(s, k-1);
+            s = atr2func::lstr(s, k);
         }
         s = atr2func::btrim(atr2func::ucase(s));
         for (i = 0; i <= atr2var::max_op; i++) {
@@ -768,7 +768,7 @@ void atr2::compile(int n, std::string filename) {
                         } else if (atr2func::lstr(s3, 10) == "HEATSINKS=") {
                             av->robot[n].config.heatsinks = atr2func::value(atr2func::rstr(s3, s3.length() - 10));
                         } else if (atr2func::lstr(s3, 6) == "MINES=") {
-                            av->robot[n].config.mines = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                            av->robot[n].config.mines = atr2func::value(atr2func::rstr(s3, s3.length() - 6));
                         } else {
                             prog_error(20, s3);
                         }
@@ -2290,7 +2290,7 @@ int atr2::in_port(int n, int p, int &time_used) {
                 }
             }
             if (l >= 0) {
-                v = (int)round(atr2func::find_angle(av->robot[n].x, av->robot[n].y, av->robot[l].x, av->robot[l].y) / atr2var::pi * 128 + 1024 + (rand() % 65) - 32) & 255;
+                v = (int)round((double)atr2func::find_angle(av->robot[n].x, av->robot[n].y, av->robot[l].x, av->robot[l].y) / atr2var::pi * 128 + 1024 + (rand() % 65) - 32) & 255;
             } else {
                 v = atr2var::minint;
             }
@@ -2497,7 +2497,7 @@ void atr2::call_int(int n, int int_num, int &time_used) {
             if (k > 1000) {
                 k = 1000;
             }
-            av->robot[n].ram[65] = (int)round(atr2func::find_angle(round(av->robot[n].x), round(av->robot[n].y), j, k) / atr2var::pi * 128 + 256) & 255;
+            av->robot[n].ram[65] = (int)round((double)atr2func::find_angle(round(av->robot[n].x), round(av->robot[n].y), j, k) / atr2var::pi * 128 + 256) & 255;
             time_used = 32;
             break;
         case 8:
@@ -3173,7 +3173,7 @@ void atr2::do_robot(int n) {
     if ((ttx < 0) || (tty < 0) || (ttx > 1000) || (tty > 1000)) {
         av->robot[n].ram[8]++;
         av->robot[n].tspd = 0;
-        if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+        if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2.0) {
             damage(n, 1, true);
             av->robot[n].spd = 0;
         }
@@ -3189,7 +3189,7 @@ void atr2::do_robot(int n) {
             av->robot[i].spd = 0;
             av->robot[n].ram[8]++;
             av->robot[i].ram[8]++;
-            if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+            if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2.0) {
                 damage(n, 1, true);
                 damage(i, 1, true);
             }
