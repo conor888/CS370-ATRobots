@@ -251,6 +251,14 @@ QColor atr2func::robot_color(int n) {
     }
 }
 
+void chirp() {
+
+}
+
+void click() {
+
+}
+
 int atr2func::hex2int(std::string s) {
     uint16_t w;
     int i;
