@@ -1,5 +1,6 @@
 #include "window.h"
 #include <QKeyEvent>
+#include <QPainter>
 
 window::window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent) : QWidget(parent)
 {
@@ -7,7 +8,35 @@ window::window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent) : QWidget(p
 
     av = avtemp;
     cycleg = cyclegtemp;
+
+    windowborder = new QPixmap(640, 480);
+    windowborder->fill(QColor(168, 168, 168));
+    init_window();
 }
+
+void window::init_window() {
+    QPainter p(windowborder);
+    p.save();
+
+    //White lines
+    p.setPen(QPen(QColor(252, 252, 252), 1));
+    p.drawLine(0, 0, 0, 479);
+    p.drawLine(0, 0, 639, 0);
+
+    p.restore();
+}
+
+void window::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+    p.save();
+
+    p.drawPixmap(0, 0, *windowborder);
+
+    p.restore();
+
+}
+
 
 void window::keyPressEvent(QKeyEvent *event){
     if ((event->key() == Qt::Key_Equal) || (event->key() == Qt::Key_Plus)){
