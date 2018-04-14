@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
 
     window atr2w(&av, cycleg);
     atr2w.setLayout(atr2l);
+    atr2w.setAttribute(Qt::WA_OpaquePaintEvent, true);
 
     atr2l->addWidget(atr2a, 0, 0);
 
@@ -51,11 +52,11 @@ int main(int argc, char *argv[]) {
         atr2l->addWidget(rgraphs[i], i, 1);
     }
 
-    atr2l->addWidget(cycleg, 6, 1);
+    atr2l->addWidget(cycleg, 7, 1);
     atr2l->setSpacing(5);
-    atr2l->setRowStretch(0, 0);
-    atr2l->setRowStretch(6, 1);
     atr2l->setContentsMargins(5, 5, 5, 5);
+    atr2l->setRowMinimumHeight(6, 6);
+    atr2l->setColumnMinimumWidth(0, 471);
 
     atr2w.setStyleSheet("background-color: rgb(168, 168, 168);");
     atr2w.show();
