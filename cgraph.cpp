@@ -30,8 +30,9 @@ void cgraph::paintEvent(QPaintEvent *)
     p.setFont(*P2);
     p.drawText(QRect(2, 2, 154, 10), QString::fromStdString("Delay:   " + atr2func::zero_pad(av->game_delay, 3)));
 
-    p.drawText(QRect(2, 12, 154, 20), QString::fromStdString("Cycle:   " + atr2func::zero_pad(av->game_cycle, 9)));
+    p.drawText(QRect(2, 12, 154, 20), QString::fromStdString("Cycle:   " + atr2func::zero_pad(av->game_cycle - 1, 9)));
     p.drawText(QRect(2, 22, 154, 30), QString::fromStdString("Limit:   " + atr2func::zero_pad(av->game_limit, 9)));
+    p.drawText(QRect(2, 32, 154, 30), QString::fromStdString("Match:   " + std::to_string(av->played) + "/" + std::to_string(av->matches)));
 
     p.restore();
 
