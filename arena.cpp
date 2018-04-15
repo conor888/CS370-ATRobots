@@ -31,7 +31,6 @@ void arena::update_robot(int rn) {
     pix[rn]->fill(QColor(0,0,0,0));
     QPainter p(pix[rn]);
 
-    //setcolor(robot_color(n) & 7);
     if (av->robot[rn].shields_up) {
         p.setPen(QPen(atr2func::pascal_color(atr2func::robot_color_i(rn) & 7), 1));
         p.drawEllipse(av->robot[rn].tx[4] - atr2var::robot_scale,
@@ -43,16 +42,13 @@ void arena::update_robot(int rn) {
     p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
     p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
     p.drawLine(av->robot[rn].tx[3], av->robot[rn].ty[3], av->robot[rn].tx[1], av->robot[rn].ty[1]);
-    //setcolor(7);
-    p.setPen(QPen(QColor(200,200,200), 1));
+    p.setPen(QPen(atr2func::pascal_color(7), 1));
     p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[5], av->robot[rn].ty[5]);
-    //setcolor(8);
-    p.setPen(QPen(QColor(100,100,100), 1));
+    p.setPen(QPen(atr2func::pascal_color(8), 1));
     if ((av->show_arcs) && (av->robot[rn].arc_count > 0)) {
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[6], av->robot[rn].ty[6]);
         p.drawLine(av->robot[rn].tx[4], av->robot[rn].ty[4], av->robot[rn].tx[7], av->robot[rn].ty[7]);
         if (av->robot[rn].scanrange < 1500) {
-            //p.setPen(QPen(QColor(0,0,255), 1));
             p.drawArc(av->robot[rn].tx[4] - (av->robot[rn].scanrange  * atr2var::screen_scale), //x
                       av->robot[rn].ty[4] - (av->robot[rn].scanrange  * atr2var::screen_scale), //y
                       (int)round(av->robot[rn].scanrange * atr2var::screen_scale * 2), //h
@@ -84,9 +80,10 @@ void arena::update_missile(int mn) {
         QPainter p(pix[33]);
         if (av->missile[mn].a == 1) {
             if (av->missile[mn].mult > av->robot[av->missile[mn].source].shotstrength) {
-                //setcolor(14+(game_cycle & 1))
+                p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 1));
+            } else {
+                p.setPen(QPen(atr2func::pascal_color(15), 1));
             }
-            p.setPen(QPen(Qt::white, 1));
 
             p.drawLine((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
                        (int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y,
@@ -140,41 +137,11 @@ void arena::paintEvent(QPaintEvent *)
     //p->translate(width() / 2, height() / 2);
     //p->scale(side / 200.0, side / 200.0);
 
-    setWindowTitle(QString::fromStdString("ATR2 | Match: " + std::to_string(av->played) + "/" + std::to_string(av->matches)
-                                                         + " - Cycle: " + std::to_string(av->game_cycle) + "/" + std::to_string(av->game_limit / 1000) + "k - Delay (ms): " + std::to_string(av->game_delay)));
-
     QPainter p(this);
-
-    p.setBrush(Qt::NoBrush);
-
-    p.save();
 
     p.drawPixmap(0, 0, *pix[32]);
     p.drawPixmap(0, 0, *pix[34]);
     p.drawPixmap(0, 0, *pix[33]);
-
-    //p.setPen(QPen(QColor(0,0,255), 1));
-
-    /*QPointF const A(av->robot[0].tx[6], av->robot[0].ty[6]);
-    QPointF const B(av->robot[0].tx[7], av->robot[0].ty[7]);
-    QPointF const C(av->robot[0].tx[4], av->robot[0].ty[4]);
-    double  const radius(av->robot[0].scanrange * atr2var::screen_scale);
-
-    QRectF const r(C.x() - radius, C.y() - radius, radius * 2, radius * 2);
-    double const startAngle = 16 * atan2(A.y() - C.y(), A.x() - C.x()) * 180.0 / M_PI;
-    double const endAngle   = 16 * atan2(B.y() - C.y(), B.x() - C.x()) * 180.0 / M_PI;
-    double const spanAngle = endAngle - startAngle;
-    p.drawArc(r, startAngle, spanAngle);*/
-    /*p.drawArc(av->robot[0].tx[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //x
-              av->robot[0].ty[4] - (av->robot[0].scanrange  * atr2var::screen_scale), //y
-              (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //h
-              (int)round(av->robot[0].scanrange * atr2var::screen_scale * 2), //w
-              av->robot[0].startarc * 16, //startArc
-              (av->robot[0].endarc - av->robot[0].startarc) * 16); //spanArc*/
-
-    p.restore();
-
-    //p->end();
 
     //emit donePainting();
 }
