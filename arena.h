@@ -18,24 +18,23 @@ public:
     arena(atr2var* avtemp, QWidget *parent = 0);
     ~arena();
 
-    void update_vars(int nn, int new_target);
     void update_robot(int rn);
     void update_missile(int mn);
-    void clear_missiles();
+    void update_mine(int rn, int mn);
+    void delete_robot(int rn);
 
 private:
     void paintEvent(QPaintEvent *event) override;
-    void keyPressEvent(QKeyEvent * event);
     atr2var *av;
-    int n = 0;
-    int update_target = 0;
 
-    QPixmap **pix = new QPixmap*[34];
+    QPixmap **pix = new QPixmap*[36];
     /*
      * PIXMAP INFO:
      * pix[0] - pix[31]: robots #0-31
      * pix[32]: all robots together
      * pix[33]: missiles
+     * pix[34]: mines
+     * pix[35]: black
     */
 
 signals:

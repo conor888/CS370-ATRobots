@@ -50,8 +50,8 @@ public:
     static QColor robot_color(int n);
     //void box(int x1, int y1, int x2, int y2);
     //void hole(int x1, int y1, int x2, int y2);
-    //void chirp();
-    //void click();
+    static void chirp();
+    static void click();
     static int hex2int(std::string s);
     static int str2int(std::string s);
     static double distance(double x1, double y1, double x2, double y2);
@@ -59,6 +59,10 @@ public:
     static int find_anglei(double xx, double yy, double tx, double ty);
     //std::string bin(int n);
     //std::string decimal(int num, int length);
+
+    //Our custom functions:
+    static QColor pascal_color(int n);
+    static int robot_color_i(int n);
 
 private:
     //long delay_per_sec;

@@ -8,9 +8,11 @@
 #include "arena.h"
 #include <QEventLoop>
 
-atr2::atr2(atr2var* avtemp, arena* parent) {
+atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp) {
     av = avtemp;
     atr2a = parent;
+    rgraphs = rgraphstemp;
+    cycleg = cyclegtemp;
 }
 
 atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
@@ -199,11 +201,11 @@ int atr2::max_shown() {
 }
 
 void atr2::update_armor(int n) {
-
+    rgraphs[n]->update();
 }
 
 void atr2::update_heat(int n) {
-
+    rgraphs[n]->update();
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
@@ -214,7 +216,11 @@ void atr2::robot_error(int n, int i, std::string ov) {
 }
 
 void atr2::update_lives(int n) {
+    rgraphs[n]->update();
+}
 
+void atr2::update_cycle_window() {
+    cycleg->update();
 }
 
 void atr2::prog_error(int n, std::string ss) {
@@ -604,7 +610,7 @@ void atr2::compile(int n, std::string filename) {
     std::ifstream f;
     bool robotdone = false;
 
-    av->lock_code = "";
+    av->lock_code.clear();
     av->lock_pos = 0;
     locktype = 0;
     av->lock_dat = 0;
@@ -637,10 +643,9 @@ void atr2::compile(int n, std::string filename) {
             av->lock_pos = 0;
         }
         if (!av->lock_code.empty()) {
-            for (i = 1; i < (int)s.length(); i++) {
-                av->lock_pos++;
-                if (av->lock_pos > (int)av->lock_code.length()) {
-                    av->lock_pos = 1;
+            for (i = 0; i < (int)s.length(); i++) {
+                if (av->lock_pos > (int)av->lock_code.length() - 1) {
+                    av->lock_pos = 0;
                 }
                 switch(locktype) {
                     case 3:
@@ -655,6 +660,7 @@ void atr2::compile(int n, std::string filename) {
                         s[i] = (char)(((int)s[i]) ^ ((int)av->lock_code[av->lock_pos]));
                 }
                 av->lock_dat = (int)s[i] & 15;
+                av->lock_pos++;
             }
         }
         s = atr2func::btrim(s);
@@ -679,7 +685,7 @@ void atr2::compile(int n, std::string filename) {
             }
         }
         if(k > 0) {
-            s = atr2func::lstr(s, k-1);
+            s = atr2func::lstr(s, k);
         }
         s = atr2func::btrim(atr2func::ucase(s));
         for (i = 0; i <= atr2var::max_op; i++) {
@@ -762,7 +768,7 @@ void atr2::compile(int n, std::string filename) {
                         } else if (atr2func::lstr(s3, 10) == "HEATSINKS=") {
                             av->robot[n].config.heatsinks = atr2func::value(atr2func::rstr(s3, s3.length() - 10));
                         } else if (atr2func::lstr(s3, 6) == "MINES=") {
-                            av->robot[n].config.mines = atr2func::value(atr2func::rstr(s3, s3.length() - 7));
+                            av->robot[n].config.mines = atr2func::value(atr2func::rstr(s3, s3.length() - 6));
                         } else {
                             prog_error(20, s3);
                         }
@@ -1751,7 +1757,6 @@ void atr2::draw_robot(int n) {
         }
 
         if (av->graphix) {
-            //atr2a->update_vars(n, 1);
             atr2a->update_robot(n);
             //atr2a->update();
             //loop->exec();
@@ -2284,7 +2289,7 @@ int atr2::in_port(int n, int p, int &time_used) {
                 }
             }
             if (l >= 0) {
-                v = (int)round(atr2func::find_angle(av->robot[n].x, av->robot[n].y, av->robot[l].x, av->robot[l].y) / atr2var::pi * 128 + 1024 + (rand() % 65) - 32) & 255;
+                v = (int)round((double)atr2func::find_angle(av->robot[n].x, av->robot[n].y, av->robot[l].x, av->robot[l].y) / atr2var::pi * 128 + 1024 + (rand() % 65) - 32) & 255;
             } else {
                 v = atr2var::minint;
             }
@@ -2491,7 +2496,7 @@ void atr2::call_int(int n, int int_num, int &time_used) {
             if (k > 1000) {
                 k = 1000;
             }
-            av->robot[n].ram[65] = (int)round(atr2func::find_angle(round(av->robot[n].x), round(av->robot[n].y), j, k) / atr2var::pi * 128 + 256) & 255;
+            av->robot[n].ram[65] = (int)round((double)atr2func::find_angle(round(av->robot[n].x), round(av->robot[n].y), j, k) / atr2var::pi * 128 + 256) & 255;
             time_used = 32;
             break;
         case 8:
@@ -3167,7 +3172,7 @@ void atr2::do_robot(int n) {
     if ((ttx < 0) || (tty < 0) || (ttx > 1000) || (tty > 1000)) {
         av->robot[n].ram[8]++;
         av->robot[n].tspd = 0;
-        if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+        if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2.0) {
             damage(n, 1, true);
             av->robot[n].spd = 0;
         }
@@ -3183,7 +3188,7 @@ void atr2::do_robot(int n) {
             av->robot[i].spd = 0;
             av->robot[n].ram[8]++;
             av->robot[i].ram[8]++;
-            if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2) {
+            if (std::abs(av->robot[n].speed) >= atr2var::max_vel / 2.0) {
                 damage(n, 1, true);
                 damage(i, 1, true);
             }
@@ -3235,7 +3240,59 @@ void atr2::do_robot(int n) {
 }
 
 void atr2::do_mine(int n, int m) {
+    int i, j, k, l;
+    double d, r;
+    bool source_alive;
 
+    if ((av->robot[n].mine[m].x >= 0) && (av->robot[n].mine[m].x <= 1000) && (av->robot[n].mine[m].y >= 0) && (av->robot[n].mine[m].y <= 1000) && av->robot[n].mine[m].yield > 0) {
+        for (i = 0; i < av->num_robots; i++) {
+            if ((av->robot[i].armor > 0) && (i != n)) {
+                d = atr2func::distance(av->robot[n].mine[m].x, av->robot[n].mine[m].y, av->robot[i].x, av->robot[i].y);
+                if (d <= av->robot[n].mine[m].detect) {
+                    av->robot[n].mine[m].detonate = true;
+                }
+            }
+        }
+        if (av->robot[n].mine[m].detonate) {
+            init_missile(av->robot[n].mine[m].x, av->robot[n].mine[m].y, 0, 0, 0, n, av->mine_circle, false);
+            av->kill_count = 0;
+            if (av->robot[n].armor > 0) {
+                source_alive = true;
+            } else {
+                source_alive = false;
+            }
+            for (i = 0; i < av->num_robots; i++) {
+                if (av->robot[i].armor > 0) {
+                    k = (int)std::round(atr2func::distance(av->robot[n].mine[m].x, av->robot[n].mine[m].y, av->robot[i].x, av->robot[i].y));
+                    if (k < av->robot[n].mine[m].yield) {
+                        damage(i, (int)std::round(std::abs(av->robot[n].mine[m].yield - k)), false);
+                        if ((n >= 0) && (n <= av->num_robots) && (i != n)) {
+                            av->robot[n].damage_total = av->robot[n].damage_total + (int)std::round(std::abs(av->robot[n].mine[m].yield - k));
+                        }
+                    }
+                }
+                if ((av->kill_count) && source_alive && (av->robot[n].armor <= 0)) {
+                    av->kill_count--;
+                }
+                if (av->kill_count > 0) {
+                    av->robot[n].kills = av->robot[n].kills + av->kill_count;
+                    update_lives(n);
+                }
+            }
+            if (av->graphix) {
+                //putpixel(round(x*screen_scale)+screen_x,round(y*screen_scale)+screen_y,0);
+            }
+            av->robot[n].mine[m].yield = 0;
+            av->robot[n].mine[m].x = -1;
+            av->robot[n].mine[m].y = -1;
+        } else {
+            //Draw mine
+
+            if ((av->graphix) /*&& ((av->game_cycle & 1) == 0)*/) {
+                atr2a->update_mine(n, m);
+            }
+        }
+    }
 }
 
 void atr2::do_missile(int n) {
@@ -3337,7 +3394,7 @@ void atr2::do_missile(int n) {
             }
             if (av->graphix) {
                 atr2a->update_missile(n);
-                atr2func::time_delay(av->game_delay);
+                atr2func::time_delay(1);
             }
         }
     }
@@ -3461,7 +3518,6 @@ void atr2::bout() {
         exit(0);
     }
 
-    //atr2a->update_vars(0, 0);
     //atr2a->update();
     atr2func::time_delay(1);
 
@@ -3491,6 +3547,8 @@ void atr2::bout() {
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
                 do_robot(i);
+            } else {
+                atr2a->delete_robot(i);
             }
         }
         //atr2a->clear_missiles();
@@ -3500,13 +3558,16 @@ void atr2::bout() {
                 do_missile(i);
             }
         }
+        atr2a->update_mine(3000, 0);
         for (i = 0; i < av->num_robots; i++) {
             for (k = 0; k < atr2var::max_mines; k++) {
                 if (av->robot[i].mine[k].yield > 0) {
                     do_mine(i, k);
+                    //atr2func::time_delay(1);
                 }
             }
         }
+        atr2a->update_mine(4000, 0);
 
         if (av->graphix && av->timing) {
             //atr2func::time_delay(av->game_delay);
@@ -3534,38 +3595,36 @@ void atr2::bout() {
             av->game_delay = 100;
         }
 
-        /*switch(av->game_delay) {
-            case 0 ... 1:
-                k = 100;
-            case 2 ... 5:
-                k = 50;
-            case 6 ... 10:
-                k = 25;
-            case 11 ... 25:
-                k = 20;
-            case 26 ... 40:
-                k = 10;
-            case 41 ... 70:
-                k = 5;
-            case 71 ... atr2var::maxint:
-                k = 1;
-            default:
-                k = 10;
+        if (av->game_delay <= 1) {
+            k = 100;
+        } else if (av->game_delay <= 15) {
+            k = 50;
+        } else if (av->game_delay <= 30) {
+            k = 25;
+        } else if (av->game_delay <= 50) {
+            k = 20;
+        } else if (av->game_delay <= 60) {
+            k = 10;
+        } else if (av->game_delay <= 75) {
+            k = 5;
+        } else if (av->game_delay >= 76) {
+            k = 1;
         }
 
         if (!av->graphix) {
             k = 100;
-        }*/
-        /*if (av->graphix) {
+        }
+
+        if (av->graphix) {
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
-            } else {
+            } /*else {
                 if (av->update_timer != mem[0:$46C] >> 1) {
                     update_cycle_window();
                 }
                 av->update_timer = mem[0:$46C] >> 1;
-            }
-        }*/
+            }*/
+        }
     } while(!(av->quit || gameover() || av->bout_over));
 
     //update_cycle_window();

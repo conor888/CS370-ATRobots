@@ -11,12 +11,15 @@
 #include "atr2func.h"
 #include <QEventLoop>
 #include <QObject>
+#include "rgraph.h"
+#include "cgraph.h"
 
 class arena;
 
 class atr2 {
 public:
-    atr2(atr2var* avtemp, arena* parent);
+    //atr2(atr2var* avtemp, arena* parent);
+    atr2(atr2var* avtemp, arena* parent, rgraph** rgraphstemp, cgraph *cyclegtemp);
     atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy);
 
     std::string operand(int n, int m);
@@ -29,7 +32,7 @@ public:
     void update_heat(int n); //Not done
     void robot_error(int n, int i, std::string ov);      //Not done
     void update_lives(int n);                       //Not done
-    //void update_cycle_window();
+    void update_cycle_window();
     //void setscreen();
     //void graph_mode(bool on);
     void prog_error(int n, std::string ss);
@@ -93,6 +96,8 @@ public:
 private:
     atr2var *av;
     arena *atr2a;
+    rgraph **rgraphs;
+    cgraph *cycleg;
     //QEventLoop *loop;
 };
 
@@ -102,11 +107,13 @@ Q_OBJECT
 public:
     //QEventLoop *loop;
 
-    WorkerThread(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent) {
+    WorkerThread(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp) {
         av = avtemp;
         argc = argctemp;
         argv = argvtemp;
         atr2a = parent;
+        rgraphs = rgraphstemp;
+        cycleg = cyclegtemp;
 
         //loop = new QEventLoop();
 
@@ -115,7 +122,7 @@ public:
 
     void run() override {
         //atr2 atr2(av, atr2a, loop);
-        atr2 atr2(av, atr2a);
+        atr2 atr2(av, atr2a, rgraphs, cycleg);
 
         atr2.init(argc, argv);
 
@@ -187,6 +194,8 @@ private:
     atr2var *av;
     arena *atr2a;
     std::string *argv;
+    rgraph **rgraphs;
+    cgraph *cycleg;
 };
 
 
