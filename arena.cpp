@@ -93,14 +93,14 @@ void arena::update_missile(int mn) {
 
         else if (av->missile[mn].a == 2) {
             p.setPen(QPen(Qt::black, 8));
-            p.drawEllipse((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
-                          (int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y,
+            p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].lrad,
+                          ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].lrad,
                           av->missile[mn].lrad * 2, av->missile[mn].lrad * 2);
 
             if (av->missile[mn].a > 0) {
-                p.setPen(QPen(Qt::white, 1));
-                p.drawEllipse((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
-                              (int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y,
+                p.setPen(QPen(atr2func::pascal_color(15), 1));
+                p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].rad,
+                              ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].rad,
                               av->missile[mn].rad * 2, av->missile[mn].rad * 2);
             }
         }
