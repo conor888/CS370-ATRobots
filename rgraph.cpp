@@ -24,8 +24,6 @@ void rgraph::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
 
-    p.save();
-
     p.fillRect(0, 0, 154, 65, QBrush(Qt::black));
     p.setPen(QPen(atr2func::robot_color(n), 1));
     p.setFont(*P2);
@@ -64,7 +62,5 @@ void rgraph::paintEvent(QPaintEvent *)
     //Fifth row: Kills and Deaths
     p.drawText(QRect(10, 45, 50, 10), QString::fromStdString("K:" + atr2func::zero_pad(av->robot[n].kills, 4)));
     p.drawText(QRect(79, 45, 50, 10), QString::fromStdString("D:" + atr2func::zero_pad(av->robot[n].deaths, 4)));
-
-    p.restore();
 
 }

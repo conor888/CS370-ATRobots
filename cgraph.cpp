@@ -23,8 +23,6 @@ void cgraph::paintEvent(QPaintEvent *)
 {
     QPainter p(this);
 
-    p.save();
-
     p.fillRect(0, 0, 154, 44, QBrush(Qt::black));
     p.setPen(QPen(atr2func::robot_color(6), 1));
     p.setFont(*P2);
@@ -33,7 +31,5 @@ void cgraph::paintEvent(QPaintEvent *)
     p.drawText(QRect(2, 12, 154, 20), QString::fromStdString("Cycle:   " + atr2func::zero_pad(av->game_cycle - 1, 9)));
     p.drawText(QRect(2, 22, 154, 30), QString::fromStdString("Limit:   " + atr2func::zero_pad(av->game_limit, 9)));
     p.drawText(QRect(2, 32, 154, 30), QString::fromStdString("Match:   " + std::to_string(av->played) + "/" + std::to_string(av->matches)));
-
-    p.restore();
 
 }
