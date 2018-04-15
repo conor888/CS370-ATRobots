@@ -3394,7 +3394,7 @@ void atr2::do_missile(int n) {
             }
             if (av->graphix) {
                 atr2a->update_missile(n);
-                atr2func::time_delay(av->game_delay);
+                atr2func::time_delay(1);
             }
         }
     }
@@ -3547,6 +3547,8 @@ void atr2::bout() {
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
                 do_robot(i);
+            } else {
+                atr2a->delete_robot(i);
             }
         }
         //atr2a->clear_missiles();

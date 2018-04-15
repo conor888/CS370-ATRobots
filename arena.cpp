@@ -129,6 +129,10 @@ void arena::update_mine(int rn, int mn) {
     }
 }
 
+void arena::delete_robot(int rn) {
+    pix[rn]->fill(QColor(0, 0, 0, 0));
+}
+
 void arena::paintEvent(QPaintEvent *)
 {
     //int side = qMin(width(), height());

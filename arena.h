@@ -21,6 +21,7 @@ public:
     void update_robot(int rn);
     void update_missile(int mn);
     void update_mine(int rn, int mn);
+    void delete_robot(int rn);
 
 private:
     void paintEvent(QPaintEvent *event) override;
