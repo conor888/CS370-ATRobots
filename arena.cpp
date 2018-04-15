@@ -33,7 +33,11 @@ void arena::update_robot(int rn) {
 
     //setcolor(robot_color(n) & 7);
     if (av->robot[rn].shields_up) {
-        p.drawEllipse(av->robot[rn].tx[4], av->robot[rn].ty[4], atr2var::robot_scale, atr2var::robot_scale);
+        p.setPen(QPen(atr2func::pascal_color(atr2func::robot_color_i(rn) & 7), 1));
+        p.drawEllipse(av->robot[rn].tx[4] - atr2var::robot_scale,
+                      av->robot[rn].ty[4] - atr2var::robot_scale,
+                      atr2var::robot_scale * 2.0,
+                      atr2var::robot_scale * 2.0);
     }
     p.setPen(QPen(atr2func::robot_color(rn), 1));
     p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
