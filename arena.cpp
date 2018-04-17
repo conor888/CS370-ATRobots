@@ -31,6 +31,8 @@ void arena::update_robot(int rn) {
     pix[rn]->fill(QColor(0,0,0,0));
     QPainter p(pix[rn]);
 
+    //p.setRenderHint(QPainter::Antialiasing);
+
     if (av->robot[rn].shields_up) {
         p.setPen(QPen(atr2func::pascal_color(atr2func::robot_color_i(rn) & 7), 1));
         p.drawEllipse(av->robot[rn].tx[4] - atr2var::robot_scale,
