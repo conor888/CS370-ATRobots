@@ -28,6 +28,10 @@ void rgraph::paintEvent(QPaintEvent *)
     p.setPen(QPen(atr2func::robot_color(n), 1));
     p.setFont(*P2);
 
+    if(av->robot[n].selected) {
+        p.drawRect(0, 0, 153, 64);
+    }
+
     //First row: Robot name and Wins
     p.drawText(QRect(2, 1, 70, 10), QString::fromStdString(av->robot[n].fn));
     p.drawText(QRect(79, 1, 154, 10), QString::fromStdString("Wins:" + atr2func::zero_pad(av->robot[n].wins, 4)));
