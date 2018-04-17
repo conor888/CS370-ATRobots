@@ -171,3 +171,13 @@ void window::keyPressEvent(QKeyEvent *event){
 
     cycleg->update();
 }
+
+void window::mouseDoubleClickEvent(QMouseEvent *event) {
+    if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 5) && (event->y() <= 70)) {
+        if (av->robot[0].selected = true) {
+            av->robot[0].selected = false;
+        } else {
+            av->robot[0].selected = true;
+        }
+    }
+}

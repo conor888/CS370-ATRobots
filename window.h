@@ -17,7 +17,8 @@ private:
     void box(int x1, int y1, int x2, int y2, QPixmap* canvas);
     void hole(int x1, int y1, int x2, int y2, QPixmap* canvas);
     void paintEvent(QPaintEvent *event) override;
-    void keyPressEvent(QKeyEvent * event);
+    void keyPressEvent(QKeyEvent *event);
+    void mouseDoubleClickEvent(QMouseEvent *event);
     atr2var *av;
     cgraph* cycleg;
     QPixmap *windowborder;

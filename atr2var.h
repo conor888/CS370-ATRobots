@@ -113,7 +113,7 @@ public:
         config_rec config;
         std::string name;
         std::string fn;
-        bool shields_up, lshields, overburn, keepshift, cooling, won;
+        bool shields_up, lshields, overburn, keepshift, cooling, won, selected;
         prog_type code;
         int ram[max_ram];
         mine_rec mine[max_mines];

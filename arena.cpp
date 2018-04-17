@@ -38,7 +38,11 @@ void arena::update_robot(int rn) {
                       atr2var::robot_scale * 2.0,
                       atr2var::robot_scale * 2.0);
     }
-    p.setPen(QPen(atr2func::robot_color(rn), 1));
+    if (av->robot[rn].selected) {
+        p.setPen(QPen(atr2func::robot_color(rn), 6));
+    } else {
+        p.setPen(QPen(atr2func::robot_color(rn), 1));
+    }
     p.drawLine(av->robot[rn].tx[1], av->robot[rn].ty[1], av->robot[rn].tx[2], av->robot[rn].ty[2]);
     p.drawLine(av->robot[rn].tx[2], av->robot[rn].ty[2], av->robot[rn].tx[3], av->robot[rn].ty[3]);
     p.drawLine(av->robot[rn].tx[3], av->robot[rn].ty[3], av->robot[rn].tx[1], av->robot[rn].ty[1]);
