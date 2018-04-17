@@ -201,11 +201,15 @@ int atr2::max_shown() {
 }
 
 void atr2::update_armor(int n) {
-    rgraphs[n]->update();
+    if ((n>= 0) && (n <= 5)) {
+        rgraphs[n]->update();
+    }
 }
 
 void atr2::update_heat(int n) {
-    rgraphs[n]->update();
+    if ((n>= 0) && (n <= 5)) {
+        rgraphs[n]->update();
+    }
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
@@ -216,7 +220,9 @@ void atr2::robot_error(int n, int i, std::string ov) {
 }
 
 void atr2::update_lives(int n) {
-    rgraphs[n]->update();
+    if ((n>= 0) && (n <= 5)) {
+        rgraphs[n]->update();
+    }
 }
 
 void atr2::update_cycle_window() {
