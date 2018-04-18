@@ -1,0 +1,6 @@
+ram[65] = ax
+ram[66] = bx
+ram[67] = cx
+ram[68] = dx
+ram[69] = ex
+ram[70] = fx
