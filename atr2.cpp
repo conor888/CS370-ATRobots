@@ -3311,7 +3311,7 @@ void atr2::do_missile(int n) {
     } else {
         if (av->missile[n].a == 1) {
             //Look for collision w/ wall
-            if ((av->missile[n].x <- 20) || (av->missile[n].x > 1020) || (av->missile[n].y <- 20) || (av->missile[n].y > 1020)) {
+            if ((av->missile[n].x < -20) || (av->missile[n].x > 1020) || (av->missile[n].y < -20) || (av->missile[n].y > 1020)) {
                 av->missile[n].a = 0;
             }
 
