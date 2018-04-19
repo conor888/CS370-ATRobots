@@ -13,7 +13,7 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
     //QSignalMapper * signalMapper = new QSignalMapper;
 
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
-    //connect(this, SIGNAL(draw_robot()), this, SLOT(update_robot()));
+    connect(this, SIGNAL(force_repaint()), this, SLOT(repaint_now()));
     //QObject::connect(signalMapper, SIGNAL(mapped(int*)), this, update_robot(int));
     //connect(this, SIGNAL(do_missile(mn)), this, update_missile(mn));
 
@@ -32,6 +32,10 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
     pix[35]->fill(Qt::black);
 
     //m = new QPainter(this);
+}
+
+void arena::repaint_now() {
+    this->repaint();
 }
 
 void arena::update_robot(int rn) {

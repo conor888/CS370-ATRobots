@@ -39,10 +39,14 @@ private:
      * pix[35]: black
     */
 
+public slots:
+    void repaint_now();
+
 signals:
     void donePainting();
     void draw_robot(int rn);
     void do_missile(int mn);
+    void force_repaint();
 
 };
 
