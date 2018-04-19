@@ -74,7 +74,9 @@ std::string MainWindow::base_name_pad(std::string name) {
     std::string s1;
     bool atl;
 
-    if((name.compare(name.length()-3,3,"ATL") == 0) || (name.compare(name.length()-3,3,"atl") == 0)){
+    name = ucase(name);
+
+    if(name.compare(name.length()-3,3,"ATL") == 0){
         atl = true;
     } else {
         atl = false;
@@ -90,8 +92,6 @@ std::string MainWindow::base_name_pad(std::string name) {
     while(s1.length() < 8) {
         s1 += " ";
     }
-
-    ucase(s1);
 
     if(atl == true){
         s1 += ".ATL";
