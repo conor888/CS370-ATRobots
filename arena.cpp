@@ -90,9 +90,19 @@ void arena::update_missile(int mn) {
         QPainter p(pix[33]);
         if (av->missile[mn].a == 1) {
             if (av->missile[mn].mult > av->robot[av->missile[mn].source].shotstrength) {
-                p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 1));
+                if (av->robot[av->missile[mn].source].selected) {
+                    p.setRenderHint(QPainter::Antialiasing);
+                    p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 3));
+                } else {
+                    p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 1));
+                }
             } else {
-                p.setPen(QPen(atr2func::pascal_color(15), 1));
+                if (av->robot[av->missile[mn].source].selected) {
+                    p.setRenderHint(QPainter::Antialiasing);
+                    p.setPen(QPen(atr2func::pascal_color(15), 3));
+                } else {
+                    p.setPen(QPen(atr2func::pascal_color(15), 1));
+                }
             }
 
             p.drawLine((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
