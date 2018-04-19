@@ -74,6 +74,8 @@ void rgraph::update_graph() {
         p.fillRect(0, 0, 154, 65, QBrush(atr2func::pascal_color(8)));
         //p.setBrush(QBrush(atr2func::pascal_color(8), 1));
         p.fillRect(0, 0, 154, 65, Qt::Dense4Pattern);
+
+        this->update();
     }
 
 }

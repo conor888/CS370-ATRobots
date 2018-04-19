@@ -1640,6 +1640,10 @@ void atr2::init(int argc, std::string argv[]) {
     /*if (!av->graphix) {
         std::cout << "Freemem: " << memavail << std::endl << std::endl;
     }*/
+
+    for (i = 0; i < 6; i++) {
+        rgraphs[i]->update_graph();
+    }
 }
 
 void atr2::draw_robot(int n) {

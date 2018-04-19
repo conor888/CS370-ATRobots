@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     //one->setStyleSheet("background: rgb(255, 0, 0)");
     //one->update();
 
-    window atr2w(&av, cycleg);
+    window atr2w(&av, cycleg, rgraphs);
     atr2w.setLayout(atr2l);
     atr2w.setAttribute(Qt::WA_OpaquePaintEvent, true);
 
