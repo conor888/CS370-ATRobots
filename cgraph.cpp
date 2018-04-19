@@ -18,6 +18,7 @@ cgraph::cgraph(atr2var* avtemp, QWidget *parent) : QWidget(parent)
     av = avtemp;
 
     c = new QPixmap(154, 44);
+    c->fill(Qt::black);
 
 }
 

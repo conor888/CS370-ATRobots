@@ -12,13 +12,14 @@ rgraph::rgraph(int nn, atr2var* avtemp, QWidget *parent) : QWidget(parent)
     P2->setStyleStrategy(QFont::NoAntialias);
     P2->setPixelSize(8);
     //P2->setWeight(QFont::Bold);
-    //P2->setHintingPreference(QFont::PreferNoHinting);
+    P2->setHintingPreference(QFont::PreferNoHinting);
     //P2->setStyleHint(QFont::TypeWriter);
 
     n = nn;
     av = avtemp;
 
     r = new QPixmap(154, 65);
+    r->fill(Qt::black);
 }
 
 void rgraph::update_graph() {
