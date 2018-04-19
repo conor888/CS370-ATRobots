@@ -169,7 +169,7 @@ void window::keyPressEvent(QKeyEvent *event){
         repaint();
     }
 
-    cycleg->update();
+    cycleg->update_cycle();
 }
 
 void window::mouseDoubleClickEvent(QMouseEvent *event) {

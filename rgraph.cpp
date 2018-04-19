@@ -18,11 +18,11 @@ rgraph::rgraph(int nn, atr2var* avtemp, QWidget *parent) : QWidget(parent)
     n = nn;
     av = avtemp;
 
+    r = new QPixmap(154, 65);
 }
 
-void rgraph::paintEvent(QPaintEvent *)
-{
-    QPainter p(this);
+void rgraph::update_graph() {
+    QPainter p(r);
 
     if (n < av->num_robots) {
         p.fillRect(0, 0, 154, 65, QBrush(Qt::black));
@@ -68,10 +68,19 @@ void rgraph::paintEvent(QPaintEvent *)
         p.drawText(QRect(10, 45, 50, 10), QString::fromStdString("K:" + atr2func::zero_pad(av->robot[n].kills, 4)));
         p.drawText(QRect(79, 45, 50, 10), QString::fromStdString("D:" + atr2func::zero_pad(av->robot[n].deaths, 4)));
 
+        this->update();
+
     } else {
         p.fillRect(0, 0, 154, 65, QBrush(atr2func::pascal_color(8)));
         //p.setBrush(QBrush(atr2func::pascal_color(8), 1));
         p.fillRect(0, 0, 154, 65, Qt::Dense4Pattern);
     }
 
+}
+
+void rgraph::paintEvent(QPaintEvent *)
+{
+    QPainter p(this);
+
+    p.drawPixmap(0, 0, *r);
 }
