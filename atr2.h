@@ -13,13 +13,14 @@
 #include <QObject>
 #include "rgraph.h"
 #include "cgraph.h"
+#include "window.h"
 
 class arena;
 
 class atr2 {
 public:
     //atr2(atr2var* avtemp, arena* parent);
-    atr2(atr2var* avtemp, arena* parent, rgraph** rgraphstemp, cgraph *cyclegtemp);
+    atr2(atr2var* avtemp, arena* parent, rgraph** rgraphstemp, cgraph *cyclegtemp, window* atr2wtemp);
     atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy);
 
     std::string operand(int n, int m);
@@ -98,6 +99,7 @@ private:
     arena *atr2a;
     rgraph **rgraphs;
     cgraph *cycleg;
+    window *atr2w;
     //QEventLoop *loop;
 
 signals:

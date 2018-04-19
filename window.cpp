@@ -11,9 +11,15 @@ window::window(atr2var* avtemp, cgraph* cyclegtemp, rgraph** rgraphstemp, QWidge
     cycleg = cyclegtemp;
     rgraphs = rgraphstemp;
 
+    connect(this, SIGNAL(force_repaint()), this, SLOT(repaint_now()));
+
     windowborder = new QPixmap(640, 480);
     windowborder->fill(QColor(168, 168, 168));
     init_window();
+}
+
+void window::repaint_now() {
+    this->repaint();
 }
 
 void window::init_window() {
