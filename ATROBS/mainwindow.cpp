@@ -88,7 +88,7 @@ void MainWindow::on_pushButton_clicked() //Robot 1 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[0] = inputFile;
@@ -100,7 +100,7 @@ void MainWindow::on_pushButton_2_clicked() //Robot 2 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[1] = inputFile;
@@ -112,7 +112,7 @@ void MainWindow::on_pushButton_3_clicked() //Robot 3 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[2] = inputFile;
@@ -124,7 +124,7 @@ void MainWindow::on_pushButton_4_clicked() //Robot 4 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[3] = inputFile;
@@ -137,7 +137,7 @@ void MainWindow::on_pushButton_5_clicked() //Robot 5 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[4] = inputFile;
@@ -149,7 +149,7 @@ void MainWindow::on_pushButton_6_clicked() //Robot 6 browse button
 {
     QString inputFile = QFileDialog::getOpenFileName(this, tr("Open File"),
                                                     "",
-                                                    tr("ATRobot File (*.AT2)"));
+                                                    tr("ATRobot File (*.AT2 *.ATL)"));
 
     if (!inputFile.isEmpty()) {
         *fileName[5] = inputFile;
