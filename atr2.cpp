@@ -3631,14 +3631,14 @@ void atr2::bout() {
         }
 
         if (av->graphix) {
+            atr2a->update();
+            QApplication::processEvents();
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
                 emit atr2w->force_repaint();
                 QApplication::processEvents();
-            } else {
-                atr2a->update();
-                QApplication::processEvents();
             }
+
             /*else {
                 if (av->update_timer != mem[0:$46C] >> 1) {
                     update_cycle_window();
