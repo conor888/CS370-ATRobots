@@ -91,7 +91,7 @@ void arena::update_robot(int rn) {
         pp.drawPixmap(0, 0, *pix[i]);
     }
 
-    this->update();
+    //this->update();
     //emit donePainting();
 }
 
@@ -137,8 +137,8 @@ void arena::update_missile(int mn) {
             }
         }
 
-        this->update();
-        emit donePainting();
+        //this->update();
+        //emit donePainting();
     }
 }
 

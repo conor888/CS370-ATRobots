@@ -9,11 +9,12 @@
 #include <QEventLoop>
 #include <QApplication>
 
-atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp) {
+atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp, window* atr2wtemp) {
     av = avtemp;
     atr2a = parent;
     rgraphs = rgraphstemp;
     cycleg = cyclegtemp;
+    atr2w = atr2wtemp;
 
     //loop = new QEventLoop();
     //QObject::connect(atr2a, SIGNAL(donePainting()), loop, SLOT(quit()));
@@ -3640,9 +3641,13 @@ void atr2::bout() {
         if (av->graphix) {
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
-                emit atr2a->force_repaint();
+                emit atr2w->force_repaint();
                 QApplication::processEvents();
-            } /*else {
+            } else {
+                atr2a->update();
+                QApplication::processEvents();
+            }
+            /*else {
                 if (av->update_timer != mem[0:$46C] >> 1) {
                     update_cycle_window();
                 }
