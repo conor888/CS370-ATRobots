@@ -21,7 +21,7 @@ public:
     void update_robot(int rn);
     void update_missile(int mn);
     void update_mine(int rn, int mn);
-    void delete_robot(int rn);
+    void new_cycle();
 
 private:
     void paintEvent(QPaintEvent *event) override;
@@ -29,24 +29,12 @@ private:
 
     //QPainter *m;
 
-    QPixmap **pix = new QPixmap*[36];
-    /*
-     * PIXMAP INFO:
-     * pix[0] - pix[31]: robots #0-31
-     * pix[32]: all robots together
-     * pix[33]: missiles
-     * pix[34]: mines
-     * pix[35]: black
-    */
-
-public slots:
-    void repaint_now();
+    QPixmap *pix;
 
 signals:
     void donePainting();
     void draw_robot(int rn);
     void do_missile(int mn);
-    void force_repaint();
 
 };
 

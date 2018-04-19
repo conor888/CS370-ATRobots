@@ -13,7 +13,6 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
     //QSignalMapper * signalMapper = new QSignalMapper;
 
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
-    connect(this, SIGNAL(force_repaint()), this, SLOT(repaint_now()));
     //QObject::connect(signalMapper, SIGNAL(mapped(int*)), this, update_robot(int));
     //connect(this, SIGNAL(do_missile(mn)), this, update_missile(mn));
 
@@ -23,24 +22,12 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 
     av = avtemp;
 
-    for (int i = 0; i < 35; i++) {
-        pix[i] = new QPixmap(470, 470);
-        pix[i]->fill(QColor(0, 0, 0, 0));
-    }
-
-    pix[35] = new QPixmap(470, 470);
-    pix[35]->fill(Qt::black);
-
-    //m = new QPainter(this);
-}
-
-void arena::repaint_now() {
-    this->repaint();
+    pix = new QPixmap(470, 470);
+    pix->fill(Qt::black);
 }
 
 void arena::update_robot(int rn) {
-    pix[rn]->fill(QColor(0,0,0,0));
-    QPainter p(pix[rn]);
+    QPainter p(pix);
 
     //p.setRenderHint(QPainter::Antialiasing);
 
@@ -84,86 +71,64 @@ void arena::update_robot(int rn) {
                 (int)round(atr2var::max_sonar * atr2var::screen_scale * 2),
                 (int)round(atr2var::max_sonar * atr2var::screen_scale * 2));
     }
-
-    pix[32]->fill(Qt::black);
-    QPainter pp(pix[32]);
-    for (int i = 0; i < av->num_robots; i++) {
-        pp.drawPixmap(0, 0, *pix[i]);
-    }
-
-    //this->update();
-    //emit donePainting();
 }
 
 void arena::update_missile(int mn) {
-    if (mn == 3000) {
-        pix[33]->fill(QColor(0,0,0,0));
-    } else {
-        QPainter p(pix[33]);
-        if (av->missile[mn].a == 1) {
-            if (av->missile[mn].mult > av->robot[av->missile[mn].source].shotstrength) {
-                if (av->robot[av->missile[mn].source].selected) {
-                    p.setRenderHint(QPainter::Antialiasing);
-                    p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 3));
-                } else {
-                    p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 1));
-                }
+    QPainter p(pix);
+    if (av->missile[mn].a == 1) {
+        if (av->missile[mn].mult > av->robot[av->missile[mn].source].shotstrength) {
+            if (av->robot[av->missile[mn].source].selected) {
+                p.setRenderHint(QPainter::Antialiasing);
+                p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 3));
             } else {
-                if (av->robot[av->missile[mn].source].selected) {
-                    p.setRenderHint(QPainter::Antialiasing);
-                    p.setPen(QPen(atr2func::pascal_color(15), 3));
-                } else {
-                    p.setPen(QPen(atr2func::pascal_color(15), 1));
-                }
+                p.setPen(QPen(atr2func::pascal_color(14 + (av->game_cycle & 1)), 1));
             }
-
-            p.drawLine((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
-                       (int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y,
-                       (int)round(av->missile[mn].lx * atr2var::screen_scale) + atr2var::screen_x,
-                       (int)round(av->missile[mn].ly * atr2var::screen_scale) + atr2var::screen_y);
-        }
-
-        else if (av->missile[mn].a == 2) {
-            p.setPen(QPen(Qt::black, 8));
-            p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].lrad,
-                          ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].lrad,
-                          av->missile[mn].lrad * 2, av->missile[mn].lrad * 2);
-
-            if (av->missile[mn].a > 0) {
+        } else {
+            if (av->robot[av->missile[mn].source].selected) {
+                p.setRenderHint(QPainter::Antialiasing);
+                p.setPen(QPen(atr2func::pascal_color(15), 3));
+            } else {
                 p.setPen(QPen(atr2func::pascal_color(15), 1));
-                p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].rad,
-                              ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].rad,
-                              av->missile[mn].rad * 2, av->missile[mn].rad * 2);
             }
         }
 
-        //this->update();
-        //emit donePainting();
+        p.drawLine((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x,
+                   (int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y,
+                   (int)round(av->missile[mn].lx * atr2var::screen_scale) + atr2var::screen_x,
+                   (int)round(av->missile[mn].ly * atr2var::screen_scale) + atr2var::screen_y);
+    }
+
+    else if (av->missile[mn].a == 2) {
+        p.setPen(QPen(Qt::black, 8));
+        p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].lrad,
+                      ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].lrad,
+                      av->missile[mn].lrad * 2, av->missile[mn].lrad * 2);
+
+        if (av->missile[mn].a > 0) {
+            p.setPen(QPen(atr2func::pascal_color(15), 1));
+            p.drawEllipse(((int)round(av->missile[mn].x * atr2var::screen_scale) + atr2var::screen_x) - av->missile[mn].rad,
+                          ((int)round(av->missile[mn].y * atr2var::screen_scale) + atr2var::screen_y) - av->missile[mn].rad,
+                          av->missile[mn].rad * 2, av->missile[mn].rad * 2);
+        }
     }
 }
 
 void arena::update_mine(int rn, int mn) {
-    if (rn == 3000) {
-        pix[34]->fill(QColor(0,0,0,0));
-    } else if (rn == 4000) {
-        this->update();
-    } else {
-        QPainter p(pix[34]);
+    QPainter p(pix);
 
-        p.setPen(QPen(atr2func::robot_color(rn), 1));
-        p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
-                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y - 1,
-                   (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
-                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y + 1);
-        p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x + 1,
-                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y,
-                   (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x - 1,
-                   (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y);
-    }
+    p.setPen(QPen(atr2func::robot_color(rn), 1));
+    p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
+               (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y - 1,
+               (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x,
+               (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y + 1);
+    p.drawLine((int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x + 1,
+               (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y,
+               (int)std::round(av->robot[rn].mine[mn].x * atr2var::screen_scale) + atr2var::screen_x - 1,
+               (int)std::round(av->robot[rn].mine[mn].y * atr2var::screen_scale) + atr2var::screen_y);
 }
 
-void arena::delete_robot(int rn) {
-    pix[rn]->fill(QColor(0, 0, 0, 0));
+void arena::new_cycle() {
+    pix->fill(Qt::black);
 }
 
 void arena::paintEvent(QPaintEvent *)
@@ -176,9 +141,9 @@ void arena::paintEvent(QPaintEvent *)
 
     QPainter p(this);
 
-    p.drawPixmap(0, 0, *pix[32]);
-    p.drawPixmap(0, 0, *pix[34]);
-    p.drawPixmap(0, 0, *pix[33]);
+    p.drawPixmap(0, 0, *pix);
+    //p.drawPixmap(0, 0, *pix[34]);
+    //p.drawPixmap(0, 0, *pix[33]);
 }
 
 arena::~arena() {

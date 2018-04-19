@@ -3567,33 +3567,23 @@ void atr2::bout() {
         }
 
         av->game_cycle++;
+        atr2a->new_cycle();
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
                 do_robot(i);
-            } else {
-                atr2a->delete_robot(i);
             }
         }
-        //atr2a->clear_missiles();
-        atr2a->update_missile(3000);
         for (i = 0; i < atr2var::max_missiles; i++) {
             if (av->missile[i].a > 0) {
                 do_missile(i);
             }
         }
-        atr2a->update_mine(3000, 0);
         for (i = 0; i < av->num_robots; i++) {
             for (k = 0; k < atr2var::max_mines; k++) {
                 if (av->robot[i].mine[k].yield > 0) {
                     do_mine(i, k);
-                    //atr2func::time_delay(1);
                 }
             }
-        }
-        atr2a->update_mine(4000, 0);
-
-        if (av->graphix && av->timing) {
-            atr2func::time_delay(av->game_delay);
         }
 
         /*if (keypressed) {
@@ -3618,7 +3608,9 @@ void atr2::bout() {
             av->game_delay = 100;
         }
 
-        if (av->game_delay <= 1) {
+        if (av->game_delay <= 0) {
+            k = 1000;
+        } else if (av->game_delay <= 1) {
             k = 100;
         } else if (av->game_delay <= 15) {
             k = 50;
@@ -3653,6 +3645,10 @@ void atr2::bout() {
                 }
                 av->update_timer = mem[0:$46C] >> 1;
             }*/
+        }
+
+        if (av->graphix && av->timing && (av->game_delay > 0)) {
+            atr2func::time_delay(av->game_delay);
         }
     } while(!(av->quit || gameover() || av->bout_over));
 
