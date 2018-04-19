@@ -7,12 +7,16 @@
 #include "filelib.h"
 #include "arena.h"
 #include <QEventLoop>
+#include <QApplication>
 
 atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp) {
     av = avtemp;
     atr2a = parent;
     rgraphs = rgraphstemp;
     cycleg = cyclegtemp;
+
+    //loop = new QEventLoop();
+    //QObject::connect(atr2a, SIGNAL(donePainting()), loop, SLOT(quit()));
 }
 
 atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
@@ -202,14 +206,16 @@ int atr2::max_shown() {
 
 void atr2::update_armor(int n) {
     if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update();
+        rgraphs[n]->update_graph();
     }
+    QApplication::processEvents();
 }
 
 void atr2::update_heat(int n) {
     if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update();
+        rgraphs[n]->update_graph();
     }
+    QApplication::processEvents();
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
@@ -221,12 +227,14 @@ void atr2::robot_error(int n, int i, std::string ov) {
 
 void atr2::update_lives(int n) {
     if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update();
+        rgraphs[n]->update_graph();
     }
+    QApplication::processEvents();
 }
 
 void atr2::update_cycle_window() {
-    cycleg->update();
+    cycleg->update_cycle();
+    QApplication::processEvents();
 }
 
 void atr2::prog_error(int n, std::string ss) {
@@ -1764,9 +1772,10 @@ void atr2::draw_robot(int n) {
 
         if (av->graphix) {
             atr2a->update_robot(n);
-            //atr2a->update();
+            QApplication::processEvents();
+            //emit update_robot();
+            //emit atr2a->draw_robot(n);
             //loop->exec();
-            atr2func::time_delay(av->game_delay);
         }
 
         av->robot[n].lx = av->robot[n].x;
@@ -1858,7 +1867,7 @@ void atr2::push(int n, int v) {
 }
 
 int atr2::pop(int n) {
-    int k;
+    int k = 0;
 
     if ((av->robot[n].ram[71] > atr2var::stack_base) && (av->robot[n].ram[71] <= (atr2var::stack_base + atr2var::stack_size))) {
         av->robot[n].ram[71] = av->robot[n].ram[71] - 1;
@@ -2090,6 +2099,7 @@ int atr2::scan(int n) {
     int dir, range, i, j, k, l, nn, xx, yy, sign;
 
     nn = -1;
+    sign = 1;
     range = atr2var::maxint;
     if(!((n >= 0) && (n <= av->num_robots))) {
         return 0;
@@ -3388,7 +3398,8 @@ void atr2::do_missile(int n) {
             //draw missile
             if (av->graphix) {
                 atr2a->update_missile(n);
-                atr2func::time_delay(1);
+                QApplication::processEvents();
+                //loop->exec();
             }
         }
 
@@ -3400,7 +3411,8 @@ void atr2::do_missile(int n) {
             }
             if (av->graphix) {
                 atr2a->update_missile(n);
-                atr2func::time_delay(1);
+                QApplication::processEvents();
+                //loop->exec();
             }
         }
     }
@@ -3576,7 +3588,7 @@ void atr2::bout() {
         atr2a->update_mine(4000, 0);
 
         if (av->graphix && av->timing) {
-            //atr2func::time_delay(av->game_delay);
+            atr2func::time_delay(av->game_delay);
         }
 
         /*if (keypressed) {
@@ -3630,6 +3642,11 @@ void atr2::bout() {
                 }
                 av->update_timer = mem[0:$46C] >> 1;
             }*/
+
+            //if (av->game_cycle % 100 == 0) {
+                //atr2a->repaint();
+                //emit force_repaint();
+            //}
         }
     } while(!(av->quit || gameover() || av->bout_over));
 

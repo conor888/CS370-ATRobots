@@ -99,6 +99,11 @@ private:
     rgraph **rgraphs;
     cgraph *cycleg;
     //QEventLoop *loop;
+
+signals:
+    //void update_robot();
+    //void update_missile();
+    //void force_repaint();
 };
 
 #endif //ATR2_H

@@ -10,7 +10,12 @@
 
 arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 {
+    //QSignalMapper * signalMapper = new QSignalMapper;
+
     //connect(this, SIGNAL(doneDrawingRobots), this, SLOT(update()));
+    //connect(this, SIGNAL(draw_robot()), this, SLOT(update_robot()));
+    //QObject::connect(signalMapper, SIGNAL(mapped(int*)), this, update_robot(int));
+    //connect(this, SIGNAL(do_missile(mn)), this, update_missile(mn));
 
     setWindowTitle(QString::fromStdString("ATR2"));
     //resize(470, 470);
@@ -25,6 +30,8 @@ arena::arena(atr2var* avtemp, QWidget *parent) : QWidget(parent)
 
     pix[35] = new QPixmap(470, 470);
     pix[35]->fill(Qt::black);
+
+    //m = new QPainter(this);
 }
 
 void arena::update_robot(int rn) {
@@ -81,6 +88,7 @@ void arena::update_robot(int rn) {
     }
 
     this->update();
+    //emit donePainting();
 }
 
 void arena::update_missile(int mn) {
@@ -116,6 +124,7 @@ void arena::update_missile(int mn) {
         }
 
         this->update();
+        emit donePainting();
     }
 }
 
@@ -156,8 +165,6 @@ void arena::paintEvent(QPaintEvent *)
     p.drawPixmap(0, 0, *pix[32]);
     p.drawPixmap(0, 0, *pix[34]);
     p.drawPixmap(0, 0, *pix[33]);
-
-    //emit donePainting();
 }
 
 arena::~arena() {
