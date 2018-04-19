@@ -19,6 +19,7 @@ public:
     std::string lstr(std::string s1, int l);
     std::string rstr(std::string s1, int l);
     std::string base_name_pad(std::string name);
+    std::string ucase(std::string s);
     void remove_robot(int robot);
 
     QProcess *atr2;

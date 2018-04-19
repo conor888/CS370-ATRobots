@@ -3,6 +3,16 @@
 #include <QFileDialog>
 #include <iostream>
 
+std::string MainWindow::ucase(std::string s) {
+    int i;
+    if((int)s.length() >= 1) {
+        for (i = 0; i < s.length(); i++) {
+            s[i] = (char)toupper(s[i]);
+        }
+    }
+    return s;
+}
+
 MainWindow::MainWindow(QProcess *atr2in, QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -62,6 +72,13 @@ std::string MainWindow::rstr(std::string s1, int l) {
 std::string MainWindow::base_name_pad(std::string name) {
     int k;
     std::string s1;
+    bool atl;
+
+    if((name.compare(name.length()-3,3,"ATL") == 0) || (name.compare(name.length()-3,3,"atl") == 0)){
+        atl = true;
+    } else {
+        atl = false;
+    }
 
     s1.clear();
     k = 0;
@@ -74,7 +91,13 @@ std::string MainWindow::base_name_pad(std::string name) {
         s1 += " ";
     }
 
-    s1 += ".AT2";
+    ucase(s1);
+
+    if(atl == true){
+        s1 += ".ATL";
+    } else {
+        s1 += ".AT2";
+    }
 
     return s1;
 }
