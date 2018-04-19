@@ -32,7 +32,8 @@ SOURCES += \
     atr2var.cpp \
     window.cpp \
     rgraph.cpp \
-    cgraph.cpp
+    cgraph.cpp \
+    thread.cpp
 
 HEADERS += \
     filelib.h \
@@ -42,7 +43,8 @@ HEADERS += \
     atr2var.h \
     window.h \
     rgraph.h \
-    cgraph.h
+    cgraph.h \
+    thread.h
 
 FORMS +=
 

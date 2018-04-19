@@ -3,12 +3,13 @@
 #include <QPainter>
 #include "atr2func.h"
 
-window::window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent) : QWidget(parent)
+window::window(atr2var* avtemp, cgraph* cyclegtemp, rgraph** rgraphstemp, QWidget *parent) : QWidget(parent)
 {
     setFixedSize(640, 480);
 
     av = avtemp;
     cycleg = cyclegtemp;
+    rgraphs = rgraphstemp;
 
     windowborder = new QPixmap(640, 480);
     windowborder->fill(QColor(168, 168, 168));
@@ -169,7 +170,7 @@ void window::keyPressEvent(QKeyEvent *event){
         repaint();
     }
 
-    cycleg->update();
+    cycleg->update_cycle();
 }
 
 void window::mouseDoubleClickEvent(QMouseEvent *event) {
@@ -179,35 +180,41 @@ void window::mouseDoubleClickEvent(QMouseEvent *event) {
         } else {
             av->robot[0].selected = true;
         }
+        rgraphs[0]->update_graph();
     } else if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 75) && (event->y() <= 140)) {
         if (av->robot[1].selected == true) {
             av->robot[1].selected = false;
         } else {
             av->robot[1].selected = true;
         }
+        rgraphs[1]->update_graph();
     } else if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 145) && (event->y() <= 210)) {
         if (av->robot[2].selected == true) {
             av->robot[2].selected = false;
         } else {
             av->robot[2].selected = true;
         }
+        rgraphs[2]->update_graph();
     } else if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 215) && (event->y() <= 280)) {
         if (av->robot[3].selected == true) {
             av->robot[3].selected = false;
         } else {
             av->robot[3].selected = true;
         }
+        rgraphs[3]->update_graph();
     } else if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 285) && (event->y() <= 350)) {
         if (av->robot[4].selected == true) {
             av->robot[4].selected = false;
         } else {
             av->robot[4].selected = true;
         }
+        rgraphs[4]->update_graph();
     } else if((event->x() >= 480) && (event->x() <= 635) && (event->y() >= 355) && (event->y() <= 420)) {
         if (av->robot[5].selected == true) {
             av->robot[5].selected = false;
         } else {
             av->robot[5].selected = true;
         }
+        rgraphs[5]->update_graph();
     }
 }

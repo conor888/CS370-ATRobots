@@ -4,13 +4,14 @@
 #include <QWidget>
 #include "atr2var.h"
 #include "cgraph.h"
+#include "rgraph.h"
 #include <QPixmap>
 
 class window : public QWidget
 {
     Q_OBJECT
 public:
-    explicit window(atr2var* avtemp, cgraph* cyclegtemp, QWidget *parent = nullptr);
+    explicit window(atr2var* avtemp, cgraph* cyclegtemp, rgraph** rgraphstemp, QWidget *parent = nullptr);
 
 private:
     void init_window();
@@ -21,6 +22,7 @@ private:
     void mouseDoubleClickEvent(QMouseEvent *event);
     atr2var *av;
     cgraph* cycleg;
+    rgraph** rgraphs;
     QPixmap *windowborder;
 };
 

@@ -13,6 +13,7 @@
 #include <QGridLayout>
 #include "rgraph.h"
 #include "cgraph.h"
+#include "thread.h"
 
 int main(int argc, char *argv[]) {
 
@@ -41,7 +42,7 @@ int main(int argc, char *argv[]) {
     //one->setStyleSheet("background: rgb(255, 0, 0)");
     //one->update();
 
-    window atr2w(&av, cycleg);
+    window atr2w(&av, cycleg, rgraphs);
     atr2w.setLayout(atr2l);
     atr2w.setAttribute(Qt::WA_OpaquePaintEvent, true);
 
@@ -61,10 +62,13 @@ int main(int argc, char *argv[]) {
     atr2w.setStyleSheet("background-color: rgb(168, 168, 168);");
     atr2w.show();
 
-    WorkerThread *workerThread = new WorkerThread(&av, argc, args, atr2a, rgraphs, cycleg);
+    //WorkerThread *workerThread = new WorkerThread(&av, argc, args, atr2a, rgraphs, cycleg);
     //connect(workerThread, &WorkerThread::resultReady, this, &MyObject::handleResults);
     //connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
-    workerThread->start();
+    //workerThread->start();
+
+    Controller *atr2c = new Controller(&av, argc, args, atr2a, rgraphs, cycleg);
+    atr2c->operate();
 
     return a.exec();
 }

@@ -74,7 +74,7 @@ public:
             screen_y        = 5,
             robot_scale     = 6,
             //robot_scale     = 12,
-            default_delay   = 1,
+            default_delay   = 10,
             default_slice   = 5,
             max_robot_lines = 8;
     //Gray50 : FillPatternType = ($AA, $55, $AA, $55,

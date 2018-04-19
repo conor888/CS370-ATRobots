@@ -27,6 +27,8 @@ private:
     void paintEvent(QPaintEvent *event) override;
     atr2var *av;
 
+    //QPainter *m;
+
     QPixmap **pix = new QPixmap*[36];
     /*
      * PIXMAP INFO:
@@ -37,8 +39,15 @@ private:
      * pix[35]: black
     */
 
+public slots:
+    void repaint_now();
+
 signals:
     void donePainting();
+    void draw_robot(int rn);
+    void do_missile(int mn);
+    void force_repaint();
+
 };
 
 #endif // ARENA_H
