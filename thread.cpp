@@ -1,12 +1,13 @@
 #include "thread.h"
 
-Worker::Worker(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp) {
+Worker::Worker(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp, window* atr2wtemp) {
     av = avtemp;
     argc = argctemp;
     argv = argvtemp;
     atr2a = parent;
     rgraphs = rgraphstemp;
     cycleg = cyclegtemp;
+    atr2w = atr2wtemp;
 
     //loop = new QEventLoop();
 
@@ -17,7 +18,7 @@ void Worker::doWork() {
     QString result;
 
     //atr2 atr2(av, atr2a, loop);
-    atr2 atr2(av, atr2a, rgraphs, cycleg);
+    atr2 atr2(av, atr2a, rgraphs, cycleg, atr2w);
 
     atr2.init(argc, argv);
 
@@ -84,15 +85,16 @@ void Worker::doWork() {
     emit resultReady(result);
 }
 
-Controller::Controller(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp) {
+Controller::Controller(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp, window *atr2wtemp) {
     av = avtemp;
     argc = argctemp;
     argv = argvtemp;
     atr2a = parent;
     rgraphs = rgraphstemp;
     cycleg = cyclegtemp;
+    atr2w = atr2wtemp;
 
-    Worker *worker = new Worker(av, argc, argv, atr2a, rgraphs, cycleg);
+    Worker *worker = new Worker(av, argc, argv, atr2a, rgraphs, cycleg, atr2w);
     worker->moveToThread(&workerThread);
     connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
     connect(this, &Controller::operate, worker, &Worker::doWork);

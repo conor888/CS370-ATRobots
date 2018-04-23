@@ -67,7 +67,7 @@ int main(int argc, char *argv[]) {
     //connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
     //workerThread->start();
 
-    Controller *atr2c = new Controller(&av, argc, args, atr2a, rgraphs, cycleg);
+    Controller *atr2c = new Controller(&av, argc, args, atr2a, rgraphs, cycleg, &atr2w);
     atr2c->operate();
 
     return a.exec();

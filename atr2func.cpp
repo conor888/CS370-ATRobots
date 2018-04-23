@@ -11,6 +11,7 @@
 #include "atr2func.h"
 #include <chrono>
 #include <thread>
+#include <QThread>
 
 const double pi = 3.1415926535897932385;
 
@@ -176,15 +177,17 @@ void atr2func::time_delay(int n) {
     }*/
 
     //l = (long)round(n / 1000 * delay_per_sec)
-    std::this_thread::sleep_for(std::chrono::milliseconds(n));
+    //std::this_thread::sleep_for(std::chrono::milliseconds(n));
+    QThread::msleep(n);
 }
 
 int atr2func::rol(int n, int k) {
-
+    n = ~(~0U << 16) & ((n << 1) + (n & (1 << 16)?1:0));
     return n;
 }
 
 int atr2func::ror(int n, int k) {
+    n = ~(~0U << 16) & (((unsigned)n >> 1) + ((n & 1 << 0) << 15));
     return n;
 }
 

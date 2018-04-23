@@ -2,4 +2,8 @@
     <qresource prefix="/fonts">
         <file>Extra/PressStart2P.ttf</file>
     </qresource>
+    <qresource prefix="/sounds">
+        <file>Extra/chirp-o2.wav</file>
+        <file>Extra/click-o2.wav</file>
+    </qresource>
 </RCC>

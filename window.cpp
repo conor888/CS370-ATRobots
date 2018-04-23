@@ -11,9 +11,15 @@ window::window(atr2var* avtemp, cgraph* cyclegtemp, rgraph** rgraphstemp, QWidge
     cycleg = cyclegtemp;
     rgraphs = rgraphstemp;
 
+    connect(this, SIGNAL(force_repaint()), this, SLOT(repaint_now()));
+
     windowborder = new QPixmap(640, 480);
     windowborder->fill(QColor(168, 168, 168));
     init_window();
+}
+
+void window::repaint_now() {
+    this->repaint();
 }
 
 void window::init_window() {
@@ -168,6 +174,12 @@ void window::keyPressEvent(QKeyEvent *event){
         }
     } else if (event->key() == Qt::Key_M) {
         repaint();
+    } else if ((event->key() == Qt::Key_S) || (event->key() == Qt::Key_Q)) {
+        if (av->sound_on) {
+            av->sound_on = false;
+        } else {
+            av->sound_on = true;
+        }
     }
 
     cycleg->update_cycle();

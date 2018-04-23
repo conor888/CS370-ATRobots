@@ -9,14 +9,23 @@
 #include <QEventLoop>
 #include <QApplication>
 
-atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp) {
+atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegtemp, window* atr2wtemp) {
     av = avtemp;
     atr2a = parent;
     rgraphs = rgraphstemp;
     cycleg = cyclegtemp;
+    atr2w = atr2wtemp;
 
     //loop = new QEventLoop();
     //QObject::connect(atr2a, SIGNAL(donePainting()), loop, SLOT(quit()));
+
+    click_sound = new QSoundEffect();
+    click_sound->setSource(QUrl("qrc:/sounds/Extra/click-o2.wav"));
+    click_sound->setVolume(1.0f);
+
+    chirp_sound = new QSoundEffect();
+    chirp_sound->setSource(QUrl("qrc:/sounds/Extra/chirp-o2.wav"));
+    chirp_sound->setVolume(0.5f);
 }
 
 atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
@@ -219,6 +228,8 @@ void atr2::update_heat(int n) {
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
+    chirp();
+    av->robot[n].err = i;
     if (av->logging_errors) {
         log_error(n, i, ov);
         av->robot[n].error_count++;
@@ -1918,7 +1929,7 @@ void atr2::init_mine(int n, int detectrange, int size) {
         av->robot[n].mine[k].detect = detectrange;
         av->robot[n].mine[k].yield = size;
         av->robot[n].mine[k].detonate = false;
-        //click;
+        click();
     }
 }
 
@@ -1940,7 +1951,7 @@ void atr2::init_missile(double xx, double yy, double xxv, double yyv, int dir, i
     bool sound;
 
     k = -1;
-    //click();
+    click();
     for (i = atr2var::max_missiles; i >= 0; i--){
         if (av->missile[i].a == 0){
             k = i;
@@ -3566,33 +3577,23 @@ void atr2::bout() {
         }
 
         av->game_cycle++;
+        atr2a->new_cycle();
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
                 do_robot(i);
-            } else {
-                atr2a->delete_robot(i);
             }
         }
-        //atr2a->clear_missiles();
-        atr2a->update_missile(3000);
         for (i = 0; i < atr2var::max_missiles; i++) {
             if (av->missile[i].a > 0) {
                 do_missile(i);
             }
         }
-        atr2a->update_mine(3000, 0);
         for (i = 0; i < av->num_robots; i++) {
             for (k = 0; k < atr2var::max_mines; k++) {
                 if (av->robot[i].mine[k].yield > 0) {
                     do_mine(i, k);
-                    //atr2func::time_delay(1);
                 }
             }
-        }
-        atr2a->update_mine(4000, 0);
-
-        if (av->graphix && av->timing) {
-            atr2func::time_delay(av->game_delay);
         }
 
         /*if (keypressed) {
@@ -3617,7 +3618,9 @@ void atr2::bout() {
             av->game_delay = 100;
         }
 
-        if (av->game_delay <= 1) {
+        if (av->game_delay <= 0) {
+            k = 1000;
+        } else if (av->game_delay <= 1) {
             k = 100;
         } else if (av->game_delay <= 15) {
             k = 50;
@@ -3638,16 +3641,24 @@ void atr2::bout() {
         }
 
         if (av->graphix) {
+            atr2a->update();
+            QApplication::processEvents();
             if (((av->game_cycle % k) == 0) || (av->game_cycle == 10)) {
                 update_cycle_window();
-                emit atr2a->force_repaint();
+                emit atr2w->force_repaint();
                 QApplication::processEvents();
-            } /*else {
+            }
+
+            /*else {
                 if (av->update_timer != mem[0:$46C] >> 1) {
                     update_cycle_window();
                 }
                 av->update_timer = mem[0:$46C] >> 1;
             }*/
+        }
+
+        if (av->graphix && av->timing && (av->game_delay > 0)) {
+            atr2func::time_delay(av->game_delay);
         }
     } while(!(av->quit || gameover() || av->bout_over));
 
@@ -3689,4 +3700,16 @@ void atr2::write_report() {
 
 void atr2::begin_window() {
 
+}
+
+void atr2::click() {
+    if (av->graphix && av->sound_on) {
+        click_sound->play();
+    }
+}
+
+void atr2::chirp() {
+    if (av->graphix && av->sound_on) {
+        chirp_sound->play();
+    }
 }

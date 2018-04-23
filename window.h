@@ -24,6 +24,12 @@ private:
     cgraph* cycleg;
     rgraph** rgraphs;
     QPixmap *windowborder;
+
+public slots:
+    void repaint_now();
+
+signals:
+    void force_repaint();
 };
 
 #endif // WINDOW_H
