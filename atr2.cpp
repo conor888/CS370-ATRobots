@@ -18,6 +18,14 @@ atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegt
 
     //loop = new QEventLoop();
     //QObject::connect(atr2a, SIGNAL(donePainting()), loop, SLOT(quit()));
+
+    click_sound = new QSoundEffect();
+    click_sound->setSource(QUrl("qrc:/sounds/Extra/click-o2.wav"));
+    click_sound->setVolume(1.0f);
+
+    chirp_sound = new QSoundEffect();
+    chirp_sound->setSource(QUrl("qrc:/sounds/Extra/chirp-o2.wav"));
+    chirp_sound->setVolume(0.5f);
 }
 
 atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
@@ -220,6 +228,8 @@ void atr2::update_heat(int n) {
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
+    chirp();
+    av->robot[n].err = i;
     if (av->logging_errors) {
         log_error(n, i, ov);
         av->robot[n].error_count++;
@@ -1919,7 +1929,7 @@ void atr2::init_mine(int n, int detectrange, int size) {
         av->robot[n].mine[k].detect = detectrange;
         av->robot[n].mine[k].yield = size;
         av->robot[n].mine[k].detonate = false;
-        //click;
+        click();
     }
 }
 
@@ -1941,7 +1951,7 @@ void atr2::init_missile(double xx, double yy, double xxv, double yyv, int dir, i
     bool sound;
 
     k = -1;
-    //click();
+    click();
     for (i = atr2var::max_missiles; i >= 0; i--){
         if (av->missile[i].a == 0){
             k = i;
@@ -3690,4 +3700,12 @@ void atr2::write_report() {
 
 void atr2::begin_window() {
 
+}
+
+void atr2::click() {
+    click_sound->play();
+}
+
+void atr2::chirp() {
+    chirp_sound->play();
 }

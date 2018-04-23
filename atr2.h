@@ -14,10 +14,13 @@
 #include "rgraph.h"
 #include "cgraph.h"
 #include "window.h"
+#include <QSoundEffect>
 
 class arena;
 
-class atr2 {
+class atr2 : public QObject {
+Q_OBJECT
+
 public:
     //atr2(atr2var* avtemp, arena* parent);
     atr2(atr2var* avtemp, arena* parent, rgraph** rgraphstemp, cgraph *cyclegtemp, window* atr2wtemp);
@@ -93,6 +96,8 @@ public:
     void bout();
     void write_report();
     void begin_window();                            //Not done
+    void click();
+    void chirp();
     
 private:
     atr2var *av;
@@ -101,6 +106,8 @@ private:
     cgraph *cycleg;
     window *atr2w;
     //QEventLoop *loop;
+
+    QSoundEffect *click_sound, *chirp_sound;
 
 signals:
     //void update_robot();
