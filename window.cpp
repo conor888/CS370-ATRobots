@@ -174,6 +174,12 @@ void window::keyPressEvent(QKeyEvent *event){
         }
     } else if (event->key() == Qt::Key_M) {
         repaint();
+    } else if ((event->key() == Qt::Key_S) || (event->key() == Qt::Key_Q)) {
+        if (av->sound_on) {
+            av->sound_on = false;
+        } else {
+            av->sound_on = true;
+        }
     }
 
     cycleg->update_cycle();

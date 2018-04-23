@@ -3703,9 +3703,13 @@ void atr2::begin_window() {
 }
 
 void atr2::click() {
-    click_sound->play();
+    if (av->graphix && av->sound_on) {
+        click_sound->play();
+    }
 }
 
 void atr2::chirp() {
-    chirp_sound->play();
+    if (av->graphix && av->sound_on) {
+        chirp_sound->play();
+    }
 }
