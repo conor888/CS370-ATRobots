@@ -182,11 +182,12 @@ void atr2func::time_delay(int n) {
 }
 
 int atr2func::rol(int n, int k) {
-
+    n = ~(~0U << 16) & ((n << 1) + (n & (1 << 16)?1:0));
     return n;
 }
 
 int atr2func::ror(int n, int k) {
+    n = ~(~0U << 16) & (((unsigned)n >> 1) + ((n & 1 << 0) << 15));
     return n;
 }
 
