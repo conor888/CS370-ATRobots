@@ -57,8 +57,12 @@ void rgraph::update_graph() {
 
         //Sixth row: Error
         p.drawText(QRect(10, 55, 50, 10), QString::fromStdString("Error:"));
-        p.setPen(QPen(atr2func::pascal_color(8)));
-        p.drawText(QRect(65, 55, 40, 10), QString::fromStdString("None"));
+        if(av->robot[n].err != 0) {
+            p.drawText(65, 63, QString::fromStdString(atr2func::addrear(atr2func::cstr(av->robot[n].err), 7) + atr2func::hex(av->robot[n].err)));
+        } else {
+            p.setPen(QPen(atr2func::pascal_color(8)));
+            p.drawText(65, 63, QString::fromStdString("None"));
+        }
 
         //Second row: Robot MSG
         p.setPen(QPen(atr2func::pascal_color(atr2func::robot_color_i(n) & 7)));
