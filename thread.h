@@ -10,6 +10,7 @@ class Worker : public QObject
 
 public:
     Worker(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp, window* atr2wtemp);
+    Worker(atr2var* avtemp, int argctemp, std::string argvtemp[]);
 
 private:
     int argc;
@@ -19,6 +20,8 @@ private:
     rgraph **rgraphs;
     cgraph *cycleg;
     window *atr2w;
+
+    bool graphix;
 
 public slots:
     void doWork();
@@ -37,6 +40,7 @@ class Controller : public QObject
     QThread workerThread;
 public:
     Controller(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* parent, rgraph** rgraphstemp, cgraph* cyclegtemp, window* atr2wtemp);
+    Controller(atr2var* avtemp, int argctemp, std::string argvtemp[]);
     ~Controller();
 
 private:

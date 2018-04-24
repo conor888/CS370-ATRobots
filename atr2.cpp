@@ -28,10 +28,8 @@ atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegt
     chirp_sound->setVolume(0.5f);
 }
 
-atr2::atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy) {
+atr2::atr2(atr2var* avtemp) {
     av = avtemp;
-    atr2a = parent;
-    //loop = loopy;
 }
 
 std::string atr2::operand(int n, int m) {
@@ -214,38 +212,48 @@ int atr2::max_shown() {
 }
 
 void atr2::update_armor(int n) {
-    if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update_graph();
+    if (av->graphix) {
+        if ((n>= 0) && (n <= 5)) {
+            rgraphs[n]->update_graph();
+        }
+        QApplication::processEvents();
     }
-    QApplication::processEvents();
 }
 
 void atr2::update_heat(int n) {
-    if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update_graph();
+    if (av->graphix) {
+        if ((n>= 0) && (n <= 5)) {
+            rgraphs[n]->update_graph();
+        }
+        QApplication::processEvents();
     }
-    QApplication::processEvents();
 }
 
 void atr2::robot_error(int n, int i, std::string ov) {
-    chirp();
-    av->robot[n].err = i;
-    if (av->logging_errors) {
-        log_error(n, i, ov);
-        av->robot[n].error_count++;
+    if (av->graphix) {
+        chirp();
+        av->robot[n].err = i;
+        if (av->logging_errors) {
+            log_error(n, i, ov);
+            av->robot[n].error_count++;
+        }
     }
 }
 
 void atr2::update_lives(int n) {
-    if ((n>= 0) && (n <= 5)) {
-        rgraphs[n]->update_graph();
+    if (av->graphix) {
+        if ((n>= 0) && (n <= 5)) {
+            rgraphs[n]->update_graph();
+        }
+        QApplication::processEvents();
     }
-    QApplication::processEvents();
 }
 
 void atr2::update_cycle_window() {
-    cycleg->update_cycle();
-    QApplication::processEvents();
+    if (av->graphix) {
+        cycleg->update_cycle();
+        QApplication::processEvents();
+    }
 }
 
 void atr2::prog_error(int n, std::string ss) {
@@ -1425,7 +1433,7 @@ void atr2::parse_param(std::string s) {
         }
 
         if (s1[0] == 'G') {
-            av->no_gfx = true;
+            av->graphix = false;
             found = true;
         }
 
@@ -1530,14 +1538,14 @@ void atr2::init(int argc, std::string argv[]) {
         //readkey;
     }
     av->step_mode = 0; //stepping disabled
-    av->logging_errors = true;
+    av->logging_errors = false;
     av->stats_mode = 0;
     av->insane_missiles = false;
     av->insanity = 0;
     av->delay_per_sec = 0;
     av->windoze = true;
     av->graphix = true;
-    av->no_gfx = false;
+    //av->no_gfx = false;
     av->sound_on = true;
     av->timing = true;
     av->matches = 1;
@@ -1605,9 +1613,9 @@ void atr2::init(int argc, std::string argv[]) {
     if (av->num_robots < 2) {
         prog_error(4, "");
     }
-    if (!av->no_gfx) {
+    //if (!av->no_gfx) {
         //graph_mode(true);
-    }
+    //}
 
     //fix ups
     if (av->matches > 100000) {
@@ -1651,10 +1659,6 @@ void atr2::init(int argc, std::string argv[]) {
     /*if (!av->graphix) {
         std::cout << "Freemem: " << memavail << std::endl << std::endl;
     }*/
-
-    for (i = 0; i < 6; i++) {
-        rgraphs[i]->update_graph();
-    }
 }
 
 void atr2::draw_robot(int n) {
@@ -1788,9 +1792,6 @@ void atr2::draw_robot(int n) {
         if (av->graphix) {
             atr2a->update_robot(n);
             QApplication::processEvents();
-            //emit update_robot();
-            //emit atr2a->draw_robot(n);
-            //loop->exec();
         }
 
         av->robot[n].lx = av->robot[n].x;
@@ -3456,9 +3457,9 @@ void atr2::show_statistics() {
     if (!av->windoze) {
         return;
     }
-    if (!av->graphix) {
+    //if (!av->graphix) {
 
-    } else {
+    //} else {
         //textcolor(15);
         std::cout << std::endl << atr2func::space(79) << std::endl;
         std::cout << "Match " << av->played << "/" << av->matches << " results:" << std::endl << std::endl;
@@ -3489,7 +3490,7 @@ void atr2::show_statistics() {
         std::cout << std::endl;
         std::cout << victor_string(k, n);
         std::cout << std::endl;
-    }
+    //}
 }
 
 void atr2::score_robots() {
@@ -3532,6 +3533,9 @@ void atr2::init_bout() {
     }
     if (av->graphix) {
         //setscreen();
+        for (i = 0; i < 6; i++) {
+            rgraphs[i]->update_graph();
+        }
     }
     if (av->graphix && (av->step_mode > 0)) {
         //init_debug_window();
@@ -3577,7 +3581,9 @@ void atr2::bout() {
         }
 
         av->game_cycle++;
-        atr2a->new_cycle();
+        if (av->graphix) {
+            atr2a->new_cycle();
+        }
         for (i = 0; i < av->num_robots; i++) {
             if (av->robot[i].armor > 0) {
                 do_robot(i);

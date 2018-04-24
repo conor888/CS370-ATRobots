@@ -22,9 +22,8 @@ class atr2 : public QObject {
 Q_OBJECT
 
 public:
-    //atr2(atr2var* avtemp, arena* parent);
     atr2(atr2var* avtemp, arena* parent, rgraph** rgraphstemp, cgraph *cyclegtemp, window* atr2wtemp);
-    atr2(atr2var* avtemp, arena* parent, QEventLoop* loopy);
+    atr2(atr2var* avtemp);
 
     std::string operand(int n, int m);
     std::string mnemonic(int n, int m);

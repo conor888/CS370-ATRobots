@@ -16,58 +16,67 @@
 #include "thread.h"
 
 int main(int argc, char *argv[]) {
+    bool graphix = true;
 
     QApplication a(argc, argv);
 
     QCoreApplication::setApplicationName("ATR2");
 
-    std::string args[55];
+    std::string args[100];
 
     for (int i = 0; i < argc; i++) {
         args[i] = argv[i];
+        if (args[i] == "-G") {
+            graphix = false;
+        }
     }
 
     atr2var av;
+    Controller *atr2c;
 
-    arena *atr2a = new arena(&av);
-    atr2a->setStyleSheet("background-color:black;");
-    atr2a->setAttribute(Qt::WA_OpaquePaintEvent, true);
-    //atr2a.show();
+    QGridLayout *atr2l;
+    rgraph **rgraphs;
+    cgraph *cycleg;
+    window *atr2w;
 
-    QGridLayout *atr2l = new QGridLayout();
+    if (graphix) {
+        arena *atr2a = new arena(&av);
+        atr2a->setStyleSheet("background-color:black;");
+        atr2a->setAttribute(Qt::WA_OpaquePaintEvent, true);
+        //atr2a.show();
 
-    rgraph **rgraphs = new rgraph*[6];
+        atr2l = new QGridLayout();
 
-    cgraph *cycleg = new cgraph(&av);
-    //one->setStyleSheet("background: rgb(255, 0, 0)");
-    //one->update();
+        rgraphs = new rgraph*[6];
 
-    window atr2w(&av, cycleg, rgraphs);
-    atr2w.setLayout(atr2l);
-    atr2w.setAttribute(Qt::WA_OpaquePaintEvent, true);
+        cycleg = new cgraph(&av);
 
-    atr2l->addWidget(atr2a, 0, 0);
+        atr2w = new window(&av, cycleg, rgraphs);
+        atr2w->setLayout(atr2l);
+        atr2w->setAttribute(Qt::WA_OpaquePaintEvent, true);
 
-    for (int i = 0; i < 6; i++) {
-        rgraphs[i] = new rgraph(i, &av);
-        atr2l->addWidget(rgraphs[i], i, 1);
+        atr2l->addWidget(atr2a, 0, 0);
+
+        for (int i = 0; i < 6; i++) {
+            rgraphs[i] = new rgraph(i, &av);
+            atr2l->addWidget(rgraphs[i], i, 1);
+        }
+
+        atr2l->addWidget(cycleg, 7, 1);
+        atr2l->setSpacing(5);
+        atr2l->setContentsMargins(5, 5, 5, 5);
+        atr2l->setRowMinimumHeight(6, 6);
+        atr2l->setColumnMinimumWidth(0, 471);
+
+        atr2w->setStyleSheet("background-color: rgb(168, 168, 168);");
+        atr2w->show();
+
+        atr2c = new Controller(&av, argc, args, atr2a, rgraphs, cycleg, atr2w);
+    } else {
+        //No graphics
+        atr2c = new Controller(&av, argc, args);
     }
 
-    atr2l->addWidget(cycleg, 7, 1);
-    atr2l->setSpacing(5);
-    atr2l->setContentsMargins(5, 5, 5, 5);
-    atr2l->setRowMinimumHeight(6, 6);
-    atr2l->setColumnMinimumWidth(0, 471);
-
-    atr2w.setStyleSheet("background-color: rgb(168, 168, 168);");
-    atr2w.show();
-
-    //WorkerThread *workerThread = new WorkerThread(&av, argc, args, atr2a, rgraphs, cycleg);
-    //connect(workerThread, &WorkerThread::resultReady, this, &MyObject::handleResults);
-    //connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
-    //workerThread->start();
-
-    Controller *atr2c = new Controller(&av, argc, args, atr2a, rgraphs, cycleg, &atr2w);
     atr2c->operate();
 
     return a.exec();

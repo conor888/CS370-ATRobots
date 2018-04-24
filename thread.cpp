@@ -9,27 +9,35 @@ Worker::Worker(atr2var* avtemp, int argctemp, std::string argvtemp[], arena* par
     cycleg = cyclegtemp;
     atr2w = atr2wtemp;
 
-    //loop = new QEventLoop();
+    graphix = true;
+}
 
-    //QObject::connect(parent, SIGNAL(donePainting()), loop, SLOT(quit()));
+Worker::Worker(atr2var* avtemp, int argctemp, std::string argvtemp[]) {
+    av = avtemp;
+    argc = argctemp;
+    argv = argvtemp;
+
+    graphix = false;
 }
 
 void Worker::doWork() {
     QString result;
 
-    //atr2 atr2(av, atr2a, loop);
-    atr2 atr2(av, atr2a, rgraphs, cycleg, atr2w);
+    atr2 *atr2p;
 
-    atr2.init(argc, argv);
+    if (graphix) {
+        atr2p = new atr2(av, atr2a, rgraphs, cycleg, atr2w);
+    } else {
+        atr2p = new atr2(av);
+    }
+
+    atr2p->init(argc, argv);
 
     int i, j, k, l, n, w;
 
-    if(av->graphix) {
-        atr2.begin_window();
-    }
     if(av->matches > 0) {
         for (i = 0; i < av->matches; i++) {
-            atr2.bout();
+            atr2p->bout();
         }
     }
     if(!av->graphix) {
@@ -77,10 +85,10 @@ void Worker::doWork() {
         //show_statistics();
     }
     if (av->report) {
-        atr2.write_report();
+        atr2p->write_report();
     }
 
-    atr2.shutdown();
+    atr2p->shutdown();
 
     emit resultReady(result);
 }
@@ -101,6 +109,20 @@ Controller::Controller(atr2var* avtemp, int argctemp, std::string argvtemp[], ar
     //connect(worker, &Worker::resultReady, this, &Controller::handleResults);
     workerThread.start();
 }
+
+Controller::Controller(atr2var* avtemp, int argctemp, std::string argvtemp[]) {
+    av = avtemp;
+    argc = argctemp;
+    argv = argvtemp;
+
+    Worker *worker = new Worker(av, argc, argv);
+    worker->moveToThread(&workerThread);
+    connect(&workerThread, &QThread::finished, worker, &QObject::deleteLater);
+    connect(this, &Controller::operate, worker, &Worker::doWork);
+    //connect(worker, &Worker::resultReady, this, &Controller::handleResults);
+    workerThread.start();
+}
+
 Controller::~Controller() {
     workerThread.quit();
     workerThread.wait();
