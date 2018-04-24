@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <iostream>
+#include <QFontDatabase>
 
 std::string MainWindow::ucase(std::string s) {
     int i;
@@ -26,6 +27,17 @@ MainWindow::MainWindow(QProcess *atr2in, QWidget *parent) :
     }
 
     atr2 = atr2in;
+
+    QFontDatabase::addApplicationFont(":/fonts/PressStart2P.ttf");
+    P2 = new QFont("Press Start 2P");
+    P2->setPixelSize(18);
+
+    ui->label_6->setFont(*P2);
+    ui->label_7->setFont(*P2);
+    ui->label_8->setFont(*P2);
+    ui->label_9->setFont(*P2);
+    ui->label_10->setFont(*P2);
+    ui->label_11->setFont(*P2);
 }
 
 MainWindow::~MainWindow()

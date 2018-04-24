@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QFont>
 
 namespace Ui {
 class MainWindow;
@@ -55,6 +56,8 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+
+    QFont *P2;
 
     //QString *fileName[6];
     QString **fileName = new QString*[6];

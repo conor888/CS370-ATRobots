@@ -3,6 +3,6 @@
         <file>atrobs.png</file>
     </qresource>
     <qresource prefix="/fonts">
-        <file>FUTURE.TTF</file>
+        <file>PressStart2P.ttf</file>
     </qresource>
 </RCC>
