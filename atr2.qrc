@@ -4,7 +4,6 @@
     </qresource>
     <qresource prefix="/sounds">
         <file>Extra/chirp-o2.wav</file>
-        <file>Extra/click-o2.wav</file>
-        <file>Extra/click-o2-long.wav</file>
+        <file>Extra/click-o3.wav</file>
     </qresource>
 </RCC>

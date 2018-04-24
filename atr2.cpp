@@ -20,12 +20,12 @@ atr2::atr2(atr2var* avtemp, arena* parent, rgraph **rgraphstemp, cgraph *cyclegt
     //QObject::connect(atr2a, SIGNAL(donePainting()), loop, SLOT(quit()));
 
     click_sound = new QSoundEffect();
-    click_sound->setSource(QUrl("qrc:/sounds/Extra/click-o2-long.wav"));
-    click_sound->setVolume(1.0f);
+    click_sound->setSource(QUrl("qrc:/sounds/Extra/click-o3.wav"));
+    click_sound->setVolume(0.7f);
 
     chirp_sound = new QSoundEffect();
     chirp_sound->setSource(QUrl("qrc:/sounds/Extra/chirp-o2.wav"));
-    chirp_sound->setVolume(0.5f);
+    chirp_sound->setVolume(0.7f);
 }
 
 atr2::atr2(atr2var* avtemp) {
