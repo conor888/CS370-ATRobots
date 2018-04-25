@@ -675,6 +675,12 @@ void atr2::compile(int n, std::string filename) {
         if (locktype < 3) {
             av->lock_pos = 0;
         }
+
+        //If last character of string is '\r', remove it
+        if (s[s.length() - 1] == '\r') {
+            s.erase(s.length() - 1, 1);
+        }
+
         if (!av->lock_code.empty()) {
             for (i = 0; i < (int)s.length(); i++) {
                 if (av->lock_pos > (int)av->lock_code.length() - 1) {
