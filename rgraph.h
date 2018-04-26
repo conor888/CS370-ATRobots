@@ -18,6 +18,8 @@ private:
     int n;
     atr2var *av;
 
+    QBrush *selected_fill;
+
     QPixmap *r;
 };
 

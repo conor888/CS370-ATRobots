@@ -20,6 +20,8 @@ rgraph::rgraph(int nn, atr2var* avtemp, QWidget *parent) : QWidget(parent)
 
     r = new QPixmap(154, 65);
     r->fill(Qt::black);
+
+    selected_fill = new QBrush(atr2func::pascal_color(atr2func::robot_color_i(n) & 7), Qt::Dense7Pattern);
 }
 
 void rgraph::update_graph() {
@@ -31,6 +33,7 @@ void rgraph::update_graph() {
         p.setFont(*P2);
 
         if(av->robot[n].selected) {
+            p.fillRect(0, 0, 154, 64, *selected_fill);
             p.drawRect(0, 0, 153, 64);
         }
 
