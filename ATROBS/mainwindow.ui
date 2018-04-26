@@ -1696,7 +1696,7 @@ border-color: rgb(43, 43, 43);</string>
      <number>100</number>
     </property>
     <property name="value">
-     <number>5</number>
+     <number>10</number>
     </property>
    </widget>
    <widget class="QSpinBox" name="spinBox_3">
