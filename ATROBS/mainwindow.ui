@@ -1147,6 +1147,9 @@ QCheckBox:indicator:unchecked {
       <height>16</height>
      </size>
     </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
    </widget>
    <widget class="QCheckBox" name="checkBox_5">
     <property name="geometry">

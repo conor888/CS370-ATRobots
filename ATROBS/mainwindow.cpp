@@ -201,19 +201,22 @@ void MainWindow::on_pushButton_14_clicked() //Play button
     QString current_dir = QCoreApplication::applicationDirPath();
     std::string cla;
 
+    cla = "\"";
+
     if (QSysInfo::productType() == "windows") {
-        cla = current_dir.toStdString() + "/ATR2.exe";
+        cla += current_dir.toStdString() + "/ATR2.exe";
     } else if (QSysInfo::productType() == "osx") {
         std::cout << "rstr 26 = " << MainWindow::rstr(current_dir.toStdString(), 26) << std::endl;
         if (MainWindow::rstr(current_dir.toStdString(), 26) == "/ATROBS.app/Contents/MacOS") {
             current_dir = QString::fromStdString(MainWindow::lstr(current_dir.toStdString(), current_dir.toStdString().length() - 26));
             std::cout << "lstr 27 = " << current_dir.toStdString() << std::endl;
         }
-        cla = current_dir.toStdString() + "/ATR2.app";
+        cla += current_dir.toStdString() + "/ATR2.app";
     } else {
-        cla = current_dir.toStdString() + "/ATR2";
+        cla += current_dir.toStdString() + "/ATR2";
     }
 
+    cla += "\"";
 
     //show robot source
     if (!ui->checkBox_2->isChecked()) {
