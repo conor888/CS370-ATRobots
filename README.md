@@ -77,7 +77,7 @@ To obtain the ATR2 source code, there are two main options:
 1. Go to the Build menu, and click Run.\
 ![Run ATR2](https://i.imgur.com/yH6XIS7.png)
 1. If everything worked, you should see the ATR2 arena begin playing. Congratulations!\
-![Running instance of ATR2](https://i.imgur.com/bQHs6iv.png)
+![Running instance of ATR2](https://i.imgur.com/n0qVMkA.png)
 
 ## Using ATR2
 
